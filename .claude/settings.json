@@ -15,7 +15,9 @@
       "Write(**.hlsl)",
       "Edit(**.shader)",
       "Write(**.shader)",
+      "Edit(**.json)",
       "Write(**.json)",
+      "Edit(**.py)",
       "Write(**.py)"
     ]
   }
