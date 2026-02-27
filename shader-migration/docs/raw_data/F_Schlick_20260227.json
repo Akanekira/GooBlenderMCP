@@ -1,0 +1,518 @@
+{
+  "group": "F_Schlick",
+  "node_count": 19,
+  "link_count": 20,
+  "interface_inputs": [
+    {
+      "name": "f0",
+      "bl_idname": "NodeSocketVector"
+    },
+    {
+      "name": "f90",
+      "bl_idname": "NodeSocketFloat"
+    },
+    {
+      "name": "u",
+      "bl_idname": "NodeSocketFloat"
+    }
+  ],
+  "interface_outputs": [
+    {
+      "name": "输出",
+      "bl_idname": "NodeSocketVector"
+    }
+  ],
+  "nodes": [
+    {
+      "name": "帧",
+      "type": "FRAME",
+      "bl_idname": "NodeFrame",
+      "inputs": [],
+      "outputs": []
+    },
+    {
+      "name": "帧.001",
+      "type": "FRAME",
+      "bl_idname": "NodeFrame",
+      "inputs": [],
+      "outputs": []
+    },
+    {
+      "name": "帧.002",
+      "type": "FRAME",
+      "bl_idname": "NodeFrame",
+      "inputs": [],
+      "outputs": []
+    },
+    {
+      "name": "帧.003",
+      "type": "FRAME",
+      "bl_idname": "NodeFrame",
+      "inputs": [],
+      "outputs": []
+    },
+    {
+      "name": "运算",
+      "type": "MATH",
+      "bl_idname": "ShaderNodeMath",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "运算.001",
+      "type": "MATH",
+      "bl_idname": "ShaderNodeMath",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "运算.002",
+      "type": "MATH",
+      "bl_idname": "ShaderNodeMath",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "转接点.001",
+      "type": "REROUTE",
+      "bl_idname": "NodeReroute",
+      "inputs": [
+        {
+          "name": "Input",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Output",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "转接点",
+      "type": "REROUTE",
+      "bl_idname": "NodeReroute",
+      "inputs": [
+        {
+          "name": "Input",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Output",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "转接点.029",
+      "type": "REROUTE",
+      "bl_idname": "NodeReroute",
+      "inputs": [
+        {
+          "name": "Input",
+          "type": "VECTOR"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Output",
+          "type": "VECTOR"
+        }
+      ]
+    },
+    {
+      "name": "运算.004",
+      "type": "MATH",
+      "bl_idname": "ShaderNodeMath",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "组输入",
+      "type": "GROUP_INPUT",
+      "bl_idname": "NodeGroupInput",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "f0",
+          "type": "VECTOR"
+        },
+        {
+          "name": "f90",
+          "type": "VALUE"
+        },
+        {
+          "name": "u",
+          "type": "VALUE"
+        },
+        {
+          "name": "",
+          "type": "CUSTOM"
+        }
+      ]
+    },
+    {
+      "name": "运算.003",
+      "type": "MATH",
+      "bl_idname": "ShaderNodeMath",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "转接点.002",
+      "type": "REROUTE",
+      "bl_idname": "NodeReroute",
+      "inputs": [
+        {
+          "name": "Input",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Output",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "转接点.003",
+      "type": "REROUTE",
+      "bl_idname": "NodeReroute",
+      "inputs": [
+        {
+          "name": "Input",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Output",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "Vector Math",
+      "type": "VECT_MATH",
+      "bl_idname": "ShaderNodeVectorMath",
+      "inputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Scale",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "运算.005",
+      "type": "MATH",
+      "bl_idname": "ShaderNodeMath",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "Vector Math.001",
+      "type": "VECT_MATH",
+      "bl_idname": "ShaderNodeVectorMath",
+      "inputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Scale",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "组输出",
+      "type": "GROUP_OUTPUT",
+      "bl_idname": "NodeGroupOutput",
+      "inputs": [
+        {
+          "name": "输出",
+          "type": "VECTOR"
+        },
+        {
+          "name": "",
+          "type": "CUSTOM"
+        }
+      ],
+      "outputs": []
+    }
+  ],
+  "links": [
+    {
+      "from_node": "组输入",
+      "from_socket": "f0",
+      "to_node": "转接点.029",
+      "to_socket": "Input"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "u",
+      "to_node": "运算",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "运算",
+      "from_socket": "Value",
+      "to_node": "转接点",
+      "to_socket": "Input"
+    },
+    {
+      "from_node": "转接点",
+      "from_socket": "Output",
+      "to_node": "运算.001",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "转接点",
+      "from_socket": "Output",
+      "to_node": "运算.001",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "运算.001",
+      "from_socket": "Value",
+      "to_node": "转接点.001",
+      "to_socket": "Input"
+    },
+    {
+      "from_node": "转接点.001",
+      "from_socket": "Output",
+      "to_node": "运算.002",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "转接点.001",
+      "from_socket": "Output",
+      "to_node": "运算.002",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "运算.002",
+      "from_socket": "Value",
+      "to_node": "运算.003",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "转接点",
+      "from_socket": "Output",
+      "to_node": "运算.003",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "运算.003",
+      "from_socket": "Value",
+      "to_node": "转接点.002",
+      "to_socket": "Input"
+    },
+    {
+      "from_node": "转接点.002",
+      "from_socket": "Output",
+      "to_node": "运算.004",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "转接点.029",
+      "from_socket": "Output",
+      "to_node": "Vector Math",
+      "to_socket": "Vector"
+    },
+    {
+      "from_node": "运算.004",
+      "from_socket": "Value",
+      "to_node": "Vector Math",
+      "to_socket": "Vector"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "f90",
+      "to_node": "转接点.003",
+      "to_socket": "Input"
+    },
+    {
+      "from_node": "转接点.002",
+      "from_socket": "Output",
+      "to_node": "运算.005",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "转接点.003",
+      "from_socket": "Output",
+      "to_node": "运算.005",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "Vector Math",
+      "from_socket": "Vector",
+      "to_node": "Vector Math.001",
+      "to_socket": "Vector"
+    },
+    {
+      "from_node": "运算.005",
+      "from_socket": "Value",
+      "to_node": "Vector Math.001",
+      "to_socket": "Vector"
+    },
+    {
+      "from_node": "Vector Math.001",
+      "from_socket": "Vector",
+      "to_node": "组输出",
+      "to_socket": "输出"
+    }
+  ]
+}

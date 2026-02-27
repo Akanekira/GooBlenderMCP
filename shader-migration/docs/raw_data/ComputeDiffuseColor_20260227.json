@@ -1,0 +1,166 @@
+{
+  "group": "ComputeDiffuseColor",
+  "node_count": 5,
+  "link_count": 5,
+  "interface_inputs": [
+    {
+      "name": "albedo",
+      "bl_idname": "NodeSocketColor"
+    },
+    {
+      "name": "metallic",
+      "bl_idname": "NodeSocketFloat"
+    }
+  ],
+  "interface_outputs": [
+    {
+      "name": "输出",
+      "bl_idname": "NodeSocketColor"
+    }
+  ],
+  "nodes": [
+    {
+      "name": "转接点.045",
+      "type": "REROUTE",
+      "bl_idname": "NodeReroute",
+      "inputs": [
+        {
+          "name": "Input",
+          "type": "RGBA"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Output",
+          "type": "RGBA"
+        }
+      ]
+    },
+    {
+      "name": "组输入",
+      "type": "GROUP_INPUT",
+      "bl_idname": "NodeGroupInput",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "albedo",
+          "type": "RGBA"
+        },
+        {
+          "name": "metallic",
+          "type": "VALUE"
+        },
+        {
+          "name": "",
+          "type": "CUSTOM"
+        }
+      ]
+    },
+    {
+      "name": "组输出",
+      "type": "GROUP_OUTPUT",
+      "bl_idname": "NodeGroupOutput",
+      "inputs": [
+        {
+          "name": "输出",
+          "type": "RGBA"
+        },
+        {
+          "name": "",
+          "type": "CUSTOM"
+        }
+      ],
+      "outputs": []
+    },
+    {
+      "name": "Vector Math",
+      "type": "VECT_MATH",
+      "bl_idname": "ShaderNodeVectorMath",
+      "inputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Scale",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "运算",
+      "type": "MATH",
+      "bl_idname": "ShaderNodeMath",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "from_node": "组输入",
+      "from_socket": "albedo",
+      "to_node": "转接点.045",
+      "to_socket": "Input"
+    },
+    {
+      "from_node": "Vector Math",
+      "from_socket": "Vector",
+      "to_node": "组输出",
+      "to_socket": "输出"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "metallic",
+      "to_node": "运算",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "转接点.045",
+      "from_socket": "Output",
+      "to_node": "Vector Math",
+      "to_socket": "Vector"
+    },
+    {
+      "from_node": "运算",
+      "from_socket": "Value",
+      "to_node": "Vector Math",
+      "to_socket": "Vector"
+    }
+  ]
+}

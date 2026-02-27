@@ -1,0 +1,41 @@
+{
+  "node_count": 7,
+  "nodes": [
+    {
+      "name": "材质输出",
+      "type": "OUTPUT_MATERIAL",
+      "bl_idname": "ShaderNodeOutputMaterial"
+    },
+    {
+      "name": "群组.001",
+      "type": "GROUP",
+      "bl_idname": "ShaderNodeGroup",
+      "group_name": "Arknights: Endfield_PBRToonBase"
+    },
+    {
+      "name": "图像纹理",
+      "type": "TEX_IMAGE",
+      "bl_idname": "ShaderNodeTexImage"
+    },
+    {
+      "name": "图像纹理.001",
+      "type": "TEX_IMAGE",
+      "bl_idname": "ShaderNodeTexImage"
+    },
+    {
+      "name": "图像纹理.002",
+      "type": "TEX_IMAGE",
+      "bl_idname": "ShaderNodeTexImage"
+    },
+    {
+      "name": "图像纹理.003",
+      "type": "TEX_IMAGE",
+      "bl_idname": "ShaderNodeTexImage"
+    },
+    {
+      "name": "图像纹理.004",
+      "type": "TEX_IMAGE",
+      "bl_idname": "ShaderNodeTexImage"
+    }
+  ]
+}

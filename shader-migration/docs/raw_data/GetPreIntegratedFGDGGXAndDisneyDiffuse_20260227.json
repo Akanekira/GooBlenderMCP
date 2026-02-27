@@ -1,0 +1,765 @@
+{
+  "group": "GetPreIntegratedFGDGGXAndDisneyDiffuse",
+  "node_count": 21,
+  "link_count": 29,
+  "interface_inputs": [
+    {
+      "name": "clampedNdotV",
+      "bl_idname": "NodeSocketFloat"
+    },
+    {
+      "name": "perceptualRoughness",
+      "bl_idname": "NodeSocketFloat"
+    },
+    {
+      "name": "fresnel0",
+      "bl_idname": "NodeSocketVector"
+    }
+  ],
+  "interface_outputs": [
+    {
+      "name": "specularFGD",
+      "bl_idname": "NodeSocketVector"
+    },
+    {
+      "name": "diffuseFGD",
+      "bl_idname": "NodeSocketFloat"
+    },
+    {
+      "name": "reflectivity",
+      "bl_idname": "NodeSocketFloat"
+    }
+  ],
+  "nodes": [
+    {
+      "name": "帧",
+      "type": "FRAME",
+      "bl_idname": "NodeFrame",
+      "inputs": [],
+      "outputs": []
+    },
+    {
+      "name": "帧.001",
+      "type": "FRAME",
+      "bl_idname": "NodeFrame",
+      "inputs": [],
+      "outputs": []
+    },
+    {
+      "name": "帧.002",
+      "type": "FRAME",
+      "bl_idname": "NodeFrame",
+      "inputs": [],
+      "outputs": []
+    },
+    {
+      "name": "合并 XYZ",
+      "type": "COMBXYZ",
+      "bl_idname": "ShaderNodeCombineXYZ",
+      "inputs": [
+        {
+          "name": "X",
+          "type": "VALUE"
+        },
+        {
+          "name": "Y",
+          "type": "VALUE"
+        },
+        {
+          "name": "Z",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        }
+      ]
+    },
+    {
+      "name": "运算.001",
+      "type": "MATH",
+      "bl_idname": "ShaderNodeMath",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "分离 XYZ",
+      "type": "SEPXYZ",
+      "bl_idname": "ShaderNodeSeparateXYZ",
+      "inputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "X",
+          "type": "VALUE"
+        },
+        {
+          "name": "Y",
+          "type": "VALUE"
+        },
+        {
+          "name": "Z",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "组输入",
+      "type": "GROUP_INPUT",
+      "bl_idname": "NodeGroupInput",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "clampedNdotV",
+          "type": "VALUE"
+        },
+        {
+          "name": "perceptualRoughness",
+          "type": "VALUE"
+        },
+        {
+          "name": "fresnel0",
+          "type": "VECTOR"
+        },
+        {
+          "name": "",
+          "type": "CUSTOM"
+        }
+      ]
+    },
+    {
+      "name": "转接点",
+      "type": "REROUTE",
+      "bl_idname": "NodeReroute",
+      "inputs": [
+        {
+          "name": "Input",
+          "type": "VECTOR"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Output",
+          "type": "VECTOR"
+        }
+      ]
+    },
+    {
+      "name": "分离 XYZ.002",
+      "type": "SEPXYZ",
+      "bl_idname": "ShaderNodeSeparateXYZ",
+      "inputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "X",
+          "type": "VALUE"
+        },
+        {
+          "name": "Y",
+          "type": "VALUE"
+        },
+        {
+          "name": "Z",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "图像纹理",
+      "type": "TEX_IMAGE",
+      "bl_idname": "ShaderNodeTexImage",
+      "inputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Color",
+          "type": "RGBA"
+        },
+        {
+          "name": "Alpha",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "合并 XYZ.001",
+      "type": "COMBXYZ",
+      "bl_idname": "ShaderNodeCombineXYZ",
+      "inputs": [
+        {
+          "name": "X",
+          "type": "VALUE"
+        },
+        {
+          "name": "Y",
+          "type": "VALUE"
+        },
+        {
+          "name": "Z",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        }
+      ]
+    },
+    {
+      "name": "转接点.001",
+      "type": "REROUTE",
+      "bl_idname": "NodeReroute",
+      "inputs": [
+        {
+          "name": "Input",
+          "type": "RGBA"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Output",
+          "type": "RGBA"
+        }
+      ]
+    },
+    {
+      "name": "混合",
+      "type": "MIX",
+      "bl_idname": "ShaderNodeMix",
+      "inputs": [
+        {
+          "name": "Factor",
+          "type": "VALUE"
+        },
+        {
+          "name": "Factor",
+          "type": "VECTOR"
+        },
+        {
+          "name": "A",
+          "type": "VALUE"
+        },
+        {
+          "name": "B",
+          "type": "VALUE"
+        },
+        {
+          "name": "A",
+          "type": "VECTOR"
+        },
+        {
+          "name": "B",
+          "type": "VECTOR"
+        },
+        {
+          "name": "A",
+          "type": "RGBA"
+        },
+        {
+          "name": "B",
+          "type": "RGBA"
+        },
+        {
+          "name": "A",
+          "type": "ROTATION"
+        },
+        {
+          "name": "B",
+          "type": "ROTATION"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Result",
+          "type": "VALUE"
+        },
+        {
+          "name": "Result",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Result",
+          "type": "RGBA"
+        },
+        {
+          "name": "Result",
+          "type": "ROTATION"
+        }
+      ]
+    },
+    {
+      "name": "混合.001",
+      "type": "MIX",
+      "bl_idname": "ShaderNodeMix",
+      "inputs": [
+        {
+          "name": "Factor",
+          "type": "VALUE"
+        },
+        {
+          "name": "Factor",
+          "type": "VECTOR"
+        },
+        {
+          "name": "A",
+          "type": "VALUE"
+        },
+        {
+          "name": "B",
+          "type": "VALUE"
+        },
+        {
+          "name": "A",
+          "type": "VECTOR"
+        },
+        {
+          "name": "B",
+          "type": "VECTOR"
+        },
+        {
+          "name": "A",
+          "type": "RGBA"
+        },
+        {
+          "name": "B",
+          "type": "RGBA"
+        },
+        {
+          "name": "A",
+          "type": "ROTATION"
+        },
+        {
+          "name": "B",
+          "type": "ROTATION"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Result",
+          "type": "VALUE"
+        },
+        {
+          "name": "Result",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Result",
+          "type": "RGBA"
+        },
+        {
+          "name": "Result",
+          "type": "ROTATION"
+        }
+      ]
+    },
+    {
+      "name": "混合.002",
+      "type": "MIX",
+      "bl_idname": "ShaderNodeMix",
+      "inputs": [
+        {
+          "name": "Factor",
+          "type": "VALUE"
+        },
+        {
+          "name": "Factor",
+          "type": "VECTOR"
+        },
+        {
+          "name": "A",
+          "type": "VALUE"
+        },
+        {
+          "name": "B",
+          "type": "VALUE"
+        },
+        {
+          "name": "A",
+          "type": "VECTOR"
+        },
+        {
+          "name": "B",
+          "type": "VECTOR"
+        },
+        {
+          "name": "A",
+          "type": "RGBA"
+        },
+        {
+          "name": "B",
+          "type": "RGBA"
+        },
+        {
+          "name": "A",
+          "type": "ROTATION"
+        },
+        {
+          "name": "B",
+          "type": "ROTATION"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Result",
+          "type": "VALUE"
+        },
+        {
+          "name": "Result",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Result",
+          "type": "RGBA"
+        },
+        {
+          "name": "Result",
+          "type": "ROTATION"
+        }
+      ]
+    },
+    {
+      "name": "分离 XYZ.001",
+      "type": "SEPXYZ",
+      "bl_idname": "ShaderNodeSeparateXYZ",
+      "inputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "X",
+          "type": "VALUE"
+        },
+        {
+          "name": "Y",
+          "type": "VALUE"
+        },
+        {
+          "name": "Z",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "合并 XYZ.002",
+      "type": "COMBXYZ",
+      "bl_idname": "ShaderNodeCombineXYZ",
+      "inputs": [
+        {
+          "name": "X",
+          "type": "VALUE"
+        },
+        {
+          "name": "Y",
+          "type": "VALUE"
+        },
+        {
+          "name": "Z",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        }
+      ]
+    },
+    {
+      "name": "转接点.002",
+      "type": "REROUTE",
+      "bl_idname": "NodeReroute",
+      "inputs": [
+        {
+          "name": "Input",
+          "type": "VECTOR"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Output",
+          "type": "VECTOR"
+        }
+      ]
+    },
+    {
+      "name": "组输出",
+      "type": "GROUP_OUTPUT",
+      "bl_idname": "NodeGroupOutput",
+      "inputs": [
+        {
+          "name": "specularFGD",
+          "type": "VECTOR"
+        },
+        {
+          "name": "diffuseFGD",
+          "type": "VALUE"
+        },
+        {
+          "name": "reflectivity",
+          "type": "VALUE"
+        },
+        {
+          "name": "",
+          "type": "CUSTOM"
+        }
+      ],
+      "outputs": []
+    },
+    {
+      "name": "运算",
+      "type": "MATH",
+      "bl_idname": "ShaderNodeMath",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "群组.004",
+      "type": "GROUP",
+      "bl_idname": "ShaderNodeGroup",
+      "inputs": [
+        {
+          "name": "coord",
+          "type": "VECTOR"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "coordLUT",
+          "type": "VECTOR"
+        }
+      ],
+      "group_name": "Remap01ToHalfTexelCoord"
+    }
+  ],
+  "links": [
+    {
+      "from_node": "运算.001",
+      "from_socket": "Value",
+      "to_node": "合并 XYZ",
+      "to_socket": "X"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "clampedNdotV",
+      "to_node": "运算.001",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "perceptualRoughness",
+      "to_node": "合并 XYZ",
+      "to_socket": "Y"
+    },
+    {
+      "from_node": "合并 XYZ",
+      "from_socket": "Vector",
+      "to_node": "群组.004",
+      "to_socket": "coord"
+    },
+    {
+      "from_node": "群组.004",
+      "from_socket": "coordLUT",
+      "to_node": "分离 XYZ",
+      "to_socket": "Vector"
+    },
+    {
+      "from_node": "分离 XYZ",
+      "from_socket": "X",
+      "to_node": "合并 XYZ.001",
+      "to_socket": "X"
+    },
+    {
+      "from_node": "分离 XYZ",
+      "from_socket": "Y",
+      "to_node": "合并 XYZ.001",
+      "to_socket": "Y"
+    },
+    {
+      "from_node": "合并 XYZ.001",
+      "from_socket": "Vector",
+      "to_node": "图像纹理",
+      "to_socket": "Vector"
+    },
+    {
+      "from_node": "转接点.001",
+      "from_socket": "Output",
+      "to_node": "分离 XYZ.001",
+      "to_socket": "Vector"
+    },
+    {
+      "from_node": "转接点",
+      "from_socket": "Output",
+      "to_node": "分离 XYZ.002",
+      "to_socket": "Vector"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "fresnel0",
+      "to_node": "转接点",
+      "to_socket": "Input"
+    },
+    {
+      "from_node": "分离 XYZ.002",
+      "from_socket": "X",
+      "to_node": "混合",
+      "to_socket": "Factor"
+    },
+    {
+      "from_node": "分离 XYZ.002",
+      "from_socket": "Y",
+      "to_node": "混合.001",
+      "to_socket": "Factor"
+    },
+    {
+      "from_node": "分离 XYZ.001",
+      "from_socket": "X",
+      "to_node": "混合",
+      "to_socket": "A"
+    },
+    {
+      "from_node": "分离 XYZ.001",
+      "from_socket": "Y",
+      "to_node": "混合",
+      "to_socket": "B"
+    },
+    {
+      "from_node": "分离 XYZ.001",
+      "from_socket": "X",
+      "to_node": "混合.001",
+      "to_socket": "A"
+    },
+    {
+      "from_node": "分离 XYZ.001",
+      "from_socket": "Y",
+      "to_node": "混合.001",
+      "to_socket": "B"
+    },
+    {
+      "from_node": "分离 XYZ.001",
+      "from_socket": "X",
+      "to_node": "混合.002",
+      "to_socket": "A"
+    },
+    {
+      "from_node": "分离 XYZ.002",
+      "from_socket": "Z",
+      "to_node": "混合.002",
+      "to_socket": "Factor"
+    },
+    {
+      "from_node": "分离 XYZ.001",
+      "from_socket": "Y",
+      "to_node": "混合.002",
+      "to_socket": "B"
+    },
+    {
+      "from_node": "混合",
+      "from_socket": "Result",
+      "to_node": "合并 XYZ.002",
+      "to_socket": "X"
+    },
+    {
+      "from_node": "混合.001",
+      "from_socket": "Result",
+      "to_node": "合并 XYZ.002",
+      "to_socket": "Y"
+    },
+    {
+      "from_node": "混合.002",
+      "from_socket": "Result",
+      "to_node": "合并 XYZ.002",
+      "to_socket": "Z"
+    },
+    {
+      "from_node": "图像纹理",
+      "from_socket": "Color",
+      "to_node": "转接点.001",
+      "to_socket": "Input"
+    },
+    {
+      "from_node": "转接点.002",
+      "from_socket": "Output",
+      "to_node": "组输出",
+      "to_socket": "specularFGD"
+    },
+    {
+      "from_node": "合并 XYZ.002",
+      "from_socket": "Vector",
+      "to_node": "转接点.002",
+      "to_socket": "Input"
+    },
+    {
+      "from_node": "分离 XYZ.001",
+      "from_socket": "Z",
+      "to_node": "运算",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "运算",
+      "from_socket": "Value",
+      "to_node": "组输出",
+      "to_socket": "diffuseFGD"
+    },
+    {
+      "from_node": "分离 XYZ.001",
+      "from_socket": "Y",
+      "to_node": "组输出",
+      "to_socket": "reflectivity"
+    }
+  ]
+}

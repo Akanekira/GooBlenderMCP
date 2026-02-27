@@ -1,0 +1,536 @@
+{
+  "group": "Rim_Color",
+  "node_count": 11,
+  "link_count": 15,
+  "interface_inputs": [
+    {
+      "name": "albedo",
+      "bl_idname": "NodeSocketColor"
+    },
+    {
+      "name": "dirLight_lightColor",
+      "bl_idname": "NodeSocketColor"
+    },
+    {
+      "name": "Rim_Color",
+      "bl_idname": "NodeSocketColor"
+    },
+    {
+      "name": "Rim_ColorStrength",
+      "bl_idname": "NodeSocketColor"
+    },
+    {
+      "name": "LoV",
+      "bl_idname": "NodeSocketFloat"
+    }
+  ],
+  "interface_outputs": [
+    {
+      "name": "结果",
+      "bl_idname": "NodeSocketColor"
+    }
+  ],
+  "nodes": [
+    {
+      "name": "组输出",
+      "type": "GROUP_OUTPUT",
+      "bl_idname": "NodeGroupOutput",
+      "inputs": [
+        {
+          "name": "结果",
+          "type": "RGBA"
+        },
+        {
+          "name": "",
+          "type": "CUSTOM"
+        }
+      ],
+      "outputs": []
+    },
+    {
+      "name": "转接点.101",
+      "type": "REROUTE",
+      "bl_idname": "NodeReroute",
+      "inputs": [
+        {
+          "name": "Input",
+          "type": "RGBA"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Output",
+          "type": "RGBA"
+        }
+      ]
+    },
+    {
+      "name": "转接点.099",
+      "type": "REROUTE",
+      "bl_idname": "NodeReroute",
+      "inputs": [
+        {
+          "name": "Input",
+          "type": "RGBA"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Output",
+          "type": "RGBA"
+        }
+      ]
+    },
+    {
+      "name": "运算.030",
+      "type": "MATH",
+      "bl_idname": "ShaderNodeMath",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "钳制.004",
+      "type": "CLAMP",
+      "bl_idname": "ShaderNodeClamp",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Min",
+          "type": "VALUE"
+        },
+        {
+          "name": "Max",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Result",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "混合.015",
+      "type": "MIX",
+      "bl_idname": "ShaderNodeMix",
+      "inputs": [
+        {
+          "name": "Factor",
+          "type": "VALUE"
+        },
+        {
+          "name": "Factor",
+          "type": "VECTOR"
+        },
+        {
+          "name": "A",
+          "type": "VALUE"
+        },
+        {
+          "name": "B",
+          "type": "VALUE"
+        },
+        {
+          "name": "A",
+          "type": "VECTOR"
+        },
+        {
+          "name": "B",
+          "type": "VECTOR"
+        },
+        {
+          "name": "A",
+          "type": "RGBA"
+        },
+        {
+          "name": "B",
+          "type": "RGBA"
+        },
+        {
+          "name": "A",
+          "type": "ROTATION"
+        },
+        {
+          "name": "B",
+          "type": "ROTATION"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Result",
+          "type": "VALUE"
+        },
+        {
+          "name": "Result",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Result",
+          "type": "RGBA"
+        },
+        {
+          "name": "Result",
+          "type": "ROTATION"
+        }
+      ]
+    },
+    {
+      "name": "混合.016",
+      "type": "MIX",
+      "bl_idname": "ShaderNodeMix",
+      "inputs": [
+        {
+          "name": "Factor",
+          "type": "VALUE"
+        },
+        {
+          "name": "Factor",
+          "type": "VECTOR"
+        },
+        {
+          "name": "A",
+          "type": "VALUE"
+        },
+        {
+          "name": "B",
+          "type": "VALUE"
+        },
+        {
+          "name": "A",
+          "type": "VECTOR"
+        },
+        {
+          "name": "B",
+          "type": "VECTOR"
+        },
+        {
+          "name": "A",
+          "type": "RGBA"
+        },
+        {
+          "name": "B",
+          "type": "RGBA"
+        },
+        {
+          "name": "A",
+          "type": "ROTATION"
+        },
+        {
+          "name": "B",
+          "type": "ROTATION"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Result",
+          "type": "VALUE"
+        },
+        {
+          "name": "Result",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Result",
+          "type": "RGBA"
+        },
+        {
+          "name": "Result",
+          "type": "ROTATION"
+        }
+      ]
+    },
+    {
+      "name": "混合.014",
+      "type": "MIX",
+      "bl_idname": "ShaderNodeMix",
+      "inputs": [
+        {
+          "name": "Factor",
+          "type": "VALUE"
+        },
+        {
+          "name": "Factor",
+          "type": "VECTOR"
+        },
+        {
+          "name": "A",
+          "type": "VALUE"
+        },
+        {
+          "name": "B",
+          "type": "VALUE"
+        },
+        {
+          "name": "A",
+          "type": "VECTOR"
+        },
+        {
+          "name": "B",
+          "type": "VECTOR"
+        },
+        {
+          "name": "A",
+          "type": "RGBA"
+        },
+        {
+          "name": "B",
+          "type": "RGBA"
+        },
+        {
+          "name": "A",
+          "type": "ROTATION"
+        },
+        {
+          "name": "B",
+          "type": "ROTATION"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Result",
+          "type": "VALUE"
+        },
+        {
+          "name": "Result",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Result",
+          "type": "RGBA"
+        },
+        {
+          "name": "Result",
+          "type": "ROTATION"
+        }
+      ]
+    },
+    {
+      "name": "混合.017",
+      "type": "MIX",
+      "bl_idname": "ShaderNodeMix",
+      "inputs": [
+        {
+          "name": "Factor",
+          "type": "VALUE"
+        },
+        {
+          "name": "Factor",
+          "type": "VECTOR"
+        },
+        {
+          "name": "A",
+          "type": "VALUE"
+        },
+        {
+          "name": "B",
+          "type": "VALUE"
+        },
+        {
+          "name": "A",
+          "type": "VECTOR"
+        },
+        {
+          "name": "B",
+          "type": "VECTOR"
+        },
+        {
+          "name": "A",
+          "type": "RGBA"
+        },
+        {
+          "name": "B",
+          "type": "RGBA"
+        },
+        {
+          "name": "A",
+          "type": "ROTATION"
+        },
+        {
+          "name": "B",
+          "type": "ROTATION"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Result",
+          "type": "VALUE"
+        },
+        {
+          "name": "Result",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Result",
+          "type": "RGBA"
+        },
+        {
+          "name": "Result",
+          "type": "ROTATION"
+        }
+      ]
+    },
+    {
+      "name": "转接点.100",
+      "type": "REROUTE",
+      "bl_idname": "NodeReroute",
+      "inputs": [
+        {
+          "name": "Input",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Output",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "组输入",
+      "type": "GROUP_INPUT",
+      "bl_idname": "NodeGroupInput",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "albedo",
+          "type": "RGBA"
+        },
+        {
+          "name": "dirLight_lightColor",
+          "type": "RGBA"
+        },
+        {
+          "name": "Rim_Color",
+          "type": "RGBA"
+        },
+        {
+          "name": "Rim_ColorStrength",
+          "type": "RGBA"
+        },
+        {
+          "name": "LoV",
+          "type": "VALUE"
+        },
+        {
+          "name": "",
+          "type": "CUSTOM"
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "from_node": "转接点.101",
+      "from_socket": "Output",
+      "to_node": "混合.015",
+      "to_socket": "B"
+    },
+    {
+      "from_node": "转接点.100",
+      "from_socket": "Output",
+      "to_node": "钳制.004",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "转接点.099",
+      "from_socket": "Output",
+      "to_node": "混合.015",
+      "to_socket": "A"
+    },
+    {
+      "from_node": "运算.030",
+      "from_socket": "Value",
+      "to_node": "混合.014",
+      "to_socket": "Factor"
+    },
+    {
+      "from_node": "钳制.004",
+      "from_socket": "Result",
+      "to_node": "运算.030",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "混合.014",
+      "from_socket": "Result",
+      "to_node": "混合.016",
+      "to_socket": "A"
+    },
+    {
+      "from_node": "转接点.099",
+      "from_socket": "Output",
+      "to_node": "混合.014",
+      "to_socket": "B"
+    },
+    {
+      "from_node": "混合.015",
+      "from_socket": "Result",
+      "to_node": "混合.014",
+      "to_socket": "A"
+    },
+    {
+      "from_node": "混合.017",
+      "from_socket": "Result",
+      "to_node": "混合.016",
+      "to_socket": "B"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "albedo",
+      "to_node": "转接点.101",
+      "to_socket": "Input"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "dirLight_lightColor",
+      "to_node": "转接点.099",
+      "to_socket": "Input"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "LoV",
+      "to_node": "转接点.100",
+      "to_socket": "Input"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "Rim_Color",
+      "to_node": "混合.017",
+      "to_socket": "A"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "Rim_ColorStrength",
+      "to_node": "混合.017",
+      "to_socket": "B"
+    },
+    {
+      "from_node": "混合.016",
+      "from_socket": "Result",
+      "to_node": "组输出",
+      "to_socket": "结果"
+    }
+  ]
+}

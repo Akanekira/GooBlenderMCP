@@ -1,0 +1,723 @@
+{
+  "group": "DepthRim",
+  "node_count": 21,
+  "link_count": 23,
+  "interface_inputs": [
+    {
+      "name": "Rim_width_X",
+      "bl_idname": "NodeSocketFloat"
+    },
+    {
+      "name": "Rim_width_Y",
+      "bl_idname": "NodeSocketFloat"
+    }
+  ],
+  "interface_outputs": [
+    {
+      "name": "DepthRim",
+      "bl_idname": "NodeSocketFloat"
+    }
+  ],
+  "nodes": [
+    {
+      "name": "组输出",
+      "type": "GROUP_OUTPUT",
+      "bl_idname": "NodeGroupOutput",
+      "inputs": [
+        {
+          "name": "DepthRim",
+          "type": "VALUE"
+        },
+        {
+          "name": "",
+          "type": "CUSTOM"
+        }
+      ],
+      "outputs": []
+    },
+    {
+      "name": "组输入",
+      "type": "GROUP_INPUT",
+      "bl_idname": "NodeGroupInput",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "Rim_width_X",
+          "type": "VALUE"
+        },
+        {
+          "name": "Rim_width_Y",
+          "type": "VALUE"
+        },
+        {
+          "name": "",
+          "type": "CUSTOM"
+        }
+      ]
+    },
+    {
+      "name": "纹理坐标",
+      "type": "TEX_COORD",
+      "bl_idname": "ShaderNodeTexCoord",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "Generated",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Normal",
+          "type": "VECTOR"
+        },
+        {
+          "name": "UV",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Object",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Camera",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Window",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Reflection",
+          "type": "VECTOR"
+        }
+      ]
+    },
+    {
+      "name": "矢量变换",
+      "type": "VECT_TRANSFORM",
+      "bl_idname": "ShaderNodeVectorTransform",
+      "inputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        }
+      ]
+    },
+    {
+      "name": "值(明度).004",
+      "type": "VALUE",
+      "bl_idname": "ShaderNodeValue",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "分离 XYZ.002",
+      "type": "SEPXYZ",
+      "bl_idname": "ShaderNodeSeparateXYZ",
+      "inputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "X",
+          "type": "VALUE"
+        },
+        {
+          "name": "Y",
+          "type": "VALUE"
+        },
+        {
+          "name": "Z",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "合并 XYZ.002",
+      "type": "COMBXYZ",
+      "bl_idname": "ShaderNodeCombineXYZ",
+      "inputs": [
+        {
+          "name": "X",
+          "type": "VALUE"
+        },
+        {
+          "name": "Y",
+          "type": "VALUE"
+        },
+        {
+          "name": "Z",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        }
+      ]
+    },
+    {
+      "name": "运算.020",
+      "type": "MATH",
+      "bl_idname": "ShaderNodeMath",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "运算.017",
+      "type": "MATH",
+      "bl_idname": "ShaderNodeMath",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "几何数据.001",
+      "type": "NEW_GEOMETRY",
+      "bl_idname": "ShaderNodeNewGeometry",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "Position",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Normal",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Tangent",
+          "type": "VECTOR"
+        },
+        {
+          "name": "True Normal",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Incoming",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Parametric",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Backfacing",
+          "type": "VALUE"
+        },
+        {
+          "name": "Pointiness",
+          "type": "VALUE"
+        },
+        {
+          "name": "Random Per Island",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "Vector Math.017",
+      "type": "VECT_MATH",
+      "bl_idname": "ShaderNodeVectorMath",
+      "inputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Scale",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "Screenspace Info",
+      "type": "SCREENSPACEINFO",
+      "bl_idname": "ShaderNodeScreenspaceInfo",
+      "inputs": [
+        {
+          "name": "View Position",
+          "type": "VECTOR"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Scene Color",
+          "type": "RGBA"
+        },
+        {
+          "name": "Scene Depth",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "Screenspace Info.001",
+      "type": "SCREENSPACEINFO",
+      "bl_idname": "ShaderNodeScreenspaceInfo",
+      "inputs": [
+        {
+          "name": "View Position",
+          "type": "VECTOR"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Scene Color",
+          "type": "RGBA"
+        },
+        {
+          "name": "Scene Depth",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "运算.016",
+      "type": "MATH",
+      "bl_idname": "ShaderNodeMath",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "运算.029",
+      "type": "MATH",
+      "bl_idname": "ShaderNodeMath",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "运算.031",
+      "type": "MATH",
+      "bl_idname": "ShaderNodeMath",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "运算.018",
+      "type": "MATH",
+      "bl_idname": "ShaderNodeMath",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "映射范围",
+      "type": "MAP_RANGE",
+      "bl_idname": "ShaderNodeMapRange",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "From Min",
+          "type": "VALUE"
+        },
+        {
+          "name": "From Max",
+          "type": "VALUE"
+        },
+        {
+          "name": "To Min",
+          "type": "VALUE"
+        },
+        {
+          "name": "To Max",
+          "type": "VALUE"
+        },
+        {
+          "name": "Steps",
+          "type": "VALUE"
+        },
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "From Min",
+          "type": "VECTOR"
+        },
+        {
+          "name": "From Max",
+          "type": "VECTOR"
+        },
+        {
+          "name": "To Min",
+          "type": "VECTOR"
+        },
+        {
+          "name": "To Max",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Steps",
+          "type": "VECTOR"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Result",
+          "type": "VALUE"
+        },
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        }
+      ]
+    },
+    {
+      "name": "运算.021",
+      "type": "MATH",
+      "bl_idname": "ShaderNodeMath",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "钳制",
+      "type": "CLAMP",
+      "bl_idname": "ShaderNodeClamp",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Min",
+          "type": "VALUE"
+        },
+        {
+          "name": "Max",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Result",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "运算.019",
+      "type": "MATH",
+      "bl_idname": "ShaderNodeMath",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "from_node": "运算.029",
+      "from_socket": "Value",
+      "to_node": "运算.016",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "Vector Math.017",
+      "from_socket": "Vector",
+      "to_node": "Screenspace Info",
+      "to_socket": "View Position"
+    },
+    {
+      "from_node": "运算.017",
+      "from_socket": "Value",
+      "to_node": "合并 XYZ.002",
+      "to_socket": "Y"
+    },
+    {
+      "from_node": "运算.016",
+      "from_socket": "Value",
+      "to_node": "合并 XYZ.002",
+      "to_socket": "X"
+    },
+    {
+      "from_node": "分离 XYZ.002",
+      "from_socket": "Y",
+      "to_node": "运算.017",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "分离 XYZ.002",
+      "from_socket": "X",
+      "to_node": "运算.016",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "矢量变换",
+      "from_socket": "Vector",
+      "to_node": "分离 XYZ.002",
+      "to_socket": "Vector"
+    },
+    {
+      "from_node": "几何数据.001",
+      "from_socket": "Normal",
+      "to_node": "矢量变换",
+      "to_socket": "Vector"
+    },
+    {
+      "from_node": "合并 XYZ.002",
+      "from_socket": "Vector",
+      "to_node": "Vector Math.017",
+      "to_socket": "Vector"
+    },
+    {
+      "from_node": "运算.020",
+      "from_socket": "Value",
+      "to_node": "合并 XYZ.002",
+      "to_socket": "Z"
+    },
+    {
+      "from_node": "分离 XYZ.002",
+      "from_socket": "Z",
+      "to_node": "运算.020",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "值(明度).004",
+      "from_socket": "Value",
+      "to_node": "运算.020",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "纹理坐标",
+      "from_socket": "Camera",
+      "to_node": "Vector Math.017",
+      "to_socket": "Vector"
+    },
+    {
+      "from_node": "运算.031",
+      "from_socket": "Value",
+      "to_node": "运算.017",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "Rim_width_X",
+      "to_node": "运算.029",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "Rim_width_Y",
+      "to_node": "运算.031",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "运算.018",
+      "from_socket": "Value",
+      "to_node": "映射范围",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "运算.021",
+      "from_socket": "Value",
+      "to_node": "运算.018",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "Screenspace Info.001",
+      "from_socket": "Scene Depth",
+      "to_node": "运算.018",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "Screenspace Info",
+      "from_socket": "Scene Depth",
+      "to_node": "运算.021",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "运算.019",
+      "from_socket": "Value",
+      "to_node": "组输出",
+      "to_socket": "DepthRim"
+    },
+    {
+      "from_node": "映射范围",
+      "from_socket": "Result",
+      "to_node": "钳制",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "钳制",
+      "from_socket": "Result",
+      "to_node": "运算.019",
+      "to_socket": "Value"
+    }
+  ]
+}

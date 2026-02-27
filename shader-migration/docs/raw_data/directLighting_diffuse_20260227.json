@@ -1,0 +1,275 @@
+{
+  "group": "directLighting_diffuse",
+  "node_count": 7,
+  "link_count": 9,
+  "interface_inputs": [
+    {
+      "name": "shadowRampColor",
+      "bl_idname": "NodeSocketVector"
+    },
+    {
+      "name": "directOcclusion",
+      "bl_idname": "NodeSocketVector"
+    },
+    {
+      "name": "diffuseColor",
+      "bl_idname": "NodeSocketVector"
+    },
+    {
+      "name": "矢量",
+      "bl_idname": "NodeSocketVector"
+    }
+  ],
+  "interface_outputs": [
+    {
+      "name": "directLighting_diffuse",
+      "bl_idname": "NodeSocketVector"
+    }
+  ],
+  "nodes": [
+    {
+      "name": "Vector Math.009",
+      "type": "VECT_MATH",
+      "bl_idname": "ShaderNodeVectorMath",
+      "inputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Scale",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "Vector Math.010",
+      "type": "VECT_MATH",
+      "bl_idname": "ShaderNodeVectorMath",
+      "inputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Scale",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "Vector Math.011",
+      "type": "VECT_MATH",
+      "bl_idname": "ShaderNodeVectorMath",
+      "inputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Scale",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "Vector Math.008",
+      "type": "VECT_MATH",
+      "bl_idname": "ShaderNodeVectorMath",
+      "inputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Scale",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "值(明度)",
+      "type": "VALUE",
+      "bl_idname": "ShaderNodeValue",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "组输入",
+      "type": "GROUP_INPUT",
+      "bl_idname": "NodeGroupInput",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "shadowRampColor",
+          "type": "VECTOR"
+        },
+        {
+          "name": "directOcclusion",
+          "type": "VECTOR"
+        },
+        {
+          "name": "diffuseColor",
+          "type": "VECTOR"
+        },
+        {
+          "name": "矢量",
+          "type": "VECTOR"
+        },
+        {
+          "name": "",
+          "type": "CUSTOM"
+        }
+      ]
+    },
+    {
+      "name": "组输出",
+      "type": "GROUP_OUTPUT",
+      "bl_idname": "NodeGroupOutput",
+      "inputs": [
+        {
+          "name": "directLighting_diffuse",
+          "type": "VECTOR"
+        },
+        {
+          "name": "",
+          "type": "CUSTOM"
+        }
+      ],
+      "outputs": []
+    }
+  ],
+  "links": [
+    {
+      "from_node": "值(明度)",
+      "from_socket": "Value",
+      "to_node": "Vector Math.008",
+      "to_socket": "Vector"
+    },
+    {
+      "from_node": "Vector Math.009",
+      "from_socket": "Vector",
+      "to_node": "Vector Math.010",
+      "to_socket": "Vector"
+    },
+    {
+      "from_node": "Vector Math.008",
+      "from_socket": "Vector",
+      "to_node": "Vector Math.009",
+      "to_socket": "Vector"
+    },
+    {
+      "from_node": "Vector Math.010",
+      "from_socket": "Vector",
+      "to_node": "Vector Math.011",
+      "to_socket": "Vector"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "diffuseColor",
+      "to_node": "Vector Math.009",
+      "to_socket": "Vector"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "directOcclusion",
+      "to_node": "Vector Math.011",
+      "to_socket": "Vector"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "shadowRampColor",
+      "to_node": "Vector Math.008",
+      "to_socket": "Vector"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "矢量",
+      "to_node": "Vector Math.010",
+      "to_socket": "Vector"
+    },
+    {
+      "from_node": "Vector Math.011",
+      "from_socket": "Vector",
+      "to_node": "组输出",
+      "to_socket": "directLighting_diffuse"
+    }
+  ]
+}

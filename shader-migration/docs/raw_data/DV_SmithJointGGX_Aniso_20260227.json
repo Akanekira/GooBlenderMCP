@@ -1,0 +1,783 @@
+{
+  "group": "DV_SmithJointGGX_Aniso",
+  "node_count": 22,
+  "link_count": 39,
+  "interface_inputs": [
+    {
+      "name": "NdotH",
+      "bl_idname": "NodeSocketFloat"
+    },
+    {
+      "name": "Abs_NdotL",
+      "bl_idname": "NodeSocketFloat"
+    },
+    {
+      "name": "clampedNdotV",
+      "bl_idname": "NodeSocketFloat"
+    },
+    {
+      "name": "clampedRoughness",
+      "bl_idname": "NodeSocketFloat"
+    },
+    {
+      "name": "TdotH",
+      "bl_idname": "NodeSocketFloat"
+    },
+    {
+      "name": "BdotH",
+      "bl_idname": "NodeSocketFloat"
+    },
+    {
+      "name": "TdotL",
+      "bl_idname": "NodeSocketFloat"
+    },
+    {
+      "name": "BdotL",
+      "bl_idname": "NodeSocketFloat"
+    },
+    {
+      "name": "TdotV",
+      "bl_idname": "NodeSocketFloat"
+    },
+    {
+      "name": "BdotV",
+      "bl_idname": "NodeSocketFloat"
+    },
+    {
+      "name": "roughnessT",
+      "bl_idname": "NodeSocketFloat"
+    },
+    {
+      "name": "roughnessB",
+      "bl_idname": "NodeSocketFloat"
+    }
+  ],
+  "interface_outputs": [
+    {
+      "name": "original",
+      "bl_idname": "NodeSocketFloat"
+    },
+    {
+      "name": "anisotropy",
+      "bl_idname": "NodeSocketFloat"
+    },
+    {
+      "name": "DeBug",
+      "bl_idname": "NodeSocketVector"
+    }
+  ],
+  "nodes": [
+    {
+      "name": "帧",
+      "type": "FRAME",
+      "bl_idname": "NodeFrame",
+      "inputs": [],
+      "outputs": []
+    },
+    {
+      "name": "帧.001",
+      "type": "FRAME",
+      "bl_idname": "NodeFrame",
+      "inputs": [],
+      "outputs": []
+    },
+    {
+      "name": "转接点",
+      "type": "REROUTE",
+      "bl_idname": "NodeReroute",
+      "inputs": [
+        {
+          "name": "Input",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Output",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "群组",
+      "type": "GROUP",
+      "bl_idname": "ShaderNodeGroup",
+      "inputs": [
+        {
+          "name": "clampedNdotV",
+          "type": "VALUE"
+        },
+        {
+          "name": "a2",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "partLambdaV",
+          "type": "VALUE"
+        }
+      ],
+      "group_name": "GetSmithJointGGetSmithJointGGXPartLambdaV"
+    },
+    {
+      "name": "运算",
+      "type": "MATH",
+      "bl_idname": "ShaderNodeMath",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "组输出",
+      "type": "GROUP_OUTPUT",
+      "bl_idname": "NodeGroupOutput",
+      "inputs": [
+        {
+          "name": "original",
+          "type": "VALUE"
+        },
+        {
+          "name": "anisotropy",
+          "type": "VALUE"
+        },
+        {
+          "name": "DeBug",
+          "type": "VECTOR"
+        },
+        {
+          "name": "",
+          "type": "CUSTOM"
+        }
+      ],
+      "outputs": []
+    },
+    {
+      "name": "转接点.002",
+      "type": "REROUTE",
+      "bl_idname": "NodeReroute",
+      "inputs": [
+        {
+          "name": "Input",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Output",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "组输入",
+      "type": "GROUP_INPUT",
+      "bl_idname": "NodeGroupInput",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "NdotH",
+          "type": "VALUE"
+        },
+        {
+          "name": "Abs_NdotL",
+          "type": "VALUE"
+        },
+        {
+          "name": "clampedNdotV",
+          "type": "VALUE"
+        },
+        {
+          "name": "clampedRoughness",
+          "type": "VALUE"
+        },
+        {
+          "name": "TdotH",
+          "type": "VALUE"
+        },
+        {
+          "name": "BdotH",
+          "type": "VALUE"
+        },
+        {
+          "name": "TdotL",
+          "type": "VALUE"
+        },
+        {
+          "name": "BdotL",
+          "type": "VALUE"
+        },
+        {
+          "name": "TdotV",
+          "type": "VALUE"
+        },
+        {
+          "name": "BdotV",
+          "type": "VALUE"
+        },
+        {
+          "name": "roughnessT",
+          "type": "VALUE"
+        },
+        {
+          "name": "roughnessB",
+          "type": "VALUE"
+        },
+        {
+          "name": "",
+          "type": "CUSTOM"
+        }
+      ]
+    },
+    {
+      "name": "群组.001",
+      "type": "GROUP",
+      "bl_idname": "ShaderNodeGroup",
+      "inputs": [
+        {
+          "name": "lambdaV",
+          "type": "VALUE"
+        },
+        {
+          "name": "NdotH",
+          "type": "VALUE"
+        },
+        {
+          "name": "Abs_NdotL",
+          "type": "VALUE"
+        },
+        {
+          "name": "clampedNdotV",
+          "type": "VALUE"
+        },
+        {
+          "name": "a2",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "输出",
+          "type": "VALUE"
+        }
+      ],
+      "group_name": "DV_SmithJointGGX.IN"
+    },
+    {
+      "name": "转接点.003",
+      "type": "REROUTE",
+      "bl_idname": "NodeReroute",
+      "inputs": [
+        {
+          "name": "Input",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Output",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "转接点.004",
+      "type": "REROUTE",
+      "bl_idname": "NodeReroute",
+      "inputs": [
+        {
+          "name": "Input",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Output",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "运算.005",
+      "type": "MATH",
+      "bl_idname": "ShaderNodeMath",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "转接点.007",
+      "type": "REROUTE",
+      "bl_idname": "NodeReroute",
+      "inputs": [
+        {
+          "name": "Input",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Output",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "帧.005",
+      "type": "FRAME",
+      "bl_idname": "NodeFrame",
+      "inputs": [],
+      "outputs": []
+    },
+    {
+      "name": "转接点.008",
+      "type": "REROUTE",
+      "bl_idname": "NodeReroute",
+      "inputs": [
+        {
+          "name": "Input",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Output",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "转接点.009",
+      "type": "REROUTE",
+      "bl_idname": "NodeReroute",
+      "inputs": [
+        {
+          "name": "Input",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Output",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "转接点.010",
+      "type": "REROUTE",
+      "bl_idname": "NodeReroute",
+      "inputs": [
+        {
+          "name": "Input",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Output",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "转接点.011",
+      "type": "REROUTE",
+      "bl_idname": "NodeReroute",
+      "inputs": [
+        {
+          "name": "Input",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Output",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "群组.002",
+      "type": "GROUP",
+      "bl_idname": "ShaderNodeGroup",
+      "inputs": [
+        {
+          "name": "TdotV",
+          "type": "VALUE"
+        },
+        {
+          "name": "BdotV",
+          "type": "VALUE"
+        },
+        {
+          "name": "roughnessT",
+          "type": "VALUE"
+        },
+        {
+          "name": "roughnessB",
+          "type": "VALUE"
+        },
+        {
+          "name": "clampedNdotV",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "AnisoPartLambdaV",
+          "type": "VALUE"
+        }
+      ],
+      "group_name": "GetSmithJointGGXAnisoPartLambdaV"
+    },
+    {
+      "name": "帧.006",
+      "type": "FRAME",
+      "bl_idname": "NodeFrame",
+      "inputs": [],
+      "outputs": []
+    },
+    {
+      "name": "转接点.012",
+      "type": "REROUTE",
+      "bl_idname": "NodeReroute",
+      "inputs": [
+        {
+          "name": "Input",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Output",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "群组.003",
+      "type": "GROUP",
+      "bl_idname": "ShaderNodeGroup",
+      "inputs": [
+        {
+          "name": "NdotH",
+          "type": "VALUE"
+        },
+        {
+          "name": "roughnessT",
+          "type": "VALUE"
+        },
+        {
+          "name": "roughnessB",
+          "type": "VALUE"
+        },
+        {
+          "name": "TdotH",
+          "type": "VALUE"
+        },
+        {
+          "name": "BdotH",
+          "type": "VALUE"
+        },
+        {
+          "name": "AnisoPartLambdaV",
+          "type": "VALUE"
+        },
+        {
+          "name": "NdotL",
+          "type": "VALUE"
+        },
+        {
+          "name": "NdotV",
+          "type": "VALUE"
+        },
+        {
+          "name": "TdotL",
+          "type": "VALUE"
+        },
+        {
+          "name": "BdotL",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "group_name": "DV_SmithJointGGXAniso"
+    }
+  ],
+  "links": [
+    {
+      "from_node": "群组",
+      "from_socket": "partLambdaV",
+      "to_node": "转接点.002",
+      "to_socket": "Input"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "clampedNdotV",
+      "to_node": "群组",
+      "to_socket": "clampedNdotV"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "NdotH",
+      "to_node": "群组.001",
+      "to_socket": "NdotH"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "clampedRoughness",
+      "to_node": "运算",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "clampedRoughness",
+      "to_node": "运算",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "转接点",
+      "from_socket": "Output",
+      "to_node": "群组.001",
+      "to_socket": "a2"
+    },
+    {
+      "from_node": "运算",
+      "from_socket": "Value",
+      "to_node": "转接点",
+      "to_socket": "Input"
+    },
+    {
+      "from_node": "转接点",
+      "from_socket": "Output",
+      "to_node": "群组",
+      "to_socket": "a2"
+    },
+    {
+      "from_node": "群组.001",
+      "from_socket": "输出",
+      "to_node": "组输出",
+      "to_socket": "original"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "Abs_NdotL",
+      "to_node": "群组.001",
+      "to_socket": "Abs_NdotL"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "clampedNdotV",
+      "to_node": "群组.001",
+      "to_socket": "clampedNdotV"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "roughnessT",
+      "to_node": "转接点.003",
+      "to_socket": "Input"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "roughnessB",
+      "to_node": "转接点.004",
+      "to_socket": "Input"
+    },
+    {
+      "from_node": "转接点.002",
+      "from_socket": "Output",
+      "to_node": "运算.005",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "Abs_NdotL",
+      "to_node": "运算.005",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "运算.005",
+      "from_socket": "Value",
+      "to_node": "转接点.007",
+      "to_socket": "Input"
+    },
+    {
+      "from_node": "转接点.007",
+      "from_socket": "Output",
+      "to_node": "群组.001",
+      "to_socket": "lambdaV"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "roughnessT",
+      "to_node": "转接点.008",
+      "to_socket": "Input"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "TdotV",
+      "to_node": "转接点.009",
+      "to_socket": "Input"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "BdotV",
+      "to_node": "转接点.010",
+      "to_socket": "Input"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "roughnessB",
+      "to_node": "转接点.011",
+      "to_socket": "Input"
+    },
+    {
+      "from_node": "转接点.010",
+      "from_socket": "Output",
+      "to_node": "群组.002",
+      "to_socket": "BdotV"
+    },
+    {
+      "from_node": "转接点.009",
+      "from_socket": "Output",
+      "to_node": "群组.002",
+      "to_socket": "TdotV"
+    },
+    {
+      "from_node": "转接点.011",
+      "from_socket": "Output",
+      "to_node": "群组.002",
+      "to_socket": "roughnessB"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "clampedNdotV",
+      "to_node": "群组.002",
+      "to_socket": "clampedNdotV"
+    },
+    {
+      "from_node": "转接点.008",
+      "from_socket": "Output",
+      "to_node": "群组.002",
+      "to_socket": "roughnessT"
+    },
+    {
+      "from_node": "群组.002",
+      "from_socket": "AnisoPartLambdaV",
+      "to_node": "转接点.012",
+      "to_socket": "Input"
+    },
+    {
+      "from_node": "转接点.004",
+      "from_socket": "Output",
+      "to_node": "群组.003",
+      "to_socket": "roughnessB"
+    },
+    {
+      "from_node": "转接点.003",
+      "from_socket": "Output",
+      "to_node": "群组.003",
+      "to_socket": "roughnessT"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "TdotH",
+      "to_node": "群组.003",
+      "to_socket": "TdotH"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "BdotH",
+      "to_node": "群组.003",
+      "to_socket": "BdotH"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "NdotH",
+      "to_node": "群组.003",
+      "to_socket": "NdotH"
+    },
+    {
+      "from_node": "转接点.012",
+      "from_socket": "Output",
+      "to_node": "群组.003",
+      "to_socket": "AnisoPartLambdaV"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "Abs_NdotL",
+      "to_node": "群组.003",
+      "to_socket": "NdotL"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "clampedNdotV",
+      "to_node": "群组.003",
+      "to_socket": "NdotV"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "TdotL",
+      "to_node": "群组.003",
+      "to_socket": "TdotL"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "BdotL",
+      "to_node": "群组.003",
+      "to_socket": "BdotL"
+    },
+    {
+      "from_node": "群组.003",
+      "from_socket": "Value",
+      "to_node": "组输出",
+      "to_socket": "anisotropy"
+    },
+    {
+      "from_node": "转接点.012",
+      "from_socket": "Output",
+      "to_node": "组输出",
+      "to_socket": "DeBug"
+    }
+  ]
+}

@@ -1,0 +1,206 @@
+{
+  "group": "Directional light attenuation",
+  "node_count": 5,
+  "link_count": 5,
+  "interface_inputs": [
+    {
+      "name": "NoL_Unsaturate",
+      "bl_idname": "NodeSocketFloat"
+    },
+    {
+      "name": "Directional light attenuation adjust",
+      "bl_idname": "NodeSocketFloat"
+    }
+  ],
+  "interface_outputs": [
+    {
+      "name": "结果",
+      "bl_idname": "NodeSocketFloat"
+    }
+  ],
+  "nodes": [
+    {
+      "name": "组输出",
+      "type": "GROUP_OUTPUT",
+      "bl_idname": "NodeGroupOutput",
+      "inputs": [
+        {
+          "name": "结果",
+          "type": "VALUE"
+        },
+        {
+          "name": "",
+          "type": "CUSTOM"
+        }
+      ],
+      "outputs": []
+    },
+    {
+      "name": "混合.013",
+      "type": "MIX",
+      "bl_idname": "ShaderNodeMix",
+      "inputs": [
+        {
+          "name": "Factor",
+          "type": "VALUE"
+        },
+        {
+          "name": "Factor",
+          "type": "VECTOR"
+        },
+        {
+          "name": "A",
+          "type": "VALUE"
+        },
+        {
+          "name": "B",
+          "type": "VALUE"
+        },
+        {
+          "name": "A",
+          "type": "VECTOR"
+        },
+        {
+          "name": "B",
+          "type": "VECTOR"
+        },
+        {
+          "name": "A",
+          "type": "RGBA"
+        },
+        {
+          "name": "B",
+          "type": "RGBA"
+        },
+        {
+          "name": "A",
+          "type": "ROTATION"
+        },
+        {
+          "name": "B",
+          "type": "ROTATION"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Result",
+          "type": "VALUE"
+        },
+        {
+          "name": "Result",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Result",
+          "type": "RGBA"
+        },
+        {
+          "name": "Result",
+          "type": "ROTATION"
+        }
+      ]
+    },
+    {
+      "name": "钳制.005",
+      "type": "CLAMP",
+      "bl_idname": "ShaderNodeClamp",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Min",
+          "type": "VALUE"
+        },
+        {
+          "name": "Max",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Result",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "运算.025",
+      "type": "MATH",
+      "bl_idname": "ShaderNodeMath",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "组输入",
+      "type": "GROUP_INPUT",
+      "bl_idname": "NodeGroupInput",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "NoL_Unsaturate",
+          "type": "VALUE"
+        },
+        {
+          "name": "Directional light attenuation adjust",
+          "type": "VALUE"
+        },
+        {
+          "name": "",
+          "type": "CUSTOM"
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "from_node": "运算.025",
+      "from_socket": "Value",
+      "to_node": "混合.013",
+      "to_socket": "A"
+    },
+    {
+      "from_node": "钳制.005",
+      "from_socket": "Result",
+      "to_node": "混合.013",
+      "to_socket": "Factor"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "NoL_Unsaturate",
+      "to_node": "钳制.005",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "Directional light attenuation adjust",
+      "to_node": "运算.025",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "混合.013",
+      "from_socket": "Result",
+      "to_node": "组输出",
+      "to_socket": "结果"
+    }
+  ]
+}

@@ -1,0 +1,126 @@
+{
+  "group": "PerceptualRoughnessToRoughness",
+  "node_count": 5,
+  "link_count": 4,
+  "interface_inputs": [
+    {
+      "name": "perceptualRoughness",
+      "bl_idname": "NodeSocketFloat"
+    }
+  ],
+  "interface_outputs": [
+    {
+      "name": "roughness",
+      "bl_idname": "NodeSocketFloat"
+    }
+  ],
+  "nodes": [
+    {
+      "name": "帧.011",
+      "type": "FRAME",
+      "bl_idname": "NodeFrame",
+      "inputs": [],
+      "outputs": []
+    },
+    {
+      "name": "组输出",
+      "type": "GROUP_OUTPUT",
+      "bl_idname": "NodeGroupOutput",
+      "inputs": [
+        {
+          "name": "roughness",
+          "type": "VALUE"
+        },
+        {
+          "name": "",
+          "type": "CUSTOM"
+        }
+      ],
+      "outputs": []
+    },
+    {
+      "name": "运算.002",
+      "type": "MATH",
+      "bl_idname": "ShaderNodeMath",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "转接点.009",
+      "type": "REROUTE",
+      "bl_idname": "NodeReroute",
+      "inputs": [
+        {
+          "name": "Input",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Output",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "组输入",
+      "type": "GROUP_INPUT",
+      "bl_idname": "NodeGroupInput",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "perceptualRoughness",
+          "type": "VALUE"
+        },
+        {
+          "name": "",
+          "type": "CUSTOM"
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "from_node": "运算.002",
+      "from_socket": "Value",
+      "to_node": "转接点.009",
+      "to_socket": "Input"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "perceptualRoughness",
+      "to_node": "运算.002",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "perceptualRoughness",
+      "to_node": "运算.002",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "转接点.009",
+      "from_socket": "Output",
+      "to_node": "组输出",
+      "to_socket": "roughness"
+    }
+  ]
+}

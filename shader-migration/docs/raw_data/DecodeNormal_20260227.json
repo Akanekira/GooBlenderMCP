@@ -1,0 +1,427 @@
+{
+  "group": "DecodeNormal",
+  "node_count": 12,
+  "link_count": 16,
+  "interface_inputs": [
+    {
+      "name": "X",
+      "bl_idname": "NodeSocketFloat"
+    },
+    {
+      "name": "Y",
+      "bl_idname": "NodeSocketFloat"
+    },
+    {
+      "name": "NormalStrength",
+      "bl_idname": "NodeSocketFloat"
+    }
+  ],
+  "interface_outputs": [
+    {
+      "name": "NormalWS",
+      "bl_idname": "NodeSocketVector"
+    }
+  ],
+  "nodes": [
+    {
+      "name": "钳制",
+      "type": "CLAMP",
+      "bl_idname": "ShaderNodeClamp",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Min",
+          "type": "VALUE"
+        },
+        {
+          "name": "Max",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Result",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "Vector Math.001",
+      "type": "VECT_MATH",
+      "bl_idname": "ShaderNodeVectorMath",
+      "inputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Scale",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "合并 XYZ",
+      "type": "COMBXYZ",
+      "bl_idname": "ShaderNodeCombineXYZ",
+      "inputs": [
+        {
+          "name": "X",
+          "type": "VALUE"
+        },
+        {
+          "name": "Y",
+          "type": "VALUE"
+        },
+        {
+          "name": "Z",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        }
+      ]
+    },
+    {
+      "name": "运算",
+      "type": "MATH",
+      "bl_idname": "ShaderNodeMath",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "运算.001",
+      "type": "MATH",
+      "bl_idname": "ShaderNodeMath",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "Vector Math",
+      "type": "VECT_MATH",
+      "bl_idname": "ShaderNodeVectorMath",
+      "inputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Scale",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "合并 XYZ.001",
+      "type": "COMBXYZ",
+      "bl_idname": "ShaderNodeCombineXYZ",
+      "inputs": [
+        {
+          "name": "X",
+          "type": "VALUE"
+        },
+        {
+          "name": "Y",
+          "type": "VALUE"
+        },
+        {
+          "name": "Z",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        }
+      ]
+    },
+    {
+      "name": "法线贴图",
+      "type": "NORMAL_MAP",
+      "bl_idname": "ShaderNodeNormalMap",
+      "inputs": [
+        {
+          "name": "Strength",
+          "type": "VALUE"
+        },
+        {
+          "name": "Color",
+          "type": "RGBA"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Normal",
+          "type": "VECTOR"
+        }
+      ]
+    },
+    {
+      "name": "组输入",
+      "type": "GROUP_INPUT",
+      "bl_idname": "NodeGroupInput",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "X",
+          "type": "VALUE"
+        },
+        {
+          "name": "Y",
+          "type": "VALUE"
+        },
+        {
+          "name": "NormalStrength",
+          "type": "VALUE"
+        },
+        {
+          "name": "",
+          "type": "CUSTOM"
+        }
+      ]
+    },
+    {
+      "name": "组输出",
+      "type": "GROUP_OUTPUT",
+      "bl_idname": "NodeGroupOutput",
+      "inputs": [
+        {
+          "name": "NormalWS",
+          "type": "VECTOR"
+        },
+        {
+          "name": "",
+          "type": "CUSTOM"
+        }
+      ],
+      "outputs": []
+    },
+    {
+      "name": "运算.002",
+      "type": "MATH",
+      "bl_idname": "ShaderNodeMath",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "运算.003",
+      "type": "MATH",
+      "bl_idname": "ShaderNodeMath",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "from_node": "运算",
+      "from_socket": "Value",
+      "to_node": "运算.001",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "钳制",
+      "from_socket": "Result",
+      "to_node": "运算",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "Vector Math",
+      "from_socket": "Vector",
+      "to_node": "Vector Math.001",
+      "to_socket": "Vector"
+    },
+    {
+      "from_node": "Vector Math.001",
+      "from_socket": "Value",
+      "to_node": "钳制",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "合并 XYZ",
+      "from_socket": "Vector",
+      "to_node": "Vector Math",
+      "to_socket": "Vector"
+    },
+    {
+      "from_node": "Vector Math",
+      "from_socket": "Vector",
+      "to_node": "Vector Math.001",
+      "to_socket": "Vector"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "X",
+      "to_node": "合并 XYZ",
+      "to_socket": "X"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "Y",
+      "to_node": "合并 XYZ",
+      "to_socket": "Y"
+    },
+    {
+      "from_node": "法线贴图",
+      "from_socket": "Normal",
+      "to_node": "组输出",
+      "to_socket": "NormalWS"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "X",
+      "to_node": "合并 XYZ.001",
+      "to_socket": "X"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "Y",
+      "to_node": "合并 XYZ.001",
+      "to_socket": "Y"
+    },
+    {
+      "from_node": "合并 XYZ.001",
+      "from_socket": "Vector",
+      "to_node": "法线贴图",
+      "to_socket": "Color"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "NormalStrength",
+      "to_node": "法线贴图",
+      "to_socket": "Strength"
+    },
+    {
+      "from_node": "运算.001",
+      "from_socket": "Value",
+      "to_node": "运算.002",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "运算.002",
+      "from_socket": "Value",
+      "to_node": "运算.003",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "运算.003",
+      "from_socket": "Value",
+      "to_node": "合并 XYZ.001",
+      "to_socket": "Z"
+    }
+  ]
+}

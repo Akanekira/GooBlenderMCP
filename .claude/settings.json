@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(**)",
+      "Bash(python3 *)",
+      "Bash(python3 -c \":*)",
+      "Bash(find *)",
+      "Bash(ls *)",
+      "Bash(cat *)",
+      "Bash(cp *)",
+      "Bash(mkdir *)",
+      "Edit(**.md)",
+      "Write(**.md)",
+      "Edit(**.hlsl)",
+      "Write(**.hlsl)",
+      "Edit(**.shader)",
+      "Write(**.shader)",
+      "Write(**.json)",
+      "Write(**.py)"
+    ]
+  }
+}

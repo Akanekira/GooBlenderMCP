@@ -1,0 +1,623 @@
+{
+  "group": "Get_NoH_LoH_ToH_BoH",
+  "node_count": 17,
+  "link_count": 26,
+  "interface_inputs": [
+    {
+      "name": "NoL_Unsaturate",
+      "bl_idname": "NodeSocketFloat"
+    },
+    {
+      "name": "NoV",
+      "bl_idname": "NodeSocketFloat"
+    },
+    {
+      "name": "LoV",
+      "bl_idname": "NodeSocketFloat"
+    },
+    {
+      "name": "ToV",
+      "bl_idname": "NodeSocketFloat"
+    },
+    {
+      "name": "ToL",
+      "bl_idname": "NodeSocketFloat"
+    },
+    {
+      "name": "BoV",
+      "bl_idname": "NodeSocketFloat"
+    },
+    {
+      "name": "BoL",
+      "bl_idname": "NodeSocketFloat"
+    }
+  ],
+  "interface_outputs": [
+    {
+      "name": "NdotH",
+      "bl_idname": "NodeSocketFloat"
+    },
+    {
+      "name": "LdotH",
+      "bl_idname": "NodeSocketFloat"
+    },
+    {
+      "name": "TdotH",
+      "bl_idname": "NodeSocketFloat"
+    },
+    {
+      "name": "BdotH",
+      "bl_idname": "NodeSocketFloat"
+    }
+  ],
+  "nodes": [
+    {
+      "name": "帧.022",
+      "type": "FRAME",
+      "bl_idname": "NodeFrame",
+      "inputs": [],
+      "outputs": []
+    },
+    {
+      "name": "运算.008",
+      "type": "MATH",
+      "bl_idname": "ShaderNodeMath",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "运算.009",
+      "type": "MATH",
+      "bl_idname": "ShaderNodeMath",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "钳制",
+      "type": "CLAMP",
+      "bl_idname": "ShaderNodeClamp",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Min",
+          "type": "VALUE"
+        },
+        {
+          "name": "Max",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Result",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "钳制.001",
+      "type": "CLAMP",
+      "bl_idname": "ShaderNodeClamp",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Min",
+          "type": "VALUE"
+        },
+        {
+          "name": "Max",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Result",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "运算.011",
+      "type": "MATH",
+      "bl_idname": "ShaderNodeMath",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "转接点.019",
+      "type": "REROUTE",
+      "bl_idname": "NodeReroute",
+      "inputs": [
+        {
+          "name": "Input",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Output",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "群组.021",
+      "type": "GROUP",
+      "bl_idname": "ShaderNodeGroup",
+      "inputs": [
+        {
+          "name": "LoV",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "invLenLV",
+          "type": "VALUE"
+        }
+      ],
+      "group_name": "GetinvLenLV"
+    },
+    {
+      "name": "运算.010",
+      "type": "MATH",
+      "bl_idname": "ShaderNodeMath",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "组输入",
+      "type": "GROUP_INPUT",
+      "bl_idname": "NodeGroupInput",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "NoL_Unsaturate",
+          "type": "VALUE"
+        },
+        {
+          "name": "NoV",
+          "type": "VALUE"
+        },
+        {
+          "name": "LoV",
+          "type": "VALUE"
+        },
+        {
+          "name": "ToV",
+          "type": "VALUE"
+        },
+        {
+          "name": "ToL",
+          "type": "VALUE"
+        },
+        {
+          "name": "BoV",
+          "type": "VALUE"
+        },
+        {
+          "name": "BoL",
+          "type": "VALUE"
+        },
+        {
+          "name": "",
+          "type": "CUSTOM"
+        }
+      ]
+    },
+    {
+      "name": "组输出",
+      "type": "GROUP_OUTPUT",
+      "bl_idname": "NodeGroupOutput",
+      "inputs": [
+        {
+          "name": "NdotH",
+          "type": "VALUE"
+        },
+        {
+          "name": "LdotH",
+          "type": "VALUE"
+        },
+        {
+          "name": "TdotH",
+          "type": "VALUE"
+        },
+        {
+          "name": "BdotH",
+          "type": "VALUE"
+        },
+        {
+          "name": "",
+          "type": "CUSTOM"
+        }
+      ],
+      "outputs": []
+    },
+    {
+      "name": "运算.012",
+      "type": "MATH",
+      "bl_idname": "ShaderNodeMath",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "运算.013",
+      "type": "MATH",
+      "bl_idname": "ShaderNodeMath",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "运算.014",
+      "type": "MATH",
+      "bl_idname": "ShaderNodeMath",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "运算.015",
+      "type": "MATH",
+      "bl_idname": "ShaderNodeMath",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "钳制.002",
+      "type": "CLAMP",
+      "bl_idname": "ShaderNodeClamp",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Min",
+          "type": "VALUE"
+        },
+        {
+          "name": "Max",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Result",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "钳制.003",
+      "type": "CLAMP",
+      "bl_idname": "ShaderNodeClamp",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Min",
+          "type": "VALUE"
+        },
+        {
+          "name": "Max",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Result",
+          "type": "VALUE"
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "from_node": "运算.009",
+      "from_socket": "Value",
+      "to_node": "钳制",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "运算.011",
+      "from_socket": "Value",
+      "to_node": "钳制.001",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "运算.008",
+      "from_socket": "Value",
+      "to_node": "运算.009",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "转接点.019",
+      "from_socket": "Output",
+      "to_node": "运算.009",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "转接点.019",
+      "from_socket": "Output",
+      "to_node": "运算.011",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "群组.021",
+      "from_socket": "invLenLV",
+      "to_node": "转接点.019",
+      "to_socket": "Input"
+    },
+    {
+      "from_node": "转接点.019",
+      "from_socket": "Output",
+      "to_node": "运算.010",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "运算.010",
+      "from_socket": "Value",
+      "to_node": "运算.011",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "NoL_Unsaturate",
+      "to_node": "运算.008",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "NoV",
+      "to_node": "运算.008",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "钳制",
+      "from_socket": "Result",
+      "to_node": "组输出",
+      "to_socket": "NdotH"
+    },
+    {
+      "from_node": "钳制.001",
+      "from_socket": "Result",
+      "to_node": "组输出",
+      "to_socket": "LdotH"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "LoV",
+      "to_node": "运算.010",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "LoV",
+      "to_node": "群组.021",
+      "to_socket": "LoV"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "ToV",
+      "to_node": "运算.012",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "ToL",
+      "to_node": "运算.012",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "BoV",
+      "to_node": "运算.013",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "转接点.019",
+      "from_socket": "Output",
+      "to_node": "运算.014",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "运算.012",
+      "from_socket": "Value",
+      "to_node": "运算.014",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "转接点.019",
+      "from_socket": "Output",
+      "to_node": "运算.015",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "运算.013",
+      "from_socket": "Value",
+      "to_node": "运算.015",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "运算.014",
+      "from_socket": "Value",
+      "to_node": "钳制.002",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "运算.015",
+      "from_socket": "Value",
+      "to_node": "钳制.003",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "钳制.003",
+      "from_socket": "Result",
+      "to_node": "组输出",
+      "to_socket": "BdotH"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "BoL",
+      "to_node": "运算.013",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "钳制.002",
+      "from_socket": "Result",
+      "to_node": "组输出",
+      "to_socket": "TdotH"
+    }
+  ]
+}

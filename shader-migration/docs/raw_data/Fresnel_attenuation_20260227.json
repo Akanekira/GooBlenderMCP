@@ -1,0 +1,187 @@
+{
+  "group": "Fresnel attenuation",
+  "node_count": 6,
+  "link_count": 7,
+  "interface_inputs": [
+    {
+      "name": "NoV",
+      "bl_idname": "NodeSocketFloat"
+    }
+  ],
+  "interface_outputs": [
+    {
+      "name": "Fresnel attenuation",
+      "bl_idname": "NodeSocketFloat"
+    }
+  ],
+  "nodes": [
+    {
+      "name": "运算.019",
+      "type": "MATH",
+      "bl_idname": "ShaderNodeMath",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "运算.021",
+      "type": "MATH",
+      "bl_idname": "ShaderNodeMath",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "转接点.093",
+      "type": "REROUTE",
+      "bl_idname": "NodeReroute",
+      "inputs": [
+        {
+          "name": "Input",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Output",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "运算.022",
+      "type": "MATH",
+      "bl_idname": "ShaderNodeMath",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "组输入",
+      "type": "GROUP_INPUT",
+      "bl_idname": "NodeGroupInput",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "NoV",
+          "type": "VALUE"
+        },
+        {
+          "name": "",
+          "type": "CUSTOM"
+        }
+      ]
+    },
+    {
+      "name": "组输出",
+      "type": "GROUP_OUTPUT",
+      "bl_idname": "NodeGroupOutput",
+      "inputs": [
+        {
+          "name": "Fresnel attenuation",
+          "type": "VALUE"
+        },
+        {
+          "name": "",
+          "type": "CUSTOM"
+        }
+      ],
+      "outputs": []
+    }
+  ],
+  "links": [
+    {
+      "from_node": "转接点.093",
+      "from_socket": "Output",
+      "to_node": "运算.019",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "运算.019",
+      "from_socket": "Value",
+      "to_node": "运算.021",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "运算.022",
+      "from_socket": "Value",
+      "to_node": "转接点.093",
+      "to_socket": "Input"
+    },
+    {
+      "from_node": "运算.019",
+      "from_socket": "Value",
+      "to_node": "运算.021",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "转接点.093",
+      "from_socket": "Output",
+      "to_node": "运算.019",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "NoV",
+      "to_node": "运算.022",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "运算.021",
+      "from_socket": "Value",
+      "to_node": "组输出",
+      "to_socket": "Fresnel attenuation"
+    }
+  ]
+}

@@ -1,0 +1,187 @@
+{
+  "group": "Vertical attenuation",
+  "node_count": 6,
+  "link_count": 4,
+  "interface_inputs": [],
+  "interface_outputs": [
+    {
+      "name": "Vertical attenuation",
+      "bl_idname": "NodeSocketFloat"
+    }
+  ],
+  "nodes": [
+    {
+      "name": "组输出",
+      "type": "GROUP_OUTPUT",
+      "bl_idname": "NodeGroupOutput",
+      "inputs": [
+        {
+          "name": "Vertical attenuation",
+          "type": "VALUE"
+        },
+        {
+          "name": "",
+          "type": "CUSTOM"
+        }
+      ],
+      "outputs": []
+    },
+    {
+      "name": "组输入",
+      "type": "GROUP_INPUT",
+      "bl_idname": "NodeGroupInput",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "",
+          "type": "CUSTOM"
+        }
+      ]
+    },
+    {
+      "name": "运算.024",
+      "type": "MATH",
+      "bl_idname": "ShaderNodeMath",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "几何数据.002",
+      "type": "NEW_GEOMETRY",
+      "bl_idname": "ShaderNodeNewGeometry",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "Position",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Normal",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Tangent",
+          "type": "VECTOR"
+        },
+        {
+          "name": "True Normal",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Incoming",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Parametric",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Backfacing",
+          "type": "VALUE"
+        },
+        {
+          "name": "Pointiness",
+          "type": "VALUE"
+        },
+        {
+          "name": "Random Per Island",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "分离 XYZ.003",
+      "type": "SEPXYZ",
+      "bl_idname": "ShaderNodeSeparateXYZ",
+      "inputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "X",
+          "type": "VALUE"
+        },
+        {
+          "name": "Y",
+          "type": "VALUE"
+        },
+        {
+          "name": "Z",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "运算.023",
+      "type": "MATH",
+      "bl_idname": "ShaderNodeMath",
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "from_node": "运算.023",
+      "from_socket": "Value",
+      "to_node": "运算.024",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "几何数据.002",
+      "from_socket": "Normal",
+      "to_node": "分离 XYZ.003",
+      "to_socket": "Vector"
+    },
+    {
+      "from_node": "分离 XYZ.003",
+      "from_socket": "Z",
+      "to_node": "运算.023",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "运算.024",
+      "from_socket": "Value",
+      "to_node": "组输出",
+      "to_socket": "Vertical attenuation"
+    }
+  ]
+}

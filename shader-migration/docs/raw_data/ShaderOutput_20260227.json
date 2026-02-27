@@ -1,0 +1,162 @@
+{
+  "group": "ShaderOutput",
+  "node_count": 5,
+  "link_count": 5,
+  "interface_inputs": [
+    {
+      "name": "Alpha",
+      "bl_idname": "NodeSocketFloat"
+    },
+    {
+      "name": "着色结果",
+      "bl_idname": "NodeSocketColor"
+    }
+  ],
+  "interface_outputs": [
+    {
+      "name": "着色结果",
+      "bl_idname": "NodeSocketShader"
+    }
+  ],
+  "nodes": [
+    {
+      "name": "混合着色器",
+      "type": "MIX_SHADER",
+      "bl_idname": "ShaderNodeMixShader",
+      "inputs": [
+        {
+          "name": "Fac",
+          "type": "VALUE"
+        },
+        {
+          "name": "Shader",
+          "type": "SHADER"
+        },
+        {
+          "name": "Shader",
+          "type": "SHADER"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Shader",
+          "type": "SHADER"
+        }
+      ]
+    },
+    {
+      "name": "透明 BSDF",
+      "type": "BSDF_TRANSPARENT",
+      "bl_idname": "ShaderNodeBsdfTransparent",
+      "inputs": [
+        {
+          "name": "Color",
+          "type": "RGBA"
+        },
+        {
+          "name": "Weight",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "BSDF",
+          "type": "SHADER"
+        }
+      ]
+    },
+    {
+      "name": "组输出",
+      "type": "GROUP_OUTPUT",
+      "bl_idname": "NodeGroupOutput",
+      "inputs": [
+        {
+          "name": "着色结果",
+          "type": "SHADER"
+        },
+        {
+          "name": "",
+          "type": "CUSTOM"
+        }
+      ],
+      "outputs": []
+    },
+    {
+      "name": "组输入",
+      "type": "GROUP_INPUT",
+      "bl_idname": "NodeGroupInput",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "Alpha",
+          "type": "VALUE"
+        },
+        {
+          "name": "着色结果",
+          "type": "RGBA"
+        },
+        {
+          "name": "",
+          "type": "CUSTOM"
+        }
+      ]
+    },
+    {
+      "name": "自发光(发射)",
+      "type": "EMISSION",
+      "bl_idname": "ShaderNodeEmission",
+      "inputs": [
+        {
+          "name": "Color",
+          "type": "RGBA"
+        },
+        {
+          "name": "Strength",
+          "type": "VALUE"
+        },
+        {
+          "name": "Weight",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Emission",
+          "type": "SHADER"
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "from_node": "自发光(发射)",
+      "from_socket": "Emission",
+      "to_node": "混合着色器",
+      "to_socket": "Shader"
+    },
+    {
+      "from_node": "透明 BSDF",
+      "from_socket": "BSDF",
+      "to_node": "混合着色器",
+      "to_socket": "Shader"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "Alpha",
+      "to_node": "混合着色器",
+      "to_socket": "Fac"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "着色结果",
+      "to_node": "自发光(发射)",
+      "to_socket": "Color"
+    },
+    {
+      "from_node": "混合着色器",
+      "from_socket": "Shader",
+      "to_node": "组输出",
+      "to_socket": "着色结果"
+    }
+  ]
+}

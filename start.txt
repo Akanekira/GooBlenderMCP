@@ -1,0 +1,7 @@
+1. git clone <GooBlenderProj>
+2. git clone https://github.com/Akanekira/blenderMaterialAnalyzis  shader-migration/
+3. 安装 Goo Engine，安装 blender_mcp_addon.py（在工程根目录）
+4. 安装 uv：pip install uv
+5. 打开 Goo Engine → N 面板 → Start MCP Server
+6. 在 GooBlenderProj/ 目录启动 Claude Code
+7. /analyze-material <材质名> <群组名>  即可开始

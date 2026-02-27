@@ -1,0 +1,332 @@
+{
+  "group": "DeSaturation",
+  "node_count": 11,
+  "link_count": 11,
+  "interface_inputs": [
+    {
+      "name": "DeSaturation",
+      "bl_idname": "NodeSocketFloat"
+    },
+    {
+      "name": "Color",
+      "bl_idname": "NodeSocketColor"
+    }
+  ],
+  "interface_outputs": [
+    {
+      "name": "Vector",
+      "bl_idname": "NodeSocketColor"
+    }
+  ],
+  "nodes": [
+    {
+      "name": "组输出",
+      "type": "GROUP_OUTPUT",
+      "bl_idname": "NodeGroupOutput",
+      "inputs": [
+        {
+          "name": "Vector",
+          "type": "RGBA"
+        },
+        {
+          "name": "",
+          "type": "CUSTOM"
+        }
+      ],
+      "outputs": []
+    },
+    {
+      "name": "组输入",
+      "type": "GROUP_INPUT",
+      "bl_idname": "NodeGroupInput",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "DeSaturation",
+          "type": "VALUE"
+        },
+        {
+          "name": "Color",
+          "type": "RGBA"
+        },
+        {
+          "name": "",
+          "type": "CUSTOM"
+        }
+      ]
+    },
+    {
+      "name": "转接点.159",
+      "type": "REROUTE",
+      "bl_idname": "NodeReroute",
+      "inputs": [
+        {
+          "name": "Input",
+          "type": "RGBA"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Output",
+          "type": "RGBA"
+        }
+      ]
+    },
+    {
+      "name": "矢量运算.004",
+      "type": "VECT_MATH",
+      "bl_idname": "ShaderNodeVectorMath",
+      "inputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Scale",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "合并 XYZ.002",
+      "type": "COMBXYZ",
+      "bl_idname": "ShaderNodeCombineXYZ",
+      "inputs": [
+        {
+          "name": "X",
+          "type": "VALUE"
+        },
+        {
+          "name": "Y",
+          "type": "VALUE"
+        },
+        {
+          "name": "Z",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        }
+      ]
+    },
+    {
+      "name": "帧.071",
+      "type": "FRAME",
+      "bl_idname": "NodeFrame",
+      "inputs": [],
+      "outputs": []
+    },
+    {
+      "name": "矢量运算.005",
+      "type": "VECT_MATH",
+      "bl_idname": "ShaderNodeVectorMath",
+      "inputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Scale",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "转接点.160",
+      "type": "REROUTE",
+      "bl_idname": "NodeReroute",
+      "inputs": [
+        {
+          "name": "Input",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Output",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "帧.072",
+      "type": "FRAME",
+      "bl_idname": "NodeFrame",
+      "inputs": [],
+      "outputs": []
+    },
+    {
+      "name": "矢量运算.006",
+      "type": "VECT_MATH",
+      "bl_idname": "ShaderNodeVectorMath",
+      "inputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Scale",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "矢量运算.007",
+      "type": "VECT_MATH",
+      "bl_idname": "ShaderNodeVectorMath",
+      "inputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Scale",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "from_node": "矢量运算.006",
+      "from_socket": "Vector",
+      "to_node": "矢量运算.007",
+      "to_socket": "Vector"
+    },
+    {
+      "from_node": "合并 XYZ.002",
+      "from_socket": "Vector",
+      "to_node": "矢量运算.004",
+      "to_socket": "Vector"
+    },
+    {
+      "from_node": "转接点.160",
+      "from_socket": "Output",
+      "to_node": "矢量运算.006",
+      "to_socket": "Vector"
+    },
+    {
+      "from_node": "矢量运算.005",
+      "from_socket": "Vector",
+      "to_node": "矢量运算.006",
+      "to_socket": "Vector"
+    },
+    {
+      "from_node": "矢量运算.004",
+      "from_socket": "Value",
+      "to_node": "矢量运算.007",
+      "to_socket": "Vector"
+    },
+    {
+      "from_node": "矢量运算.004",
+      "from_socket": "Value",
+      "to_node": "矢量运算.005",
+      "to_socket": "Vector"
+    },
+    {
+      "from_node": "转接点.159",
+      "from_socket": "Output",
+      "to_node": "矢量运算.005",
+      "to_socket": "Vector"
+    },
+    {
+      "from_node": "转接点.159",
+      "from_socket": "Output",
+      "to_node": "矢量运算.004",
+      "to_socket": "Vector"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "DeSaturation",
+      "to_node": "转接点.160",
+      "to_socket": "Input"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "Color",
+      "to_node": "转接点.159",
+      "to_socket": "Input"
+    },
+    {
+      "from_node": "矢量运算.007",
+      "from_socket": "Vector",
+      "to_node": "组输出",
+      "to_socket": "Vector"
+    }
+  ]
+}
