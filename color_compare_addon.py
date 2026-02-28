@@ -17,6 +17,10 @@ _agx_state = {
     "use_curve_mapping": True,
 }
 
+# ─── 存储 _D 预览状态 ────────────────────────────────────────────────────────
+_d_preview_state = {}   # {mat.name: [(from_node, from_sock, to_node, to_sock), ...]}
+_D_PREVIEW_NODE = "__D_Preview_Emission__"
+
 # 合成器节点名称（与场景中的节点 name 字段对应）
 _COMPOSITOR_NODE_NAMES = [
     "色调映射",
@@ -27,6 +31,56 @@ _COMPOSITOR_NODE_NAMES = [
 
 
 # ─── 工具函数 ─────────────────────────────────────────────────────────────────
+
+def _activate_d_preview(mat):
+    """将材质的输出替换为 _D 贴图 Emission 预览。成功返回 True。"""
+    if mat.name in _d_preview_state:
+        return False
+    nt = mat.node_tree
+    d_node = next(
+        (n for n in nt.nodes
+         if n.type == 'TEX_IMAGE' and n.image and '_D' in n.image.name),
+        None
+    )
+    if not d_node:
+        return False
+    out = next((n for n in nt.nodes if n.type == 'OUTPUT_MATERIAL'), None)
+    if not out:
+        return False
+    saved = []
+    for lnk in list(nt.links):
+        if lnk.to_node == out and lnk.to_socket.name == 'Surface':
+            saved.append((lnk.from_node.name, lnk.from_socket.name,
+                          lnk.to_node.name,   lnk.to_socket.name))
+            nt.links.remove(lnk)
+    _d_preview_state[mat.name] = saved
+    em = nt.nodes.new('ShaderNodeEmission')
+    em.name = _D_PREVIEW_NODE
+    em.location = (out.location[0] - 220, out.location[1])
+    nt.links.new(d_node.outputs['Color'], em.inputs['Color'])
+    nt.links.new(em.outputs['Emission'], out.inputs['Surface'])
+    return True
+
+
+def _deactivate_d_preview(mat):
+    """移除 _D 预览节点并恢复原始连线。"""
+    nt = mat.node_tree
+    saved = _d_preview_state.pop(mat.name, [])
+    preview_node = nt.nodes.get(_D_PREVIEW_NODE)
+    if preview_node:
+        for lnk in list(nt.links):
+            if lnk.from_node == preview_node or lnk.to_node == preview_node:
+                nt.links.remove(lnk)
+        nt.nodes.remove(preview_node)
+    for from_n, from_s, to_n, to_s in saved:
+        fn = nt.nodes.get(from_n)
+        tn = nt.nodes.get(to_n)
+        if fn and tn:
+            fs = fn.outputs.get(from_s)
+            ts = tn.inputs.get(to_s)
+            if fs and ts:
+                nt.links.new(fs, ts)
+
 
 def _get_compositor_nodes(scene):
     """返回目标合成器节点列表，不存在则返回空列表"""
@@ -173,6 +227,39 @@ class VIEW3D_OT_restore_all_postfx(bpy.types.Operator):
         return {"FINISHED"}
 
 
+# ─── Operator：切换 _D Albedo 预览 ──────────────────────────────────────────
+
+class VIEW3D_OT_toggle_d_preview(bpy.types.Operator):
+    bl_idname = "view3d.toggle_d_preview"
+    bl_label = "切换 _D 贴图预览"
+    bl_description = "开启/关闭：将所有选中网格对象的材质输出替换为纯 _D Albedo（Emission 无光）"
+
+    def execute(self, context):
+        objects = [o for o in context.selected_objects
+                   if o.type == 'MESH' and o.material_slots]
+        if not objects:
+            self.report({'WARNING'}, "无选中的网格对象或材质槽")
+            return {'CANCELLED'}
+
+        if not _d_preview_state:
+            count = 0
+            for obj in objects:
+                for slot in obj.material_slots:
+                    mat = slot.material
+                    if mat and mat.node_tree and _activate_d_preview(mat):
+                        count += 1
+            self.report({'INFO'}, "_D 预览已开启（" + str(count) + " 个材质）")
+        else:
+            for mat_name in list(_d_preview_state.keys()):
+                mat = bpy.data.materials.get(mat_name)
+                if mat:
+                    _deactivate_d_preview(mat)
+            _d_preview_state.clear()
+            self.report({'INFO'}, "_D 预览已关闭，材质已还原")
+
+        return {'FINISHED'}
+
+
 # ─── Panel ───────────────────────────────────────────────────────────────────
 
 class VIEW3D_PT_color_compare(bpy.types.Panel):
@@ -246,6 +333,18 @@ class VIEW3D_PT_color_compare(bpy.types.Panel):
         else:
             box.label(text="Bloom 不可用", icon="ERROR")
 
+        layout.separator()
+
+        # ── _D 贴图预览 ──
+        box = layout.box()
+        box.label(text="_D 贴图预览", icon="IMAGE_DATA")
+        is_d = bool(_d_preview_state)
+        if is_d:
+            box.label(text="预览中：" + str(len(_d_preview_state)) + " 个材质", icon="HIDE_OFF")
+            box.operator("view3d.toggle_d_preview", text="还原材质", icon="BACK")
+        else:
+            box.operator("view3d.toggle_d_preview", text="仅显示 _D", icon="FORWARD")
+
 
 # ─── 注册 ─────────────────────────────────────────────────────────────────────
 
@@ -256,6 +355,7 @@ classes = (
     VIEW3D_OT_toggle_bloom,
     VIEW3D_OT_disable_all_postfx,
     VIEW3D_OT_restore_all_postfx,
+    VIEW3D_OT_toggle_d_preview,
     VIEW3D_PT_color_compare,
 )
 

@@ -18,7 +18,8 @@
       "Edit(**.json)",
       "Write(**.json)",
       "Edit(**.py)",
-      "Write(**.py)"
+      "Write(**.py)",
+      "mcp__blender__get_scene_info"
     ]
   }
 }
