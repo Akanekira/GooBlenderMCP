@@ -1,6 +1,7 @@
 # DirectionalLightAttenuation
 
 > 溯源：`docs/raw_data/Directional_light_attenuation_20260227.json` | 节点数：5
+> HLSL 实现：`hlsl/SubGroups/SubGroups.hlsl` — `DirectionalLightAttenuation()` 函数
 
 ## 接口
 

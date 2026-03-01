@@ -1,7 +1,9 @@
 # 00 — 材质概览：M_actor_pelica_cloth_04
 
+> 主节点群：`Arknights: Endfield_PBRToonBase`
 > 溯源：`docs/raw_data/M_actor_pelica_cloth_04_nodes_20260227.json`
 > 提取日期：2026-02-27
+> 相关文件：`hlsl/PBRToonBase_Input.hlsl` | `hlsl/PBRToonBase.hlsl` | `unity/Shaders/PBRToonBase.shader`
 
 ---
 

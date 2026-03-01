@@ -1,0 +1,222 @@
+{
+  "group": "OutlineColor",
+  "nodes": [
+    {
+      "name": "运算.034",
+      "type": "MATH",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "运算.033",
+      "type": "MATH",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "运算.032",
+      "type": "MATH",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "颜色渐变.001",
+      "type": "VALTORGB",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [
+        {
+          "name": "Fac",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Color",
+          "type": "RGBA"
+        },
+        {
+          "name": "Alpha",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "颜色渐变.002",
+      "type": "VALTORGB",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [
+        {
+          "name": "Fac",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Color",
+          "type": "RGBA"
+        },
+        {
+          "name": "Alpha",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "组输入",
+      "type": "GROUP_INPUT",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "Fresnel attenuation",
+          "type": "VALUE"
+        },
+        {
+          "name": "Vertical attenuation",
+          "type": "VALUE"
+        },
+        {
+          "name": "",
+          "type": "CUSTOM"
+        }
+      ]
+    },
+    {
+      "name": "组输出",
+      "type": "GROUP_OUTPUT",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [
+        {
+          "name": "OutlineColor",
+          "type": "RGBA"
+        },
+        {
+          "name": "",
+          "type": "CUSTOM"
+        }
+      ],
+      "outputs": []
+    }
+  ],
+  "links": [
+    {
+      "from_node": "运算.033",
+      "from_socket": "Value",
+      "to_node": "颜色渐变.001",
+      "to_socket": "Fac"
+    },
+    {
+      "from_node": "运算.032",
+      "from_socket": "Value",
+      "to_node": "运算.034",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "颜色渐变.001",
+      "from_socket": "Color",
+      "to_node": "运算.032",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "颜色渐变.002",
+      "from_socket": "Color",
+      "to_node": "运算.034",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "Fresnel attenuation",
+      "to_node": "运算.032",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "Vertical attenuation",
+      "to_node": "颜色渐变.002",
+      "to_socket": "Fac"
+    },
+    {
+      "from_node": "运算.034",
+      "from_socket": "Value",
+      "to_node": "组输出",
+      "to_socket": "OutlineColor"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "Fresnel attenuation",
+      "to_node": "运算.033",
+      "to_socket": "Value"
+    }
+  ]
+}

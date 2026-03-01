@@ -1,6 +1,7 @@
 # DeSaturation
 
 > 溯源：`docs/raw_data/DeSaturation_20260227.json` | 节点数：11
+> HLSL 实现：`hlsl/SubGroups/SubGroups.hlsl` — `DeSaturation()` 函数
 
 ## 接口
 

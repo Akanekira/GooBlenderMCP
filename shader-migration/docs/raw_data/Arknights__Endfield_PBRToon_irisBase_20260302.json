@@ -1,0 +1,1005 @@
+{
+  "group": "Arknights: Endfield_PBRToon_irisBase",
+  "nodes": [
+    {
+      "name": "组输出",
+      "type": "GROUP_OUTPUT",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [
+        {
+          "name": "Emission",
+          "type": "SHADER"
+        },
+        {
+          "name": "",
+          "type": "CUSTOM"
+        }
+      ],
+      "outputs": []
+    },
+    {
+      "name": "组输入",
+      "type": "GROUP_INPUT",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "D_RGB",
+          "type": "RGBA"
+        },
+        {
+          "name": "D_Alpha",
+          "type": "VALUE"
+        },
+        {
+          "name": "Eyes brightness",
+          "type": "VALUE"
+        },
+        {
+          "name": "Eyes HightLight brightness",
+          "type": "VALUE"
+        },
+        {
+          "name": "",
+          "type": "CUSTOM"
+        }
+      ]
+    },
+    {
+      "name": "自发光(发射)",
+      "type": "EMISSION",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [
+        {
+          "name": "Color",
+          "type": "RGBA"
+        },
+        {
+          "name": "Strength",
+          "type": "VALUE"
+        },
+        {
+          "name": "Weight",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Emission",
+          "type": "SHADER"
+        }
+      ]
+    },
+    {
+      "name": "转接点.101",
+      "type": "REROUTE",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [
+        {
+          "name": "Input",
+          "type": "VECTOR"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Output",
+          "type": "VECTOR"
+        }
+      ]
+    },
+    {
+      "name": "转接点.100",
+      "type": "REROUTE",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [
+        {
+          "name": "Input",
+          "type": "VECTOR"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Output",
+          "type": "VECTOR"
+        }
+      ]
+    },
+    {
+      "name": "群组",
+      "type": "GROUP",
+      "label": "AngleThreshold",
+      "parent": null,
+      "node_tree": "calculateAngel",
+      "inputs": [
+        {
+          "name": "LightDirection",
+          "type": "VECTOR"
+        },
+        {
+          "name": "headUp",
+          "type": "VECTOR"
+        },
+        {
+          "name": "headRight",
+          "type": "VECTOR"
+        },
+        {
+          "name": "headForward",
+          "type": "VECTOR"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "AngleThreshold",
+          "type": "VALUE"
+        },
+        {
+          "name": "Flip threshold",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "属性.004",
+      "type": "ATTRIBUTE",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "Color",
+          "type": "RGBA"
+        },
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Fac",
+          "type": "VALUE"
+        },
+        {
+          "name": "Alpha",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "属性.002",
+      "type": "ATTRIBUTE",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "Color",
+          "type": "RGBA"
+        },
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Fac",
+          "type": "VALUE"
+        },
+        {
+          "name": "Alpha",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "属性.003",
+      "type": "ATTRIBUTE",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "Color",
+          "type": "RGBA"
+        },
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Fac",
+          "type": "VALUE"
+        },
+        {
+          "name": "Alpha",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "属性.001",
+      "type": "ATTRIBUTE",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "Color",
+          "type": "RGBA"
+        },
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Fac",
+          "type": "VALUE"
+        },
+        {
+          "name": "Alpha",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "运算",
+      "type": "MATH",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "钳制",
+      "type": "CLAMP",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Min",
+          "type": "VALUE"
+        },
+        {
+          "name": "Max",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Result",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "混合",
+      "type": "MIX",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [
+        {
+          "name": "Factor",
+          "type": "VALUE"
+        },
+        {
+          "name": "Factor",
+          "type": "VECTOR"
+        },
+        {
+          "name": "A",
+          "type": "VALUE"
+        },
+        {
+          "name": "B",
+          "type": "VALUE"
+        },
+        {
+          "name": "A",
+          "type": "VECTOR"
+        },
+        {
+          "name": "B",
+          "type": "VECTOR"
+        },
+        {
+          "name": "A",
+          "type": "RGBA"
+        },
+        {
+          "name": "B",
+          "type": "RGBA"
+        },
+        {
+          "name": "A",
+          "type": "ROTATION"
+        },
+        {
+          "name": "B",
+          "type": "ROTATION"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Result",
+          "type": "VALUE"
+        },
+        {
+          "name": "Result",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Result",
+          "type": "RGBA"
+        },
+        {
+          "name": "Result",
+          "type": "ROTATION"
+        }
+      ]
+    },
+    {
+      "name": "混合.001",
+      "type": "MIX",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [
+        {
+          "name": "Factor",
+          "type": "VALUE"
+        },
+        {
+          "name": "Factor",
+          "type": "VECTOR"
+        },
+        {
+          "name": "A",
+          "type": "VALUE"
+        },
+        {
+          "name": "B",
+          "type": "VALUE"
+        },
+        {
+          "name": "A",
+          "type": "VECTOR"
+        },
+        {
+          "name": "B",
+          "type": "VECTOR"
+        },
+        {
+          "name": "A",
+          "type": "RGBA"
+        },
+        {
+          "name": "B",
+          "type": "RGBA"
+        },
+        {
+          "name": "A",
+          "type": "ROTATION"
+        },
+        {
+          "name": "B",
+          "type": "ROTATION"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Result",
+          "type": "VALUE"
+        },
+        {
+          "name": "Result",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Result",
+          "type": "RGBA"
+        },
+        {
+          "name": "Result",
+          "type": "ROTATION"
+        }
+      ]
+    },
+    {
+      "name": "纹理坐标",
+      "type": "TEX_COORD",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "Generated",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Normal",
+          "type": "VECTOR"
+        },
+        {
+          "name": "UV",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Object",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Camera",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Window",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Reflection",
+          "type": "VECTOR"
+        }
+      ]
+    },
+    {
+      "name": "矢量变换",
+      "type": "VECT_TRANSFORM",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        }
+      ]
+    },
+    {
+      "name": "矢量运算",
+      "type": "VECT_MATH",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Scale",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "矢量运算.001",
+      "type": "VECT_MATH",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Scale",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "图像纹理.001",
+      "type": "TEX_IMAGE",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Color",
+          "type": "RGBA"
+        },
+        {
+          "name": "Alpha",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "混合.002",
+      "type": "MIX",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [
+        {
+          "name": "Factor",
+          "type": "VALUE"
+        },
+        {
+          "name": "Factor",
+          "type": "VECTOR"
+        },
+        {
+          "name": "A",
+          "type": "VALUE"
+        },
+        {
+          "name": "B",
+          "type": "VALUE"
+        },
+        {
+          "name": "A",
+          "type": "VECTOR"
+        },
+        {
+          "name": "B",
+          "type": "VECTOR"
+        },
+        {
+          "name": "A",
+          "type": "RGBA"
+        },
+        {
+          "name": "B",
+          "type": "RGBA"
+        },
+        {
+          "name": "A",
+          "type": "ROTATION"
+        },
+        {
+          "name": "B",
+          "type": "ROTATION"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Result",
+          "type": "VALUE"
+        },
+        {
+          "name": "Result",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Result",
+          "type": "RGBA"
+        },
+        {
+          "name": "Result",
+          "type": "ROTATION"
+        }
+      ]
+    },
+    {
+      "name": "混合.003",
+      "type": "MIX",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [
+        {
+          "name": "Factor",
+          "type": "VALUE"
+        },
+        {
+          "name": "Factor",
+          "type": "VECTOR"
+        },
+        {
+          "name": "A",
+          "type": "VALUE"
+        },
+        {
+          "name": "B",
+          "type": "VALUE"
+        },
+        {
+          "name": "A",
+          "type": "VECTOR"
+        },
+        {
+          "name": "B",
+          "type": "VECTOR"
+        },
+        {
+          "name": "A",
+          "type": "RGBA"
+        },
+        {
+          "name": "B",
+          "type": "RGBA"
+        },
+        {
+          "name": "A",
+          "type": "ROTATION"
+        },
+        {
+          "name": "B",
+          "type": "ROTATION"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Result",
+          "type": "VALUE"
+        },
+        {
+          "name": "Result",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Result",
+          "type": "RGBA"
+        },
+        {
+          "name": "Result",
+          "type": "ROTATION"
+        }
+      ]
+    },
+    {
+      "name": "图像纹理.002",
+      "type": "TEX_IMAGE",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Color",
+          "type": "RGBA"
+        },
+        {
+          "name": "Alpha",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "自发光",
+      "type": "EMISSION",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [
+        {
+          "name": "Color",
+          "type": "RGBA"
+        },
+        {
+          "name": "Strength",
+          "type": "VALUE"
+        },
+        {
+          "name": "Weight",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Emission",
+          "type": "SHADER"
+        }
+      ]
+    },
+    {
+      "name": "相加着色器",
+      "type": "ADD_SHADER",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [
+        {
+          "name": "Shader",
+          "type": "SHADER"
+        },
+        {
+          "name": "Shader",
+          "type": "SHADER"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Shader",
+          "type": "SHADER"
+        }
+      ]
+    },
+    {
+      "name": "运算.001",
+      "type": "MATH",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "from_node": "转接点.101",
+      "from_socket": "Output",
+      "to_node": "群组",
+      "to_socket": "headUp"
+    },
+    {
+      "from_node": "钳制",
+      "from_socket": "Result",
+      "to_node": "混合",
+      "to_socket": "B"
+    },
+    {
+      "from_node": "属性.002",
+      "from_socket": "Vector",
+      "to_node": "群组",
+      "to_socket": "headRight"
+    },
+    {
+      "from_node": "运算",
+      "from_socket": "Value",
+      "to_node": "钳制",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "混合.001",
+      "from_socket": "Result",
+      "to_node": "自发光(发射)",
+      "to_socket": "Strength"
+    },
+    {
+      "from_node": "属性.003",
+      "from_socket": "Vector",
+      "to_node": "转接点.101",
+      "to_socket": "Input"
+    },
+    {
+      "from_node": "群组",
+      "from_socket": "AngleThreshold",
+      "to_node": "运算",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "属性.004",
+      "from_socket": "Vector",
+      "to_node": "转接点.100",
+      "to_socket": "Input"
+    },
+    {
+      "from_node": "属性.001",
+      "from_socket": "Vector",
+      "to_node": "群组",
+      "to_socket": "headForward"
+    },
+    {
+      "from_node": "混合.002",
+      "from_socket": "Result",
+      "to_node": "自发光(发射)",
+      "to_socket": "Color"
+    },
+    {
+      "from_node": "转接点.100",
+      "from_socket": "Output",
+      "to_node": "群组",
+      "to_socket": "LightDirection"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "D_RGB",
+      "to_node": "混合",
+      "to_socket": "A"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "D_Alpha",
+      "to_node": "混合.001",
+      "to_socket": "Factor"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "Eyes brightness",
+      "to_node": "混合.001",
+      "to_socket": "A"
+    },
+    {
+      "from_node": "运算.001",
+      "from_socket": "Value",
+      "to_node": "混合.001",
+      "to_socket": "B"
+    },
+    {
+      "from_node": "纹理坐标",
+      "from_socket": "Normal",
+      "to_node": "矢量变换",
+      "to_socket": "Vector"
+    },
+    {
+      "from_node": "矢量变换",
+      "from_socket": "Vector",
+      "to_node": "矢量运算",
+      "to_socket": "Vector"
+    },
+    {
+      "from_node": "矢量运算",
+      "from_socket": "Vector",
+      "to_node": "矢量运算.001",
+      "to_socket": "Vector"
+    },
+    {
+      "from_node": "矢量运算.001",
+      "from_socket": "Vector",
+      "to_node": "图像纹理.001",
+      "to_socket": "Vector"
+    },
+    {
+      "from_node": "混合",
+      "from_socket": "Result",
+      "to_node": "混合.002",
+      "to_socket": "A"
+    },
+    {
+      "from_node": "混合.003",
+      "from_socket": "Result",
+      "to_node": "混合.002",
+      "to_socket": "B"
+    },
+    {
+      "from_node": "图像纹理.001",
+      "from_socket": "Color",
+      "to_node": "混合.003",
+      "to_socket": "A"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "D_RGB",
+      "to_node": "混合.003",
+      "to_socket": "B"
+    },
+    {
+      "from_node": "图像纹理.002",
+      "from_socket": "Color",
+      "to_node": "自发光",
+      "to_socket": "Color"
+    },
+    {
+      "from_node": "自发光",
+      "from_socket": "Emission",
+      "to_node": "相加着色器",
+      "to_socket": "Shader"
+    },
+    {
+      "from_node": "自发光(发射)",
+      "from_socket": "Emission",
+      "to_node": "相加着色器",
+      "to_socket": "Shader"
+    },
+    {
+      "from_node": "相加着色器",
+      "from_socket": "Shader",
+      "to_node": "组输出",
+      "to_socket": "Emission"
+    },
+    {
+      "from_node": "运算",
+      "from_socket": "Value",
+      "to_node": "运算.001",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "Eyes HightLight brightness",
+      "to_node": "运算.001",
+      "to_socket": "Value"
+    }
+  ]
+}

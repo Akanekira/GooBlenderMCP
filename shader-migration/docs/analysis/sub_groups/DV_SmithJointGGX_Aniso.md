@@ -1,6 +1,7 @@
 # DV_SmithJointGGX_Aniso
 
 > 溯源：`docs/raw_data/DV_SmithJointGGX_Aniso_20260227.json` | 节点数：22
+> HLSL 实现：`hlsl/SubGroups/SubGroups.hlsl` — `DV_SmithJointGGX_Aniso()` 函数
 
 ## 接口
 

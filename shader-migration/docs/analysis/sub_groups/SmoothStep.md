@@ -1,6 +1,7 @@
 # SmoothStep
 
 > 溯源：`docs/raw_data/SmoothStep_20260227.json` | 节点数：17
+> HLSL 实现：`hlsl/SubGroups/SubGroups.hlsl` — `SmoothStep()` 函数
 
 ## 接口
 

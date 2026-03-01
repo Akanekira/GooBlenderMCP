@@ -1,6 +1,7 @@
 # GetPreIntegratedFGD（子群组 Remap01ToHalfTexelCoord）
 
 > 溯源：在 `GetPreIntegratedFGDGGXAndDisneyDiffuse_20260227.json` 中发现，第三层子群组
+> HLSL 实现：`hlsl/SubGroups/SubGroups.hlsl` — `Remap01ToHalfTexelCoord()`、`GetinvLenLV()` 函数（内嵌于 GetPreIntegratedFGDGGXAndDisneyDiffuse）
 > 本群组 JSON 尚未单独提取（Phase 1.4）
 
 ## 功能描述

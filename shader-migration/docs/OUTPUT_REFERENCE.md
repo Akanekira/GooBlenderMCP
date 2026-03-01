@@ -129,6 +129,7 @@ shader-migration/
 
 > 主节点群：`<group_name>`
 > 提取日期：<TODAY> | 溯源：`docs/raw_data/<GROUP_SAFE_NAME>_<TODAY>.json`
+> 相关文件：`hlsl/<MATERIAL_SAFE_NAME>/<MaterialName>_Input.hlsl` | `hlsl/<MATERIAL_SAFE_NAME>/<MaterialName>.hlsl` | `unity/Shaders/<MaterialName>.shader`
 ```
 
 ---
@@ -136,6 +137,16 @@ shader-migration/
 ### 2. 架构文档（`01_shader_arch.md`）
 
 **路径**：`docs/analysis/<MATERIAL_SAFE_NAME>/01_shader_arch.md`
+
+**文件头模板**：
+
+```markdown
+# 01 — 主群组架构分析：<group_name>
+
+> 溯源：`docs/raw_data/<GROUP_SAFE_NAME>_<TODAY>.json`
+> 提取日期：<TODAY>
+> 相关文件：`hlsl/<MATERIAL_SAFE_NAME>/<MaterialName>.hlsl` | `hlsl/<MATERIAL_SAFE_NAME>/SubGroups/SubGroups.hlsl`
+```
 
 **必须包含**：
 
@@ -189,6 +200,15 @@ ThirdLevel_SubGroups（Remap01ToHalfTexelCoord / GetinvLenLV）
 | 等价公式 | 数学表达式 |
 | HLSL 等价 | 伪代码函数签名 + 函数体 |
 | 备注 | 对应 HDRP/URP 标准函数、注意事项 |
+
+**文件头模板**：
+
+```markdown
+# <SubGroupName>
+
+> 溯源：`docs/raw_data/<SubGroupName>_<TODAY>.json` | 节点数：N
+> HLSL 实现：`hlsl/<MATERIAL_SAFE_NAME>/SubGroups/SubGroups.hlsl` — `<FunctionName>()` 函数
+```
 
 ---
 

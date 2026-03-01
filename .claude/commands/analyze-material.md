@@ -158,6 +158,7 @@ print(f'连线数: {len(data.get("links", []))}')
 
 > 主节点群：`<group_name>`
 > 提取日期：<TODAY> | 溯源：`docs/raw_data/<GROUP_SAFE_NAME>_<TODAY>.json`
+> 相关文件：`hlsl/<MATERIAL_SAFE_NAME>/<MaterialName>_Input.hlsl` | `hlsl/<MATERIAL_SAFE_NAME>/<MaterialName>.hlsl` | `unity/Shaders/<MaterialName>.shader`
 
 ## 群组规模
 
@@ -198,6 +199,7 @@ print(f'连线数: {len(data.get("links", []))}')
 
 > 溯源：`docs/raw_data/<GROUP_SAFE_NAME>_<TODAY>.json`
 > 提取日期：<TODAY>
+> 相关文件：`hlsl/<MATERIAL_SAFE_NAME>/<MaterialName>.hlsl` | `hlsl/<MATERIAL_SAFE_NAME>/SubGroups/SubGroups.hlsl`
 
 ## 顶级模块（Frame）一览
 
@@ -252,6 +254,7 @@ print(f'连线数: {len(data.get("links", []))}')
 # <SubGroupName>
 
 > 溯源：`docs/raw_data/<SubGroupName>_<TODAY>.json` | 节点数：N
+> HLSL 实现：`hlsl/<MATERIAL_SAFE_NAME>/SubGroups/SubGroups.hlsl` — `<FunctionName>()` 函数
 
 ## 接口
 

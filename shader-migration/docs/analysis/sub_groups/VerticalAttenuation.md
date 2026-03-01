@@ -1,6 +1,7 @@
 # VerticalAttenuation
 
 > 溯源：`docs/raw_data/Vertical_attenuation_20260227.json` | 节点数：6
+> HLSL 实现：`hlsl/SubGroups/SubGroups.hlsl` — `VerticalAttenuation()` 函数
 
 ## 接口
 

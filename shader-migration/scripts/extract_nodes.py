@@ -45,22 +45,34 @@ def node_info(node):
         'name': node.name,
         'type': node.type,
         'bl_idname': node.bl_idname,
-        'inputs': [{'name': i.name, 'type': i.type} for i in node.inputs],
-        'outputs': [{'name': o.name, 'type': o.type} for o in node.outputs],
     }
-    if node.type == 'GROUP' and node.node_tree:
-        info['group_name'] = node.node_tree.name
-    # 记录可用默认值
-    defaults = {}
-    for inp in node.inputs:
-        if hasattr(inp, 'default_value'):
+    # 捕获节点特定运算属性（math_type、blend_type 等）
+    props = {}
+    for prop_name in ['operation', 'blend_type', 'data_type', 'clamp_type',
+                       'interpolation_type', 'use_clamp']:
+        if hasattr(node, prop_name):
             try:
-                v = inp.default_value
-                defaults[inp.name] = list(v) if hasattr(v, '__iter__') else v
+                props[prop_name] = str(getattr(node, prop_name))
             except Exception:
                 pass
-    if defaults:
-        info['input_defaults'] = defaults
+    if props:
+        info['properties'] = props
+    # 输入：含索引和默认值（避免同名 socket 覆盖问题）
+    inputs = []
+    for i in node.inputs:
+        inp = {'name': i.name, 'type': i.type}
+        if hasattr(i, 'default_value'):
+            try:
+                v = i.default_value
+                inp['default_value'] = (list(v) if hasattr(v, '__iter__') and not isinstance(v, str)
+                                        else float(v) if i.type == 'VALUE' else str(v))
+            except Exception:
+                pass
+        inputs.append(inp)
+    info['inputs'] = inputs
+    info['outputs'] = [{'name': o.name, 'type': o.type} for o in node.outputs]
+    if node.type == 'GROUP' and node.node_tree:
+        info['group_name'] = node.node_tree.name
     return info
 
 _target = TARGET_GROUP
@@ -105,9 +117,32 @@ def node_info(node):
         'name': node.name,
         'type': node.type,
         'bl_idname': node.bl_idname,
-        'inputs': [{'name': i.name, 'type': i.type} for i in node.inputs],
-        'outputs': [{'name': o.name, 'type': o.type} for o in node.outputs],
     }
+    # 捕获节点特定运算属性
+    props = {}
+    for prop_name in ['operation', 'blend_type', 'data_type', 'clamp_type',
+                       'interpolation_type', 'use_clamp']:
+        if hasattr(node, prop_name):
+            try:
+                props[prop_name] = str(getattr(node, prop_name))
+            except Exception:
+                pass
+    if props:
+        info['properties'] = props
+    # 输入：含索引和默认值
+    inputs = []
+    for i in node.inputs:
+        inp = {'name': i.name, 'type': i.type}
+        if hasattr(i, 'default_value'):
+            try:
+                v = i.default_value
+                inp['default_value'] = (list(v) if hasattr(v, '__iter__') and not isinstance(v, str)
+                                        else float(v) if i.type == 'VALUE' else str(v))
+            except Exception:
+                pass
+        inputs.append(inp)
+    info['inputs'] = inputs
+    info['outputs'] = [{'name': o.name, 'type': o.type} for o in node.outputs]
     if node.type == 'GROUP' and node.node_tree:
         info['group_name'] = node.node_tree.name
     if node.type == 'TEX_IMAGE' and node.image:

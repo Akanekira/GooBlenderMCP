@@ -1,6 +1,7 @@
 # PerceptualSmoothnessToPerceptualRoughness
 
 > 溯源：`docs/raw_data/PerceptualSmoothnessToPerceptualRoughness_20260227.json` | 节点数：5
+> HLSL 实现：`hlsl/SubGroups/SubGroups.hlsl` — `PerceptualSmoothnessToPerceptualRoughness()` 函数
 
 ## 接口
 

@@ -1,6 +1,7 @@
 # ComputeFresnel0
 
 > 溯源：`docs/raw_data/ComputeFresnel0_20260227.json` | 节点数：4
+> HLSL 实现：`hlsl/SubGroups/SubGroups.hlsl` — `ComputeFresnel0()` 函数
 
 ## 接口
 

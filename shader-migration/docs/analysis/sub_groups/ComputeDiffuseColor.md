@@ -1,6 +1,7 @@
 # ComputeDiffuseColor
 
 > 溯源：`docs/raw_data/ComputeDiffuseColor_20260227.json` | 节点数：5
+> HLSL 实现：`hlsl/SubGroups/SubGroups.hlsl` — `ComputeDiffuseColor()` 函数
 
 ## 接口
 

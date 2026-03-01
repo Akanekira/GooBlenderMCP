@@ -1,6 +1,7 @@
 # F_Schlick
 
 > 溯源：`docs/raw_data/F_Schlick_20260227.json` | 节点数：19
+> HLSL 实现：`hlsl/SubGroups/SubGroups.hlsl` — `F_Schlick()` 函数
 
 ## 接口
 

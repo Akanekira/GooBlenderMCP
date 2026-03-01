@@ -11,11 +11,13 @@
 // SigmoidSharp
 // 可控 Sigmoid 曲线，用于 Toon 阴影边缘锐化
 // 溯源：sub_groups/SigmoidSharp.md
+// 节点实现：运算.003(×-3) → 运算.005(×sharp·(x-c)) → 运算.002(pow 100000) → 运算.006(+1) → 运算.007(÷)
+// 底数 100000（非 e），陡峭度 ≈ e^34.54，适合 Toon 阶段感边缘
 // -----------------------------------------------------------------------------
 float SigmoidSharp(float x, float center, float sharp)
 {
-    float t = sharp * (x - center);
-    return 1.0 / (1.0 + exp(-t));
+    float t = -3.0 * sharp * (x - center);
+    return 1.0 / (1.0 + pow(100000.0, t));
 }
 
 // -----------------------------------------------------------------------------

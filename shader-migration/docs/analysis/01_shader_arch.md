@@ -2,6 +2,7 @@
 
 > 溯源：`docs/raw_data/PBRToonBase_full_20260227.json`
 > 提取日期：2026-02-27 | **版本 2（基于 Frame 模块结构重写）**
+> 相关文件：`hlsl/PBRToonBase.hlsl` | `hlsl/SubGroups/SubGroups.hlsl`
 
 ---
 
@@ -213,15 +214,77 @@ NoL_Unsaturate
 
 ### Frame.006 — IndirectLighting（间接光照）
 
-**职责**：预积分 FGD 查找 + 环境光叠加。
+**职责**：预积分 FGD 查找 + 环境光叠加 + 能量守恒补偿。
+**节点数**：12 个逻辑节点 + 4 个子框（帧.035/036/037/038）
+
+#### 外部输入来源
+
+| 信号 | 实际来源 | 含义 |
+|------|---------|------|
+| `clampedNdotV` | Frame.012 Init | saturate(dot(N,V)) |
+| `perceptualRoughness` | Frame.013 GetSurfaceData | 感知粗糙度 |
+| `fresnel0` (F0) | Frame.013 GetSurfaceData | ComputeFresnel0 输出 |
+| `diffuseColor` | ComputeDiffuseColor (群组.009) | 漫反射基础色 |
+| `ShaderInfo.Ambient Lighting` | SHADERINFO 节点 | Goo Engine 环境光强度 |
+| `AmbientLightColorTint` | Group Input | 环境光色调参数 |
+| `specularFGD Strength` | Group Input | 间接高光强度系数 |
+
+#### 计算流程
 
 ```
-(NdotV, perceptualRoughness, F0)
-    → GetPreIntegratedFGDGGXAndDisneyDiffuse(LUT采样)
-    → specularFGD [框.038], diffuseFGD [框.037]
-    → energyCompensation [框.035] = 1 - reflectivity（能量守恒补偿）
-    → indirectLighting.diffuse [框.036] = diffuseColor × diffuseFGD × AmbientLightColorTint
+clampedNdotV / perceptualRoughness / F0
+    → 群组.005 GetPreIntegratedFGDGGXAndDisneyDiffuse
+    → specularFGD [帧.038] / diffuseFGD [帧.037] / reflectivity
+
+reflectivity
+    → 运算.015 DIVIDE   : 1.0 / reflectivity
+    → 运算.013 SUBTRACT : (1/r) − 1.0 = ecFactor           [帧.035 energyCompensation]
+
+F0 × ecFactor
+    → Vector Math.012 MULTIPLY → Vector Math.013 ADD        [→ 下游 VectorMath.014，specular修正]
+
+specularFGD × specularFGD_Strength
+    → 混合.025 MULTIPLY
+    → ecFactor × weighted_specFGD
+    → 混合.010 MULTIPLY → 混合.011.B                       [间接镜面能量补偿输出]
+
+AmbientLightColorTint × ShaderInfo.AmbientLighting
+    → 混合.013 MULTIPLY
+diffuseColor × diffuseFGD
+    → 混合.007 MULTIPLY
+    → (diffuseColor × diffuseFGD) × (AmbientTint × AmbientLighting)
+    → 混合.008 MULTIPLY → 混合.009.B                       [间接漫反射输出]
 ```
+
+#### 等价 HLSL
+
+```hlsl
+// Stage 1: FGD LUT 查询
+float3 specularFGD; float diffuseFGD; float reflectivity;
+GetPreIntegratedFGD(clampedNdotV, perceptualRoughness, fresnel0,
+                    specularFGD, diffuseFGD, reflectivity);
+
+// Stage 2: energyCompensation 因子（帧.035）
+float ecFactor = 1.0 / reflectivity - 1.0;
+
+// Stage 3: 间接镜面能量补偿（帧.038 → 混合.011.B）
+float3 indirectSpecComp = ecFactor * (specularFGD * specularFGD_Strength);
+// 附：F0 修正项送下游高光合并
+float3 F0_correction = fresnel0 * ecFactor;  // → VectorMath.014
+
+// Stage 4: 间接漫反射（帧.037 + 帧.036 → 混合.009.B）
+float3 ambientCombined = AmbientLightColorTint * ShaderInfo_AmbientLighting;
+float3 indirectDiffuse  = diffuseColor * diffuseFGD * ambientCombined;
+```
+
+#### 设计要点
+
+| 要点 | 说明 |
+|------|------|
+| `ecFactor = 1/r − 1` | HDRP 多重散射能量守恒修正，而非直接用 `1 − reflectivity` |
+| 两路输出 | 间接漫射 → 混合.009；镜面补偿 → 混合.011（在最终汇合节点分开叠加） |
+| AmbientLighting from SHADERINFO | Goo Engine 专有；Unity 迁移替换为 SH 球谐或 `GI.indirectDiffuse` |
+| specularFGD_Strength 独立系数 | 美术独立调节间接高光，不影响 ecFactor 计算 |
 
 调用子群组：`GetPreIntegratedFGDGGXAndDisneyDiffuse`
 

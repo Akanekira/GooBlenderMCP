@@ -1,6 +1,7 @@
 # FresnelAttenuation
 
 > 溯源：`docs/raw_data/Fresnel_attenuation_20260227.json` | 节点数：6
+> HLSL 实现：`hlsl/SubGroups/SubGroups.hlsl` — `FresnelAttenuation()` 函数
 
 ## 接口
 

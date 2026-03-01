@@ -1,6 +1,7 @@
 # Rim_Color
 
 > 溯源：`docs/raw_data/Rim_Color_20260227.json` | 节点数：11
+> HLSL 实现：`hlsl/SubGroups/SubGroups.hlsl` — `Rim_Color()` 函数
 
 ## 接口
 

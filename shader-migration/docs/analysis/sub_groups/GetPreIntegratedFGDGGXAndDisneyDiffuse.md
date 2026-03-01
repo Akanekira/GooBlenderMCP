@@ -1,6 +1,7 @@
 # GetPreIntegratedFGDGGXAndDisneyDiffuse
 
 > 溯源：`docs/raw_data/GetPreIntegratedFGDGGXAndDisneyDiffuse_20260227.json` | 节点数：21
+> HLSL 实现：`hlsl/SubGroups/SubGroups.hlsl` — `GetPreIntegratedFGDGGXAndDisneyDiffuse()` 函数
 
 ## 接口
 

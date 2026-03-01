@@ -3,6 +3,7 @@
 > 溯源：`Arknights: Endfield_PBRToonBase` 主群组
 > 数据来源：2026-02-28 Blender MCP 实时追踪
 > 关联文档：[01_shader_arch.md](01_shader_arch.md)、[ComputeDiffuseColor.md](sub_groups/ComputeDiffuseColor.md)
+> 相关文件：`hlsl/PBRToonBase.hlsl`
 
 ---
 

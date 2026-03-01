@@ -3,24 +3,12 @@
   "node_count": 8,
   "link_count": 9,
   "interface_inputs": [
-    {
-      "name": "x",
-      "bl_idname": "NodeSocketFloat"
-    },
-    {
-      "name": "center",
-      "bl_idname": "NodeSocketFloat"
-    },
-    {
-      "name": "sharp",
-      "bl_idname": "NodeSocketFloat"
-    }
+    { "name": "x",      "bl_idname": "NodeSocketFloat" },
+    { "name": "center", "bl_idname": "NodeSocketFloat" },
+    { "name": "sharp",  "bl_idname": "NodeSocketFloat" }
   ],
   "interface_outputs": [
-    {
-      "name": "值(明度)",
-      "bl_idname": "NodeSocketFloat"
-    }
+    { "name": "值(明度)", "bl_idname": "NodeSocketFloat" }
   ],
   "nodes": [
     {
@@ -29,245 +17,118 @@
       "bl_idname": "NodeGroupInput",
       "inputs": [],
       "outputs": [
-        {
-          "name": "x",
-          "type": "VALUE"
-        },
-        {
-          "name": "center",
-          "type": "VALUE"
-        },
-        {
-          "name": "sharp",
-          "type": "VALUE"
-        },
-        {
-          "name": "",
-          "type": "CUSTOM"
-        }
+        { "name": "x",      "type": "VALUE" },
+        { "name": "center", "type": "VALUE" },
+        { "name": "sharp",  "type": "VALUE" },
+        { "name": "",       "type": "CUSTOM" }
       ]
     },
     {
       "name": "运算.003",
       "type": "MATH",
       "bl_idname": "ShaderNodeMath",
+      "properties": { "operation": "MULTIPLY", "use_clamp": "False" },
       "inputs": [
-        {
-          "name": "Value",
-          "type": "VALUE"
-        },
-        {
-          "name": "Value",
-          "type": "VALUE"
-        },
-        {
-          "name": "Value",
-          "type": "VALUE"
-        }
+        { "name": "Value", "type": "VALUE", "default_value": -3.0,
+          "_note": "slot[0] linked → sharp；-3.0 为 slot[1] 常量（乘法可交换，两槽位不影响结果）" },
+        { "name": "Value", "type": "VALUE", "default_value": -3.0 },
+        { "name": "Value", "type": "VALUE", "default_value": 0.5 }
       ],
-      "outputs": [
-        {
-          "name": "Value",
-          "type": "VALUE"
-        }
-      ]
+      "outputs": [ { "name": "Value", "type": "VALUE" } ]
     },
     {
       "name": "运算.004",
       "type": "MATH",
       "bl_idname": "ShaderNodeMath",
+      "properties": { "operation": "SUBTRACT", "use_clamp": "False" },
       "inputs": [
-        {
-          "name": "Value",
-          "type": "VALUE"
-        },
-        {
-          "name": "Value",
-          "type": "VALUE"
-        },
-        {
-          "name": "Value",
-          "type": "VALUE"
-        }
+        { "name": "Value", "type": "VALUE", "default_value": 0.0,
+          "_note": "slot[0] linked → x" },
+        { "name": "Value", "type": "VALUE", "default_value": 0.5,
+          "_note": "slot[1] linked → center" },
+        { "name": "Value", "type": "VALUE", "default_value": 0.5 }
       ],
-      "outputs": [
-        {
-          "name": "Value",
-          "type": "VALUE"
-        }
-      ]
+      "outputs": [ { "name": "Value", "type": "VALUE" } ]
     },
     {
       "name": "运算.005",
       "type": "MATH",
       "bl_idname": "ShaderNodeMath",
+      "properties": { "operation": "MULTIPLY", "use_clamp": "False" },
       "inputs": [
-        {
-          "name": "Value",
-          "type": "VALUE"
-        },
-        {
-          "name": "Value",
-          "type": "VALUE"
-        },
-        {
-          "name": "Value",
-          "type": "VALUE"
-        }
+        { "name": "Value", "type": "VALUE", "default_value": 0.5,
+          "_note": "slot[0] linked → 运算.004 (x-center)" },
+        { "name": "Value", "type": "VALUE", "default_value": 0.5,
+          "_note": "slot[1] linked → 运算.003 (-3·sharp)" },
+        { "name": "Value", "type": "VALUE", "default_value": 0.5 }
       ],
-      "outputs": [
-        {
-          "name": "Value",
-          "type": "VALUE"
-        }
-      ]
+      "outputs": [ { "name": "Value", "type": "VALUE" } ]
+    },
+    {
+      "name": "运算.002",
+      "type": "MATH",
+      "bl_idname": "ShaderNodeMath",
+      "properties": { "operation": "POWER", "use_clamp": "False" },
+      "inputs": [
+        { "name": "Value", "type": "VALUE", "default_value": 100000.0,
+          "_note": "slot[0] = 底数 100000（常量，未连线）" },
+        { "name": "Value", "type": "VALUE", "default_value": 0.5,
+          "_note": "slot[1] linked → 运算.005（指数 t）" },
+        { "name": "Value", "type": "VALUE", "default_value": 0.5 }
+      ],
+      "outputs": [ { "name": "Value", "type": "VALUE" } ]
     },
     {
       "name": "运算.006",
       "type": "MATH",
       "bl_idname": "ShaderNodeMath",
+      "properties": { "operation": "ADD", "use_clamp": "False" },
       "inputs": [
-        {
-          "name": "Value",
-          "type": "VALUE"
-        },
-        {
-          "name": "Value",
-          "type": "VALUE"
-        },
-        {
-          "name": "Value",
-          "type": "VALUE"
-        }
+        { "name": "Value", "type": "VALUE", "default_value": 1.0,
+          "_note": "slot[0] = 常量 1.0（未连线）" },
+        { "name": "Value", "type": "VALUE", "default_value": 0.5,
+          "_note": "slot[1] linked → 运算.002" },
+        { "name": "Value", "type": "VALUE", "default_value": 0.5 }
       ],
-      "outputs": [
-        {
-          "name": "Value",
-          "type": "VALUE"
-        }
-      ]
+      "outputs": [ { "name": "Value", "type": "VALUE" } ]
+    },
+    {
+      "name": "运算.007",
+      "type": "MATH",
+      "bl_idname": "ShaderNodeMath",
+      "properties": { "operation": "DIVIDE", "use_clamp": "False" },
+      "inputs": [
+        { "name": "Value", "type": "VALUE", "default_value": 1.0,
+          "_note": "slot[0] = 常量 1.0（分子）" },
+        { "name": "Value", "type": "VALUE", "default_value": 0.5,
+          "_note": "slot[1] linked → 运算.006（分母）" },
+        { "name": "Value", "type": "VALUE", "default_value": 0.5 }
+      ],
+      "outputs": [ { "name": "Value", "type": "VALUE" } ]
     },
     {
       "name": "组输出",
       "type": "GROUP_OUTPUT",
       "bl_idname": "NodeGroupOutput",
       "inputs": [
-        {
-          "name": "值(明度)",
-          "type": "VALUE"
-        },
-        {
-          "name": "",
-          "type": "CUSTOM"
-        }
+        { "name": "值(明度)", "type": "VALUE", "default_value": 0.0 },
+        { "name": "",        "type": "CUSTOM" }
       ],
       "outputs": []
-    },
-    {
-      "name": "运算.007",
-      "type": "MATH",
-      "bl_idname": "ShaderNodeMath",
-      "inputs": [
-        {
-          "name": "Value",
-          "type": "VALUE"
-        },
-        {
-          "name": "Value",
-          "type": "VALUE"
-        },
-        {
-          "name": "Value",
-          "type": "VALUE"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "Value",
-          "type": "VALUE"
-        }
-      ]
-    },
-    {
-      "name": "运算.002",
-      "type": "MATH",
-      "bl_idname": "ShaderNodeMath",
-      "inputs": [
-        {
-          "name": "Value",
-          "type": "VALUE"
-        },
-        {
-          "name": "Value",
-          "type": "VALUE"
-        },
-        {
-          "name": "Value",
-          "type": "VALUE"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "Value",
-          "type": "VALUE"
-        }
-      ]
     }
   ],
   "links": [
-    {
-      "from_node": "组输入",
-      "from_socket": "sharp",
-      "to_node": "运算.003",
-      "to_socket": "Value"
-    },
-    {
-      "from_node": "组输入",
-      "from_socket": "x",
-      "to_node": "运算.004",
-      "to_socket": "Value"
-    },
-    {
-      "from_node": "组输入",
-      "from_socket": "center",
-      "to_node": "运算.004",
-      "to_socket": "Value"
-    },
-    {
-      "from_node": "运算.004",
-      "from_socket": "Value",
-      "to_node": "运算.005",
-      "to_socket": "Value"
-    },
-    {
-      "from_node": "运算.003",
-      "from_socket": "Value",
-      "to_node": "运算.005",
-      "to_socket": "Value"
-    },
-    {
-      "from_node": "运算.005",
-      "from_socket": "Value",
-      "to_node": "运算.002",
-      "to_socket": "Value"
-    },
-    {
-      "from_node": "运算.002",
-      "from_socket": "Value",
-      "to_node": "运算.006",
-      "to_socket": "Value"
-    },
-    {
-      "from_node": "运算.006",
-      "from_socket": "Value",
-      "to_node": "运算.007",
-      "to_socket": "Value"
-    },
-    {
-      "from_node": "运算.007",
-      "from_socket": "Value",
-      "to_node": "组输出",
-      "to_socket": "值(明度)"
-    }
-  ]
+    { "from_node": "组输入",  "from_socket": "sharp",  "to_node": "运算.003", "to_socket": "Value" },
+    { "from_node": "组输入",  "from_socket": "x",      "to_node": "运算.004", "to_socket": "Value" },
+    { "from_node": "组输入",  "from_socket": "center", "to_node": "运算.004", "to_socket": "Value" },
+    { "from_node": "运算.004","from_socket": "Value",  "to_node": "运算.005", "to_socket": "Value" },
+    { "from_node": "运算.003","from_socket": "Value",  "to_node": "运算.005", "to_socket": "Value" },
+    { "from_node": "运算.005","from_socket": "Value",  "to_node": "运算.002", "to_socket": "Value",
+      "_note": "连接到 POWER 的 slot[1]（指数）；slot[0] 底数=100000 为常量" },
+    { "from_node": "运算.002","from_socket": "Value",  "to_node": "运算.006", "to_socket": "Value" },
+    { "from_node": "运算.006","from_socket": "Value",  "to_node": "运算.007", "to_socket": "Value" },
+    { "from_node": "运算.007","from_socket": "Value",  "to_node": "组输出",   "to_socket": "值(明度)" }
+  ],
+  "_extracted": "2026-03-02（重提取，补入 properties/default_value）",
+  "_prev_extracted": "2026-02-27（旧版，缺失 operation 和常量值）"
 }

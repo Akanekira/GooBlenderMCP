@@ -1,6 +1,7 @@
 # directLighting_diffuse
 
 > 溯源：`docs/raw_data/directLighting_diffuse_20260227.json` | 节点数：7
+> HLSL 实现：`hlsl/SubGroups/SubGroups.hlsl` — `directLighting_diffuse()` 函数
 
 ## 接口
 

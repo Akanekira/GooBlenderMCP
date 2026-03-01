@@ -2,7 +2,16 @@
   "permissions": {
     "allow": [
       "mcp__blender__execute_blender_code",
-      "mcp__blender__get_viewport_screenshot"
+      "mcp__blender__get_viewport_screenshot",
+      "mcp__blender__get_scene_info",
+      "mcp__blender__get_object_info",
+      "Bash(*)",
+      "Task",
+      "Read",
+      "Write",
+      "Edit",
+      "Glob",
+      "Grep"
     ]
   }
 }

@@ -1,6 +1,7 @@
 # Get_NoH_LoH_ToH_BoH
 
 > 溯源：`docs/raw_data/Get_NoH_LoH_ToH_BoH_20260227.json` | 节点数：17
+> HLSL 实现：`hlsl/SubGroups/SubGroups.hlsl` — `Get_NoH_LoH_ToH_BoH()` 函数
 
 ## 接口
 

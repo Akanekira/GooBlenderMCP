@@ -1,6 +1,7 @@
 # DecodeNormal
 
 > 溯源：`docs/raw_data/DecodeNormal_20260227.json` | 节点数：12
+> HLSL 实现：`hlsl/SubGroups/SubGroups.hlsl` — `DecodeNormal()` 函数
 
 ## 接口
 
