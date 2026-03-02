@@ -1,0 +1,518 @@
+{
+  "material": "M_actor_laevat_cloth_05",
+  "nodes": [
+    {
+      "name": "材质输出",
+      "type": "OUTPUT_MATERIAL",
+      "label": "",
+      "node_tree": null,
+      "image": null,
+      "inputs": [
+        {
+          "name": "Surface",
+          "type": "SHADER",
+          "default_value": "None"
+        },
+        {
+          "name": "Volume",
+          "type": "SHADER",
+          "default_value": "None"
+        },
+        {
+          "name": "Displacement",
+          "type": "VECTOR",
+          "default_value": "<bpy_float[3], NodeSocketVector.default_value>"
+        },
+        {
+          "name": "Thickness",
+          "type": "VALUE",
+          "default_value": "0.0"
+        }
+      ],
+      "outputs": []
+    },
+    {
+      "name": "群组.001",
+      "type": "GROUP",
+      "label": "",
+      "node_tree": "Arknights: Endfield_PBRToonBase",
+      "image": null,
+      "inputs": [
+        {
+          "name": "Is Skin?",
+          "type": "BOOLEAN",
+          "default_value": "False"
+        },
+        {
+          "name": "Use anisotropy?",
+          "type": "BOOLEAN",
+          "default_value": "True"
+        },
+        {
+          "name": "Use Toonaniso?",
+          "type": "BOOLEAN",
+          "default_value": "True"
+        },
+        {
+          "name": "Use NormalTex?",
+          "type": "BOOLEAN",
+          "default_value": "True"
+        },
+        {
+          "name": "Use RS_Eff?",
+          "type": "BOOLEAN",
+          "default_value": "True"
+        },
+        {
+          "name": "Use Simple transmission？",
+          "type": "BOOLEAN",
+          "default_value": "False"
+        },
+        {
+          "name": "RS Model",
+          "type": "BOOLEAN",
+          "default_value": "True"
+        },
+        {
+          "name": "Simple transmission Value",
+          "type": "VALUE",
+          "default_value": "0.0"
+        },
+        {
+          "name": "RS_Index",
+          "type": "VALUE",
+          "default_value": "0.0"
+        },
+        {
+          "name": "RampIndex",
+          "type": "VALUE",
+          "default_value": "0.0"
+        },
+        {
+          "name": "_D(sRGB)R.G.B",
+          "type": "RGBA",
+          "default_value": "<bpy_float[4], NodeSocketColor.default_value>"
+        },
+        {
+          "name": "_D(sRGB).A",
+          "type": "VALUE",
+          "default_value": "0.0"
+        },
+        {
+          "name": "BaseColor",
+          "type": "RGBA",
+          "default_value": "<bpy_float[4], NodeSocketColor.default_value>"
+        },
+        {
+          "name": "_N(非色彩Non_Color)",
+          "type": "VECTOR",
+          "default_value": "<bpy_float[3], NodeSocketVector.default_value>"
+        },
+        {
+          "name": "_P(非色彩Non_Color)R.G.B",
+          "type": "VECTOR",
+          "default_value": "<bpy_float[3], NodeSocketVector.default_value>"
+        },
+        {
+          "name": "_P(非色彩Non_Color)A",
+          "type": "VALUE",
+          "default_value": "0.0"
+        },
+        {
+          "name": "_E（非色彩）",
+          "type": "RGBA",
+          "default_value": "<bpy_float[4], NodeSocketColor.default_value>"
+        },
+        {
+          "name": "_M（非色彩）",
+          "type": "RGBA",
+          "default_value": "<bpy_float[4], NodeSocketColor.default_value>"
+        },
+        {
+          "name": "Emission Color",
+          "type": "RGBA",
+          "default_value": "<bpy_float[4], NodeSocketColor.default_value>"
+        },
+        {
+          "name": "SmoothnessMax",
+          "type": "VALUE",
+          "default_value": "1.0"
+        },
+        {
+          "name": "Aniso_SmoothnessMaxT",
+          "type": "VALUE",
+          "default_value": "0.2197451889514923"
+        },
+        {
+          "name": "Aniso_SmoothnessMaxB",
+          "type": "VALUE",
+          "default_value": "0.668789803981781"
+        },
+        {
+          "name": "MetallicMax",
+          "type": "VALUE",
+          "default_value": "1.0"
+        },
+        {
+          "name": "RemaphalfLambert_center",
+          "type": "VALUE",
+          "default_value": "0.5700000524520874"
+        },
+        {
+          "name": "RemaphalfLambert_sharp",
+          "type": "VALUE",
+          "default_value": "0.18000000715255737"
+        },
+        {
+          "name": "CastShadow_center",
+          "type": "VALUE",
+          "default_value": "0.0"
+        },
+        {
+          "name": "CastShadow_sharp",
+          "type": "VALUE",
+          "default_value": "0.17000000178813934"
+        },
+        {
+          "name": "dirLight_lightColor",
+          "type": "RGBA",
+          "default_value": "<bpy_float[4], NodeSocketColor.default_value>"
+        },
+        {
+          "name": "directOcclusionColor",
+          "type": "RGBA",
+          "default_value": "<bpy_float[4], NodeSocketColor.default_value>"
+        },
+        {
+          "name": "AmbientLightColorTint",
+          "type": "RGBA",
+          "default_value": "<bpy_float[4], NodeSocketColor.default_value>"
+        },
+        {
+          "name": "SpecularColor",
+          "type": "RGBA",
+          "default_value": "<bpy_float[4], NodeSocketColor.default_value>"
+        },
+        {
+          "name": "NormalStrength",
+          "type": "VALUE",
+          "default_value": "1.4458599090576172"
+        },
+        {
+          "name": "fresnelInsideColor",
+          "type": "RGBA",
+          "default_value": "<bpy_float[4], NodeSocketColor.default_value>"
+        },
+        {
+          "name": "fresnelOutsideColor",
+          "type": "RGBA",
+          "default_value": "<bpy_float[4], NodeSocketColor.default_value>"
+        },
+        {
+          "name": "ToonfresnelPow",
+          "type": "VALUE",
+          "default_value": "1.7000000476837158"
+        },
+        {
+          "name": "_ToonfresnelSMO_L",
+          "type": "VALUE",
+          "default_value": "0.0"
+        },
+        {
+          "name": "_ToonfresnelSMO_H",
+          "type": "VALUE",
+          "default_value": "0.5000000596046448"
+        },
+        {
+          "name": "Rim_DirLightAtten",
+          "type": "VALUE",
+          "default_value": "0.9617834091186523"
+        },
+        {
+          "name": "Rim_width_X",
+          "type": "VALUE",
+          "default_value": "0.04184713214635849"
+        },
+        {
+          "name": "Rim_width_Y",
+          "type": "VALUE",
+          "default_value": "0.019108280539512634"
+        },
+        {
+          "name": "Rim_Color",
+          "type": "RGBA",
+          "default_value": "<bpy_float[4], NodeSocketColor.default_value>"
+        },
+        {
+          "name": "Rim_ColorStrength",
+          "type": "VALUE",
+          "default_value": "5.0"
+        },
+        {
+          "name": "GlobalShadowBrightnessAdjustment",
+          "type": "VALUE",
+          "default_value": "-1.7999999523162842"
+        },
+        {
+          "name": "Anisotropic mask",
+          "type": "VALUE",
+          "default_value": "0.0"
+        },
+        {
+          "name": "Alpha",
+          "type": "VALUE",
+          "default_value": "1.0"
+        },
+        {
+          "name": "Layer weight Value",
+          "type": "VALUE",
+          "default_value": "0.0"
+        },
+        {
+          "name": "Layer weight Value Offset",
+          "type": "VALUE",
+          "default_value": "0.0"
+        },
+        {
+          "name": "RS Strength",
+          "type": "VALUE",
+          "default_value": "1.0"
+        },
+        {
+          "name": "RS Multiply Value",
+          "type": "VALUE",
+          "default_value": "1.0"
+        },
+        {
+          "name": "RS ColorTint",
+          "type": "RGBA",
+          "default_value": "<bpy_float[4], NodeSocketColor.default_value>"
+        },
+        {
+          "name": "Color desaturation in shaded areas attenuation",
+          "type": "VALUE",
+          "default_value": "0.8999999761581421"
+        },
+        {
+          "name": "specularFGD Strength",
+          "type": "VALUE",
+          "default_value": "1.0"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Result",
+          "type": "SHADER"
+        },
+        {
+          "name": "Debug",
+          "type": "RGBA"
+        },
+        {
+          "name": "(Viewer)",
+          "type": "SHADER"
+        },
+        {
+          "name": "(Viewer)",
+          "type": "RGBA"
+        }
+      ]
+    },
+    {
+      "name": "图像纹理.001",
+      "type": "TEX_IMAGE",
+      "label": "",
+      "node_tree": null,
+      "image": "T_actor_laevat_cloth_02_D.png",
+      "inputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR",
+          "default_value": "<bpy_float[3], NodeSocketVector.default_value>"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Color",
+          "type": "RGBA"
+        },
+        {
+          "name": "Alpha",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "图像纹理.002",
+      "type": "TEX_IMAGE",
+      "label": "",
+      "node_tree": null,
+      "image": "T_actor_laevat_cloth_02_N.png",
+      "inputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR",
+          "default_value": "<bpy_float[3], NodeSocketVector.default_value>"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Color",
+          "type": "RGBA"
+        },
+        {
+          "name": "Alpha",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "图像纹理.003",
+      "type": "TEX_IMAGE",
+      "label": "",
+      "node_tree": null,
+      "image": "T_actor_laevat_cloth_02_P.png",
+      "inputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR",
+          "default_value": "<bpy_float[3], NodeSocketVector.default_value>"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Color",
+          "type": "RGBA"
+        },
+        {
+          "name": "Alpha",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "UV 贴图",
+      "type": "UVMAP",
+      "label": "",
+      "node_tree": null,
+      "image": null,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "UV",
+          "type": "VECTOR"
+        }
+      ]
+    },
+    {
+      "name": "图像纹理",
+      "type": "TEX_IMAGE",
+      "label": "",
+      "node_tree": null,
+      "image": "T_actor_laevat_cloth_03_M.png",
+      "inputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR",
+          "default_value": "<bpy_float[3], NodeSocketVector.default_value>"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Color",
+          "type": "RGBA"
+        },
+        {
+          "name": "Alpha",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "群组",
+      "type": "GROUP",
+      "label": "",
+      "node_tree": "SmoothStep",
+      "image": null,
+      "inputs": [
+        {
+          "name": "min",
+          "type": "VALUE",
+          "default_value": "0.0"
+        },
+        {
+          "name": "max",
+          "type": "VALUE",
+          "default_value": "1.0"
+        },
+        {
+          "name": "x",
+          "type": "VALUE",
+          "default_value": "0.0"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "输出",
+          "type": "VALUE"
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "from_node": "图像纹理.001",
+      "from_socket": "Color",
+      "to_node": "群组.001",
+      "to_socket": "_D(sRGB)R.G.B"
+    },
+    {
+      "from_node": "图像纹理.001",
+      "from_socket": "Alpha",
+      "to_node": "群组.001",
+      "to_socket": "_D(sRGB).A"
+    },
+    {
+      "from_node": "图像纹理.002",
+      "from_socket": "Color",
+      "to_node": "群组.001",
+      "to_socket": "_N(非色彩Non_Color)"
+    },
+    {
+      "from_node": "图像纹理.003",
+      "from_socket": "Color",
+      "to_node": "群组.001",
+      "to_socket": "_P(非色彩Non_Color)R.G.B"
+    },
+    {
+      "from_node": "图像纹理.003",
+      "from_socket": "Alpha",
+      "to_node": "群组.001",
+      "to_socket": "_P(非色彩Non_Color)A"
+    },
+    {
+      "from_node": "UV 贴图",
+      "from_socket": "UV",
+      "to_node": "图像纹理",
+      "to_socket": "Vector"
+    },
+    {
+      "from_node": "群组",
+      "from_socket": "输出",
+      "to_node": "群组.001",
+      "to_socket": "_M（非色彩）"
+    },
+    {
+      "from_node": "图像纹理",
+      "from_socket": "Color",
+      "to_node": "群组",
+      "to_socket": "x"
+    },
+    {
+      "from_node": "群组.001",
+      "from_socket": "(Viewer)",
+      "to_node": "材质输出",
+      "to_socket": "Surface"
+    }
+  ]
+}
