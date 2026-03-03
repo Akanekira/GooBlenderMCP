@@ -39,9 +39,11 @@ TEXTURE2D(_RampLUT);    SAMPLER(sampler_RampLUT);
 // 对应 GetPreIntegratedFGDGGXAndDisneyDiffuse 内嵌贴图
 TEXTURE2D(_FGD_LUT);    SAMPLER(sampler_FGD_LUT);
 
-// ThinFilm LUT（薄膜/彩虹光颜色随视角变化）
-// 对应 Frame.011 ThinFilmFilter 内嵌贴图
-TEXTURE2D(_ThinFilmLUT); SAMPLER(sampler_ThinFilmLUT);
+// RS 效果贴图（彩虹/光泽视角色变）
+// 对应 Frame.011 ThinFilmFilter 内嵌两张贴图（材质特定）
+// M_actor_pelica_cloth_04: T_actor_yvonne_cloth_05_RS / T_actor_aurora_cloth_03_RS
+TEXTURE2D(_RS_Tex_A); SAMPLER(sampler_RS_Tex_A);   // sRGB
+TEXTURE2D(_RS_Tex_B); SAMPLER(sampler_RS_Tex_B);   // Linear / Extend
 
 // URP 深度贴图（DepthRim 使用）
 TEXTURE2D(_CameraDepthTexture); SAMPLER(sampler_CameraDepthTexture);

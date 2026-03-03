@@ -285,35 +285,32 @@ float4 PBRToonBase_Frag(Varyings input) : SV_Target
     color += sd.emission;
 
     // -------------------------------------------------------------------------
-    // RS Effect（框.048）— 特效叠加（RSModel/RS_Eff 开关控制）
-    // 溯源：docs/analysis/01_shader_arch.md#frame048
+    // Frame.011 — ThinFilmFilter（RS 彩虹/光泽效果）
+    // 溯源：docs/analysis/01_shader_arch.md#frame011
+    // 贴图 A: T_actor_yvonne_cloth_05_RS.png (sRGB)
+    // 贴图 B: T_actor_aurora_cloth_03_RS.png (Linear / Extend)
     // -------------------------------------------------------------------------
     if (_UseRSEff > 0.5)
     {
-        // RS_Index 选择效果类型，RS_Strength 控制强度
-        // RS_MultiplyValue 乘法混合，RS_ColorTint 染色
-        // 具体实现为两级 MIX，此处简化为颜色叠加
-        float3 rsColor = _RS_ColorTint.rgb * _RS_MultiplyValue * _RS_Strength;
-        color += rsColor;
+        // Layer Weight(N, Facing) → Add → Clamp → Combine XYZ → UV
+        float rsFresnel    = saturate(dot(ld.N, ld.V));
+        float rsLayerWeight = saturate(rsFresnel * _LayerWeightValue + _LayerWeightValueOffset);
+        float2 rsUV        = float2(rsLayerWeight, 0.5);
+
+        // 采样两张 RS 贴图，由 RS_Index 选择混合
+        float3 rsColorA = SAMPLE_TEXTURE2D(_RS_Tex_A, sampler_RS_Tex_A, rsUV).rgb;
+        float3 rsColorB = SAMPLE_TEXTURE2D(_RS_Tex_B, sampler_RS_Tex_B, rsUV).rgb;
+        float3 rsMixed  = lerp(rsColorA, rsColorB, _RS_Index);
+
+        // RS ColorTint → RS Strength → _M 彩色遮罩（×2）
+        rsMixed *= _RS_ColorTint.rgb;
+        rsMixed *= _RS_Strength;
+        float3 rsMask = SAMPLE_TEXTURE2D(_M, sampler_M, input.uv).rgb;
+        rsMixed *= rsMask * rsMask;   // _M (彩色) ×2
+
+        // RS Model：最终混合叠加到主色
+        color = lerp(color, color + rsMixed, _RSModel);
     }
-
-    // -------------------------------------------------------------------------
-    // Frame.011 — ThinFilmFilter（薄膜/彩虹光视角色变）
-    // 溯源：docs/analysis/01_shader_arch.md#frame011
-    // -------------------------------------------------------------------------
-    // LAYER_WEIGHT Fresnel 因子 → 驱动 LUT 采样
-    float thinFilmFresnel = saturate(1.0 - ld.NoV); // 视角相关
-
-    // 采样 ThinFilm 彩虹 LUT（U = Fresnel 因子，V = 0.5 固定）
-    float3 thinFilmColor = SAMPLE_TEXTURE2D(_ThinFilmLUT, sampler_ThinFilmLUT,
-                               float2(thinFilmFresnel, 0.5)).rgb;
-
-    // 内/外颜色混合 + RS ColorTint 染色
-    thinFilmColor = lerp(_fresnelInsideColor.rgb, thinFilmColor, thinFilmFresnel);
-    thinFilmColor *= _RS_ColorTint.rgb;
-
-    // 叠加（强度由 LayerWeight 控制）
-    color += thinFilmColor * thinFilmFresnel * _RS_Strength;
 
     // -------------------------------------------------------------------------
     // Simple Transmission（框.069）— 简化透射（概念性）

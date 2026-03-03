@@ -345,21 +345,46 @@ _E.RGB × Emission Color → MIX(ADD 模式) → 叠加到最终输出
 
 ---
 
-### Frame.011 — ThinFilmFilter（薄膜/彩虹光）
+### Frame.011 — ThinFilmFilter（RS 彩虹反射）
 
-**职责**：视角依赖的颜色变化效果（类薄膜干涉 / 布料光泽 / 金属彩虹光）。
+**职责**：视角依赖的彩虹/光泽效果，通过 RS（Rainbow Specular）贴图 + 视角遮罩叠加到最终颜色。与 ToonFresnel（Frame.008）**无共享参数**，两者完全独立。
+
+#### 外部输入
+
+| 参数 | 含义 |
+|------|------|
+| `Layer weight Value` ×2 | Layer Weight blend 系数与 Offset |
+| `RS_Index` | 两张 RS 贴图之间的混合选择索引 |
+| `RS ColorTint` | RS 颜色色调叠加 |
+| `RS Strength` | RS 效果整体强度 |
+| `_M (彩色)` ×2 | Mask 贴图彩色通道，控制 RS 作用区域 |
+| `RS Model` | 最终输出混合模式选择 |
+
+外部几何输入：`N`（法线）、`clampedNdotV`（来自 Init）、`shadowScene`（来自上游）
+
+#### 贴图
+
+| 贴图 | 色彩空间 | 用途 |
+|------|---------|------|
+| `T_actor_yvonne_cloth_05_RS.png` | sRGB | RS 效果贴图 A |
+| `T_actor_aurora_cloth_03_RS.png` | Linear / Extend | RS 效果贴图 B |
+
+#### 计算流程
 
 ```
-LAYER_WEIGHT(blend) → 视角 Fresnel 因子
-    → CLAMP → 驱动多个 MIX 节点
-TEX_IMAGE → 彩虹 LUT（颜色随视角变化）
-fresnelInsideColor + fresnelOutsideColor → 混合
-    → ThinFilm 颜色叠加
+Layer weight Value(×2)
+    → Layer Weight(N, Facing/clampedNdotV)
+    → Add → Clamp(0~1) → Combine XYZ
+    → UV 坐标
+
+UV → T_actor_yvonne_cloth_05_RS.png → Color
+UV → T_actor_aurora_cloth_03_RS.png → Color
+    → Mix(RS_Index)                          ← RS 贴图选择
+    → Multiply(RS ColorTint)
+    → Multiply(RS Strength)
+    → Multiply(_M 彩色)                      ← 区域遮罩 ×2
+    → Mix(RS Model)                          → RS 颜色输出
 ```
-
-**关键参数**：`fresnelInsideColor`、`fresnelOutsideColor`、`ToonfresnelPow`、`_ToonfresnelSMO_L/H`、`Layer weight Value/Offset`、`RS ColorTint`
-
-> **注意**：ThinFilmFilter 与 ToonFresnel(Frame.008) 共享部分参数，两者协同形成最终边缘色效果。Unity 迁移时需理清两者的叠加顺序。
 
 ---
 
@@ -380,7 +405,7 @@ Alpha(_D.A 或参数) → ShaderOutput(着色结果, Alpha)
 
 | 框 | 功能 | 涉及节点 |
 |----|------|---------|
-| `框.048` RS EFF | RS 特效叠加 | MIX ×2 |
+| `框.048` RS EFF | Frame.011 ThinFilmFilter 内部子框，RS 贴图混合输出 | MIX ×2（见 Frame.011 详解） |
 | `框.069` Simple transmission | 简化透射 | SCREENSPACEINFO + CAMERA + FRESNEL + VECT_MATH |
 | `框.051` Emission | 自发光处理 | MIX |
 | `框.039` GlobalShadowBrightnessAdjustment | 全局阴影亮度 | MIX |
@@ -427,7 +452,7 @@ Alpha(_D.A 或参数) → ShaderOutput(着色结果, Alpha)
 | ToonFresnel | LayerWeight + SmoothStep | 🟢 易 |
 | Rim | DepthRim（屏幕空间深度） | 🔴 难（依赖 ScreenspaceInfo） |
 | Emission | 直接叠加 | 🟢 易 |
-| ThinFilmFilter | LayerWeight + LUT 颜色变化 | 🟡 中（LUT 需导出） |
+| ThinFilmFilter | LayerWeight 视角遮罩 + RS 贴图采样 | 🟡 中（RS 贴图需导出） |
 | Alpha | Transparent 混合 | 🟢 易 |
 | Simple transmission | ScreenspaceInfo | 🔴 难（依赖扩展节点） |
 
@@ -436,6 +461,6 @@ Alpha(_D.A 或参数) → ShaderOutput(着色结果, Alpha)
 ## 待补充（Phase 1.4）
 
 - [ ] 提取第三层子群组：`GetinvLenLV`、`GetSmithJointGGXPartLambdaV`、`DV_SmithJointGGXAniso`、`GetSmithJointGGXAnisoPartLambdaV`、`Remap01ToHalfTexelCoord`
-- [ ] 确认 `ThinFilmFilter` 内嵌 TEX_IMAGE 的内容（导出图像）
+- [x] 确认 `ThinFilmFilter` 内嵌贴图内容 → 两张 RS 贴图（T_actor_yvonne_cloth_05_RS / T_actor_aurora_cloth_03_RS），非 LUT
 - [ ] 确认 `DeSaturation` 所属具体 Frame（连线分析）
 - [ ] 分析 `Simple transmission` 详细流程（SCREENSPACEINFO 输出含义）
