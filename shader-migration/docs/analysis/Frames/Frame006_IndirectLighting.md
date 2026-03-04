@@ -23,6 +23,117 @@
 
 ---
 
+## 📖 理论背景
+
+### 1. 渲染方程的直接/间接拆分
+
+实时渲染中，出射辐射度通常拆分为两项分别求解：
+
+```
+Lo(v) = Lo_direct(v) + Lo_indirect(v)
+```
+
+- **直接光照**（Frame.004/005）：对场景中每盏灯逐一积分，以解析解近似。
+- **间接光照**（本 Frame）：来自环境、多次弹射的光——实时中通过预计算 LUT、球谐或环境探针来近似。
+
+Frame.006 的职责正是计算 `Lo_indirect` 并叠加到 `directLighting` 上，组成完整的渲染方程输出。
+
+---
+
+### 2. Split-Sum 近似与预积分 FGD LUT
+
+**问题**：反射方程 `∫ f_r(l,v) Li(l) (N·L) dΩ` 含两个未知量 `Li`（光照）与 `f_r`（BRDF），无法拆分解析求解。
+
+**Karis 2013（UE4 Split-Sum）** 将积分近似分解为：
+
+```
+∫ f_r(l,v) Li(l) (N·L) dΩ  ≈  [ ∫ Li(l) dΩ_lod ]  ×  [ ∫ f_r(l,v) (N·L) dΩ ]
+        ↑ 环境辐射（卷积cubemap）         ↑ FGD 预积分（只依赖 NdotV、roughness、F0）
+```
+
+**FGD 预积分**将 BRDF 积分预先烘焙到一张 2D LUT（NdotV × roughness）中：
+
+```
+FGD(NdotV, α) = ∫ f_GGX(l,v) / F(v,h)  (N·L) dΩ
+             = F0 · A(NdotV,α) + B(NdotV,α)      ← 经典 HDRP 双通道拆分
+```
+
+| LUT 通道 | 含义 | 本 shader 映射 |
+|---------|------|--------------|
+| R | `B_term`（F0=0 积分项） | LUT.R |
+| G | `A_term + B_term`（总反射率 `r`） | LUT.G → `reflectivity` |
+| B | Disney Diffuse FGD | LUT.B → `diffuseFGD` |
+| `specularFGD` | `F0·A + B`（per-channel lerp） | 群组.005 输出 |
+
+> **注意**：本 LUT 的 R/G 通道定义与 HDRP 标准互换（HDRP: R=A_term, G=B_term），迁移时须对应调整。
+
+---
+
+### 3. 多重散射能量补偿（Kulla-Conty 近似）
+
+**问题**：单次散射 GGX 模型存在能量损失——当粗糙度较高时，应被遮蔽光线在微面元之间的**多次弹射**贡献被忽略，导致材质整体偏暗（违反能量守恒）。
+
+**Kulla & Conty 2017** 提出用补偿项 `F_ms` 追加这部分损失的能量：
+
+```
+F_ms = F_avg² · r_avg / (1 - F_avg · (1 - r_avg))
+     ≈ F0 · (1/r - 1)          ← 本 shader 采用的线性近似
+```
+
+本 shader 的实现（`帧.035 energyCompensation`）：
+
+```
+ecFactor        = 1/r − 1                        // 多重散射残余能量比例
+energyCompFactor = 1 + F0 × ecFactor             // > 1.0，用于修正 direct specular
+indirectSpecComp = ecFactor × specularFGD × k    // 补偿到间接高光路径
+```
+
+**物理含义对比**：
+
+| 变量 | 用途 | 路径 |
+|------|------|------|
+| `energyCompFactor` (= 1 + F0·ecFactor) | 乘到 direct specular，修正单次散射损失 | → Reroute.110 ↗ direct specular |
+| `indirectSpecComp` (= ecFactor × specFGD × k) | 以"间接高光"形式追加弹射能量 | → 混合.011 B |
+
+两者是同一物理现象（多次弹射）在两条路径上的**互补表达**，共同还原能量守恒。
+
+> `r ∈ (0,1]`，`1/r ≥ 1`，低反射率材质（r ≈ 0.5）时 ecFactor ≈ 1.0，补偿最强；完全镜面（r → 1）时 ecFactor → 0，无需补偿。
+
+---
+
+### 4. Disney Diffuse FGD 与间接漫反射
+
+**Disney Diffuse BRDF**（Burley 2012）在漫反射模型中引入了视角相关的菲涅耳衰减：
+
+```
+f_disney(l,v) = (1/π) · (1 + (F_D90 - 1)(1-NdotL)⁵) · (1 + (F_D90 - 1)(1-NdotV)⁵)
+F_D90 = 0.5 + 2·roughness·(H·L)²
+```
+
+将其对半球积分后得到 **diffuseFGD**（LUT.B）——代表各向同性环境下漫反射的平均响应。本 Frame 中：
+
+```
+indirectDiffuse = diffuseColor × diffuseFGD × (AmbientTint × AmbientLighting)
+```
+
+相比 Lambertian（常量 `1/π`），Disney Diffuse FGD 在高粗糙度时正确建模了视角依赖的回反射（retroreflection）增强。
+
+---
+
+### 5. 间接光照的简化假设
+
+本 shader 对间接光照作出以下工程简化：
+
+| 物理量 | 理论完整形式 | 本 shader 简化 | 影响 |
+|-------|------------|--------------|------|
+| 间接漫反射 | `∫ Li(Ω) fd(l,v)(N·L) dΩ`（SH / irradiance map） | `AmbientLighting`（全局标量）× 色调 | 无方向性，完全均匀 |
+| 间接镜面 | `∫ Li(Ω) fs(l,v)(N·L) dΩ`（预卷积 cubemap × FGD） | `ecFactor × specularFGD × k`（仅能量补偿项） | 无环境反射颜色贡献 |
+| 能量守恒 | 精确 Kulla-Conty | `1/r − 1` 线性近似 | 中高粗糙度误差 < 5% |
+
+这些简化使 shader 在 Toon 风格渲染中保持可控的视觉结果，并方便美术通过 `specularFGD_Strength` 和 `AmbientLightColorTint` 进行主观调节。
+
+---
+
 ## 🗂️ 节点清单
 
 | 节点名 | 类型 | 标签/功能 | 所属子框 |

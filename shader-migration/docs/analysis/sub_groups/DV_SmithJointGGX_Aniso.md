@@ -44,17 +44,44 @@
 
 ## 📊 计算流程
 
-```
-// 等向性分支（original 输出）
-lambdaV_iso = GetSmithJointGGXPartLambdaV(NdotV, roughness)
-original    = DV_SmithJointGGX.IN(NdotH, Abs_NdotL, lambdaV_iso, roughness)
+```mermaid
+flowchart TD
+    IN_SHARED(["NdotH · Abs_NdotL · clampedNdotV"])
+    IN_ISO(["clampedRoughness"])
+    IN_ANISO(["TdotV · BdotV<br/>TdotH · BdotH · TdotL · BdotL<br/>roughnessT · roughnessB"])
 
-// 各向异性分支（anisotropy 输出）
-lambdaV_aniso = GetSmithJointGGXAnisoPartLambdaV(TdotV, BdotV, NdotV, roughT, roughB)
-anisotropy    = DV_SmithJointGGXAniso(NdotH, Abs_NdotL, lambdaV_aniso,
-                                       TdotH, BdotH, TdotL, BdotL, roughT, roughB)
+    subgraph PATH_ISO["等向性分支（original）"]
+        ISO_LV["GetSmithJointGGXPartLambdaV<br/>= lambdaV_iso"]
+        ISO_DV["DV_SmithJointGGX.IN<br/>= original"]
+        ISO_LV -->|"lambdaV_iso"| ISO_DV
+    end
 
-// 混合：由主群组 "Use anisotropy?" 控制选择 original 或 anisotropy
+    subgraph PATH_ANISO["各向异性分支（anisotropy）"]
+        ANISO_LV["GetSmithJointGGXAnisoPartLambdaV<br/>= lambdaV_aniso"]
+        ANISO_DV["DV_SmithJointGGXAniso<br/>= anisotropy"]
+        ANISO_LV -->|"lambdaV_aniso"| ANISO_DV
+    end
+
+    OUT(["original / anisotropy<br/>→ 主群组 Use anisotropy? 选择"])
+    DEBUG(["DeBug = lambdaV_aniso"])
+
+    IN_SHARED --> ISO_LV
+    IN_ISO --> ISO_LV
+    IN_SHARED --> ISO_DV
+    IN_SHARED --> ANISO_LV
+    IN_ANISO --> ANISO_LV
+    IN_ANISO --> ANISO_DV
+    ANISO_LV -.->|"debug out"| DEBUG
+    ISO_DV --> OUT
+    ANISO_DV --> OUT
+
+    classDef input  fill:#e8f4fd,stroke:#4a90d9
+    classDef output fill:#eafaea,stroke:#4caf50
+    classDef extra  fill:#f5f5f5,stroke:#bbb,color:#888
+    class IN_SHARED,IN_ISO,IN_ANISO input
+    class OUT output
+    class DEBUG extra
+    linkStyle default stroke:#555,stroke-width:1.5px
 ```
 
 ---
@@ -102,7 +129,7 @@ float V_SmithJointGGXAniso(float TdotV, float BdotV, float NdotV,
 ## 📝 备注
 
 - 等向和各向异性两路并行计算，主群组根据 `Use anisotropy?` 开关选择
-- 各向同性路径：`partLambdaV × NdotL`（**无 sqrt**），与 HDRP 标准版（含 sqrt）存在差异
+- ⚠️ 各向同性路径：`partLambdaV × NdotL`（**无 sqrt**），与 HDRP 标准版（含 sqrt）存在差异
 - 各向异性路径：`AnisoPartLambdaV`（**已含 sqrt**，LENGTH 节点），外层直接 × NdotL
 - `DeBug` 输出 = `AnisoPartLambdaV`（各向异性 ΛV 原始值），调试用，Unity 侧忽略
 - `clampedRoughness` = 各向同性粗糙度（外层平方得 a2），`roughnessT/B` = 各向异性分量

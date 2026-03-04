@@ -70,6 +70,57 @@
 
 ---
 
+## 📐 BRDF 理论背景
+
+### Cook-Torrance 高光 BRDF
+
+$$f_{spec} = \frac{D \cdot G \cdot F}{4 \cdot (N \cdot L) \cdot (N \cdot V)}$$
+
+| 项 | 全名 | 物理含义 | 控制效果 |
+|----|------|---------|---------|
+| **D** | Normal Distribution Function | 微表面法线朝向分布 | 高光**形状与大小**（roughness 低→锐利，高→扩散） |
+| **G** | Geometric Attenuation | 微表面几何遮蔽/自遮挡 | 高光**暗角/遮挡衰减**（掠射角时减弱） |
+| **F** | Fresnel Term | 菲涅耳反射率 | 高光**颜色与边缘增强**（掠射角趋近 1，正面趋近 f0） |
+| 分母 `4·NL·NV` | 归一化系数 | 将半球积分化为 BRDF | 能量守恒 |
+
+### DV = D × V 合并优化（实时渲染约定）
+
+HDRP / 本 Shader 将分母提前除入 G，定义**可见性函数 V**：
+
+$$V = \frac{G}{4 \cdot (N \cdot L) \cdot (N \cdot V)}$$
+
+$$\text{DV} = D \times V = \frac{D \cdot G}{4 \cdot (N \cdot L) \cdot (N \cdot V)}$$
+
+因此完整高光项简化为：
+
+$$f_{spec} = F \times DV$$
+
+对应代码中两路高光项：
+
+```cpp
+float3 specTerm      = F * DV_iso;    // 各向同性路径
+float3 specTermAniso = F * DV_aniso;  // 各向异性路径
+```
+
+### 各向同性 vs 各向异性
+
+| 路径 | DV 函数 | 输入粗糙度 | 适用场景 |
+|------|--------|----------|---------|
+| 各向同性（iso） | `DV_SmithJointGGX.IN` | 单一 `roughness` | 标准 PBR 金属/塑料 |
+| 各向异性（aniso） | `DV_SmithJointGGXAniso` | `roughnessT` + `roughnessB` | 拉丝金属、丝绸布料 |
+
+**F 项两路共用**：Fresnel 与微表面朝向无关，`F_Schlick` 只计算一次，等向/各向异性路径共享同一输出。
+
+### Smith 联合遮蔽函数（Smith Joint GGX）
+
+$$\Lambda_V = \sqrt{(1-a^2)\cdot (N\cdot V)^2 + a^2}$$
+
+$$G = \frac{1}{\Lambda_V \cdot \Lambda_L + 1} \quad \Rightarrow \quad V = \frac{G}{4 \cdot NL \cdot NV}$$
+
+> **Blender 实现差异**：`GetSmithJointGGXPartLambdaV` 返回 $\Lambda_V^2$（sqrt 内部值），**无 sqrt**（近似）；而 `lambdaL` 含 sqrt，两侧不对称。各向异性版本 `GetSmithJointGGXAnisoPartLambdaV` 直接返回 `length(αT·TdotV, αB·BdotV, NdotV)`，已含 sqrt。
+
+---
+
 ## 📊 计算流程
 
 ```mermaid

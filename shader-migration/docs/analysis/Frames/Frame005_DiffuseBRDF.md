@@ -175,10 +175,10 @@ directDiffuse = shadowRampColor × diffuseColor × dirLightColor × directOcclus
 
 | 子群组 | 节点名 | 文档状态 | 职责摘要 |
 |--------|--------|----------|---------|
-| `SigmoidSharp` | `群组.004` | ✅ 已有文档 | `1/(1+pow(100000, -3·sharp·(x-center)))`，halfLambert 路径 |
-| `SigmoidSharp` | `群组.006` | ✅ 已有文档 | 同上，CastShadow 路径，参数独立 |
-| `RampSelect` | `群组.011` | ✅ 已有文档 | 5 条 Ramp LUT 选择采样，输出 RampColor + RampAlpha |
-| `directLighting_diffuse` | `群组.019` | ✅ 已有文档 | `shadowRampColor × diffuse × dirLight × AO` |
+| [`SigmoidSharp`](../sub_groups/SigmoidSharp.md) | `群组.004` | ✅ 已有文档 | `1/(1+pow(100000, -3·sharp·(x-center)))`，halfLambert 路径 |
+| [`SigmoidSharp`](../sub_groups/SigmoidSharp.md) | `群组.006` | ✅ 已有文档 | 同上，CastShadow 路径，参数独立 |
+| [`RampSelect`](../sub_groups/RampSelect.md) | `群组.011` | ✅ 已有文档 | 5 条 Ramp LUT 选择采样，输出 RampColor + RampAlpha |
+| [`directLighting_diffuse`](../sub_groups/directLighting_diffuse.md) | `群组.019` | ✅ 已有文档 | `shadowRampColor × diffuse × dirLight × AO` |
 
 > 所有子群组均已独立归档，详见 [sub_groups/](../sub_groups/)。
 

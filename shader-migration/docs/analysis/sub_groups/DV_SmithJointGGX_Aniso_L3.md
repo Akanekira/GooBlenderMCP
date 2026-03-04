@@ -63,7 +63,7 @@
 
 ---
 
-## 子群组 A：GetSmithJointGGetSmithJointGGXPartLambdaV
+## 📌 子群组 A：GetSmithJointGGetSmithJointGGXPartLambdaV
 
 > **Blender 实际名称有重复前缀 bug**（应为 `GetSmithJointGGXPartLambdaV`）
 > 节点数：9 | 帧：`a2`
@@ -98,14 +98,14 @@ partLambdaV = (-NdotV·a2 + NdotV)·NdotV + a2
             = (1-a2)·NdotV² + a2
 ```
 
-> **注意**：输出为 sqrt **内部量**，不含 sqrt，不含 NdotL。
+> ⚠️ **注意**：输出为 sqrt **内部量**，不含 sqrt，不含 NdotL。
 > 与 HDRP `GetSmithJointGGXPartLambdaV` 的关系：
 >   - HDRP 版本：`return sqrt((-NdotV·a2 + NdotV)·NdotV + a2)`（含 sqrt）
 >   - Blender 版本：只返回 sqrt 内部量，外层不做 sqrt（直接 × NdotL）
 
 ---
 
-## 子群组 B：GetSmithJointGGXAnisoPartLambdaV
+## 📌 子群组 B：GetSmithJointGGXAnisoPartLambdaV
 
 > 节点数：6
 
@@ -138,7 +138,7 @@ partLambdaV = (-NdotV·a2 + NdotV)·NdotV + a2
 AnisoPartLambdaV = sqrt((roughT·TdotV)² + (roughB·BdotV)² + NdotV²)
 ```
 
-> **与子群组 A 的关键差异**：
+> ⚠️ **与子群组 A 的关键差异**：
 > - 子群组 A（各向同性）：输出 **不含 sqrt**（外层不做 sqrt）
 > - 子群组 B（各向异性）：输出 **已含 sqrt**（LENGTH 节点）
 > - 外层各向异性路径：直接 `AnisoPartLambdaV × NdotL`（已是 ΛV）
@@ -146,7 +146,7 @@ AnisoPartLambdaV = sqrt((roughT·TdotV)² + (roughB·BdotV)² + NdotV²)
 
 ---
 
-## 子群组 C：DV_SmithJointGGX.IN（各向同性 D×V）
+## 📌 子群组 C：DV_SmithJointGGX.IN（各向同性 D×V）
 
 > 节点数：35 | 帧标签：`s` | `lambdaV` | `lambdaL` | `D` | `G`
 
@@ -196,7 +196,7 @@ s = 1 - NdotH²·(1-a2)    [各向同性 GGX 的关键分母项]
 转接点.002(lambdaL帧)    = NdotV·ΛL
 ```
 
-> **重要**：lambdaL 路径**有 sqrt**（运算.010），但 lambdaV 路径（传入的）**无 sqrt**。
+> ⚠️ **重要**：lambdaL 路径**有 sqrt**（运算.010），但 lambdaV 路径（传入的）**无 sqrt**。
 > 这导致 Smith Joint GGX 分母是非对称近似：
 > ```
 > G_denom = NdotL × [(1-a2)·NdotV²+a2]   +   NdotV × sqrt[(1-a2)·NdotL²+a2]
@@ -255,7 +255,7 @@ DV_ISO = a2 / (2π · s² · max(G_denom, FLT_MIN))
 
 ---
 
-## 子群组 D：DV_SmithJointGGXAniso（各向异性 D×V）
+## 📌 子群组 D：DV_SmithJointGGXAniso（各向异性 D×V）
 
 > 节点数：44 | 帧标签：`a2_Aniso` | `AnisoPartLambdaV` | `lambdaV` | `V` | `s` | `lambdaL` | `D` | `G`
 > **注意**：简单 link 提取会丢失 3 条链接（同名 socket 导致覆盖），需带 input-index 提取
@@ -347,7 +347,7 @@ s_dot = roughB²·TdotH² + roughT²·BdotH² + roughT²·roughB²·NdotH²
 
 ### Frame "D" — 向量打包（含隐藏链接）
 
-> 简单提取时遗漏 2 条 link，需用 input-index 提取才能还原：
+> ⚠️ 简单提取时遗漏 2 条 link，需用 input-index 提取才能还原：
 
 ```
 // 连乘 a2_Aniso 三次（经带索引确认）
@@ -532,5 +532,5 @@ void DV_SmithJointGGX_Aniso_Full(
 
 - [ ] 各向同性路径 `partLambdaV × NdotL`（无 sqrt）是引擎故意的近似优化，还是节点 bug？
   待与 Goo Engine 源码或 HDRP 官方近似版本对照确认。
-- [x] DeBug 输出含义：= `AnisoPartLambdaV`（各向异性 ΛV 原始值），调试用。
-- [x] 第三层子群组全部分析完成（2026-03-04）
+- ✅ ~~DeBug 输出含义：= `AnisoPartLambdaV`（各向异性 ΛV 原始值），调试用。~~
+- ✅ ~~第三层子群组全部分析完成（2026-03-04）~~
