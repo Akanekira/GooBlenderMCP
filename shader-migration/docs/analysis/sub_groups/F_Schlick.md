@@ -1,18 +1,25 @@
 # F_Schlick
 
-> 溯源：`docs/raw_data/F_Schlick_20260227.json` | 节点数：19
+> 溯源：`docs/raw_data/F_Schlick_20260227.json` · 19 节点
 > HLSL 实现：`hlsl/SubGroups/SubGroups.hlsl` — `F_Schlick()` 函数
+
+---
 
 ## 接口
 
-| 方向 | 名称 | 类型 |
-|------|------|------|
-| 输入 | `f0` | Color |
-| 输入 | `f90` | Color |
-| 输入 | `u` | Float |
-| 输出 | `输出` | Color |
+| 📥 输入 | 类型 | 来源 |
+|---------|------|------|
+| `f0` | Color | — |
+| `f90` | Color | — |
+| `u` | Float | — |
 
-## 内部节点
+| 📤 输出 | 类型 | 下游 |
+|---------|------|------|
+| `输出` | Color | — |
+
+---
+
+## 🔗 内部节点
 
 19 个节点（含 REROUTE），核心为 MATH×6 + VECT_MATH×2 的五次方曲线：
 
@@ -22,7 +29,9 @@ f90-f0 ──→ VECT_MATH.001(MULTIPLY × poly)
 f0 + result ──→ VECT_MATH → output
 ```
 
-## 等价公式
+---
+
+## 🧮 等价公式
 
 Schlick Fresnel 近似：
 ```
@@ -39,9 +48,11 @@ t4 = t2 * t2      // MATH.003
 t5 = t4 * t       // MATH.005 (= t4 × t1)
 ```
 
-## HLSL 等价
+---
 
-```hlsl
+## 💻 HLSL 等价
+
+```cpp
 float3 F_Schlick(float3 f0, float3 f90, float u)
 {
     float t = 1.0 - u;
@@ -51,13 +62,23 @@ float3 F_Schlick(float3 f0, float3 f90, float u)
 }
 ```
 
-## 用途
+---
+
+## 📌 用途
 
 计算高光的 Fresnel 响应。参数来源：
 - `f0` = `ComputeFresnel0` 的输出（基础反射率）
 - `f90` = 推测为 `(1,1,1)` 或 `float3(1,1,1)`（掠射角下完全反射）
 - `u` = `LdotH`（来自 `Get_NoH_LoH_ToH_BoH`）
 
-## 备注
+---
+
+## 📝 备注
 
 与 HDRP `F_Schlick(f0, f90, u)` 实现完全相同，可直接复用 HDRP 的公式。
+
+---
+
+## ❓ 待确认
+
+- [ ] 待补充

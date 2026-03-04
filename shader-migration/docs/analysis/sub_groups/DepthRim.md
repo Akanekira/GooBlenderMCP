@@ -1,17 +1,24 @@
 # DepthRim
 
-> 溯源：`docs/raw_data/DepthRim_20260227.json` | 节点数：21
+> 溯源：`docs/raw_data/DepthRim_20260227.json` · 21 节点
 > HLSL 实现：`hlsl/SubGroups/SubGroups.hlsl` — `DepthRim()` 函数
+
+---
 
 ## 接口
 
-| 方向 | 名称 | 类型 |
-|------|------|------|
-| 输入 | `Rim_width_X` | Float |
-| 输入 | `Rim_width_Y` | Float |
-| 输出 | `DepthRim` | Float |
+| 📥 输入 | 类型 | 来源 |
+|---------|------|------|
+| `Rim_width_X` | Float | — |
+| `Rim_width_Y` | Float | — |
 
-## 内部节点（关键）
+| 📤 输出 | 类型 | 下游 |
+|---------|------|------|
+| `DepthRim` | Float | — |
+
+---
+
+## 🔗 内部节点
 
 | 节点 | 类型 | 作用 |
 |------|------|------|
@@ -26,7 +33,9 @@
 | `CLAMP` | CLAMP | 截断 |
 | `MATH.016~031` | MATH ×8 | 数学运算 |
 
-## 逻辑流程
+---
+
+## 📊 逻辑流程
 
 ```
 1. 获取当前像素屏幕坐标 (ScreenspaceInfo)
@@ -37,9 +46,11 @@
 6. 经 MapRange 映射 + Clamp 输出 [0,1] 遮罩
 ```
 
-## HLSL 等价
+---
 
-```hlsl
+## 💻 HLSL 等价
+
+```cpp
 // 需要 Unity _CameraDepthTexture
 float DepthRim(float2 screenUV, float3 normalVS, float rimWidthX, float rimWidthY)
 {
@@ -57,13 +68,17 @@ float DepthRim(float2 screenUV, float3 normalVS, float rimWidthX, float rimWidth
 }
 ```
 
-## 关键待确认项
+---
+
+## ❓ 待确认
 
 - [ ] **`ScreenspaceInfo`（Goo Engine 特有节点）**：具体输出字段不明（推测为屏幕 UV + 深度），需查阅 Goo Engine 源码确认
 - [ ] 偏移量的具体计算（是否乘以屏幕分辨率缩放系数）
 - [ ] MapRange 的 from/to 范围参数值
 
-## 备注
+---
+
+## 📝 备注
 
 这是整个 Shader 中最难移植的部分，因为依赖 Goo Engine 特有的屏幕空间节点。
 Unity 中需要：

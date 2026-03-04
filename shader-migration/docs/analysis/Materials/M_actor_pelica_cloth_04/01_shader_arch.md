@@ -210,6 +210,8 @@ NoL_Unsaturate
 
 调用子群组：`DV_SmithJointGGX_Aniso`、`F_Schlick`
 
+> 详细节点分析（19节点、双路并行、Flag矩阵）：见 [Frame004_SpecularBRDF.md](Frame004_SpecularBRDF.md)
+
 ---
 
 ### Frame.006 — IndirectLighting（间接光照）
@@ -258,7 +260,7 @@ diffuseColor × diffuseFGD
 
 #### 等价 HLSL
 
-```hlsl
+```cpp
 // Stage 1: FGD LUT 查询
 float3 specularFGD; float diffuseFGD; float reflectivity;
 GetPreIntegratedFGD(clampedNdotV, perceptualRoughness, fresnel0,

@@ -192,6 +192,8 @@ print(f'连线数: {len(data.get("links", []))}')
 
 输出路径：`shader-migration/docs/analysis/<MATERIAL_SAFE_NAME>/01_shader_arch.md`
 
+> 遵循 `OUTPUT_REFERENCE.md §G` 视觉格式规范：每个 Frame `###` 模块前加 `---` 分割线，模块标题后附 `📥📤🔗` blockquote 摘要。
+
 文档模板（参照已有的 `PBRToonBase/01_shader_arch.md`）：
 
 ```markdown
@@ -222,9 +224,16 @@ print(f'连线数: {len(data.get("links", []))}')
 
 ## 各模块详解
 
+---
+
 ### Frame.xxx — 模块名
 
 **职责**：...
+
+> 📥 **输入**：变量A（来源 Frame.yyy）· 变量B（贴图）
+> 📤 **输出**：结果变量 → Frame.zzz
+> 🔗 **子群组**：`SubGroupA`、`SubGroupB`
+
 调用子群组：...
 
 ## 子群组 ↔ Frame 归属总表
@@ -248,6 +257,8 @@ print(f'连线数: {len(data.get("links", []))}')
 - **已有的子群组**：不新建文档，在架构文档中直接引用路径
 - **新出现的子群组**：在 `sub_groups/` 下新建 `<SubGroupName>.md`
 
+> 遵循 `OUTPUT_REFERENCE.md §G` 视觉格式规范：章节标题使用图标（`📊🧮💻📝❓`），每个 `##` 章节之间加 `---` 分割线，接口表使用 `📥📤` 列头。
+
 新子群组文档模板：
 
 ```markdown
@@ -256,30 +267,43 @@ print(f'连线数: {len(data.get("links", []))}')
 > 溯源：`docs/raw_data/<SubGroupName>_<TODAY>.json` | 节点数：N
 > HLSL 实现：`hlsl/<MATERIAL_SAFE_NAME>/SubGroups/SubGroups.hlsl` — `<FunctionName>()` 函数
 
+---
+
 ## 接口
 
-| 方向 | 名称 | 类型 |
-|------|------|------|
-| 输入 | ... | Float/Color/Vector |
-| 输出 | ... | Float/Color/Vector |
+| 📥 输入 | 类型 | 来源 |
+|---------|------|------|
+| ...     | ...  | ...  |
 
-## 内部节点
+| 📤 输出 | 类型 | 下游 |
+|---------|------|------|
+| ...     | ...  | ...  |
+
+---
+
+## 🔗 内部节点（第三层）
 
 | 节点 | 作用 |
 |------|------|
-| ... | ... |
+| ...  | ...  |
 
-## 计算流程
+---
+
+## 📊 计算流程
 
 ` ``
 step1 → step2 → output
 ` ``
 
-## 等价公式
+---
+
+## 🧮 等价公式
 
 数学公式（LaTeX 或文字描述）
 
-## HLSL 等价
+---
+
+## 💻 HLSL 等价
 
 ` ``hlsl
 float FunctionName(float x, ...)
@@ -288,12 +312,16 @@ float FunctionName(float x, ...)
 }
 ` ``
 
-## 备注
+---
 
-- 与哪个 HDRP/URP 标准函数对应
-- 注意事项
+## 📝 备注
 
-## 待确认
+- ⚠️ 与标准实现的差异...
+- 对应 HDRP/URP 标准函数...
+
+---
+
+## ❓ 待确认
 
 - [ ] 待补充项
 ```

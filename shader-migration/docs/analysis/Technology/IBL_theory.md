@@ -2,11 +2,11 @@
 
 > 溯源：基于 `GetPreIntegratedFGDGGXAndDisneyDiffuse` 子群组深度分析整理
 > 适用材质：`PBRToonBase` 系列（Arknights: Endfield 风格）
-> 相关文件：`sub_groups/GetPreIntegratedFGDGGXAndDisneyDiffuse.md`、`01_shader_arch.md § Frame.011`
+> 相关文件：`../sub_groups/GetPreIntegratedFGDGGXAndDisneyDiffuse.md`、`../Materials/M_actor_pelica_cloth_04/01_shader_arch.md § Frame.011`
 
 ---
 
-## 1. 问题的起点：渲染方程
+## 🧮 1. 问题的起点：渲染方程
 
 IBL 要解决的是**来自整个环境的间接光照**如何用于实时渲染：
 
@@ -25,7 +25,7 @@ Lo(ωo) = ∫_Ω  fr(ωi, ωo) · Li(ωi) · (n·ωi)  dωi
 
 ---
 
-## 2. Split Sum 近似（Epic Games, SIGGRAPH 2013）
+## 🧮 2. Split Sum 近似（Epic Games, SIGGRAPH 2013）
 
 将镜面积分拆成两个可独立预计算的部分之积：
 
@@ -41,7 +41,7 @@ Lo(ωo) = ∫_Ω  fr(ωi, ωo) · Li(ωi) · (n·ωi)  dωi
 
 ---
 
-## 3. 第一项：预过滤环境贴图（Prefiltered Envmap）
+## 📌 3. 第一项：预过滤环境贴图（Prefiltered Envmap）
 
 **原理**：光滑材质只需采样反射方向附近一点；粗糙材质需要对整个半球平均。离线将环境 Cubemap 按不同粗糙度预积分存入多个 Mip 级别。
 
@@ -54,7 +54,7 @@ Mip N  → roughness = 1.0  → 完全漫射模糊
 
 实时采样：
 
-```hlsl
+```cpp
 float3 R = reflect(-V, N);                          // 镜面反射方向
 float  mip = roughness * MAX_REFLECTION_LOD;
 float3 envColor = SAMPLE_TEXTURECUBE_LOD(unity_SpecCube0, sampler, R, mip);
@@ -62,7 +62,7 @@ float3 envColor = SAMPLE_TEXTURECUBE_LOD(unity_SpecCube0, sampler, R, mip);
 
 ---
 
-## 4. 第二项：FGD 积分 LUT
+## 📌 4. 第二项：FGD 积分 LUT
 
 ### 4.1 数学推导
 
@@ -127,7 +127,7 @@ lerp(LUT.R, LUT.G, f0)
 
 避免双线性插值时采样到纹理边界外：
 
-```hlsl
+```cpp
 float2 RemapToHalfTexel(float2 uv, float texSize)
 {
     return uv * ((texSize - 1.0) / texSize) + (0.5 / texSize);
@@ -137,13 +137,13 @@ float2 RemapToHalfTexel(float2 uv, float texSize)
 
 ---
 
-## 5. 漫射 IBL：两种实现方案
+## 📌 5. 漫射 IBL：两种实现方案
 
 漫射 BRDF 近似均匀半球分布，`Li` 加权积分即可预计算。
 
 ### 5.1 球谐函数（SH，Spherical Harmonics）
 
-```hlsl
+```cpp
 float3 L_diffuse = SampleSH(N);  // Unity 内置，9个L0~L2阶系数
 ```
 
@@ -152,7 +152,7 @@ Unity 的 `unity_SHAr/SHAg/SHAb/SHBr...` 即此。
 
 ### 5.2 半球双色近似（本项目用法）
 
-```hlsl
+```cpp
 float  hemisphereT     = normalWS.y * 0.5 + 0.5;
 float3 ambientSphereColor = lerp(unity_AmbientGround.rgb, unity_AmbientSky.rgb, hemisphereT);
 ```
@@ -170,7 +170,7 @@ AmbientLightColorTint × SHADERINFO.AmbientLighting
 
 ---
 
-## 6. Disney Diffuse FGD 修正（LUT.B）
+## 📌 6. Disney Diffuse FGD 修正（LUT.B）
 
 **问题**：Lambert 漫射假设光线折射进入材质后 100% 散射出去，但实际上折射本身也受 Fresnel 影响。
 
@@ -183,7 +183,7 @@ indirectDiffuse = albedo · (1 - metallic) · diffuseFGD · ambientColor
 
 ---
 
-## 7. 多重散射能量守恒（Multi-Scatter / Kulla-Conty）
+## 📌 7. 多重散射能量守恒（Multi-Scatter / Kulla-Conty）
 
 ### 7.1 问题
 
@@ -206,7 +206,7 @@ ecFactor     = 1 / reflectivity - 1        // 能量补偿系数
 
 ### 7.3 在 Shader 中的应用
 
-```hlsl
+```cpp
 // Blender 原始（Frame.011）
 float3 indirectSpecComp = ecFactor * (specularFGD * specularFGD_Strength);
 // 意义：把丢失的能量按 specularFGD 的分布加回来
@@ -222,7 +222,7 @@ float3 indirectSpecular      = indirectSpecular_base + indirectSpecular_ms;
 
 ---
 
-## 8. 完整 IBL 管线总览
+## 📊 8. 完整 IBL 管线总览
 
 ```
 离线预计算
@@ -252,7 +252,7 @@ float3 indirectSpecular      = indirectSpecular_base + indirectSpecular_ms;
 
 ---
 
-## 9. Unity 迁移对照
+## 🎮 9. Unity 迁移对照
 
 | 模块 | Goo Engine（Blender） | Unity URP/Built-in |
 |------|----------------------|-------------------|
@@ -263,9 +263,11 @@ float3 indirectSpecular      = indirectSpecular_base + indirectSpecular_ms;
 | reflectivity | 直接读 LUT.G | HDRP 内加 `s.r + s.g` |
 | specularFGD | `lerp(LUT.R, LUT.G, f0)` | `f0 * s.r + s.g`（HDRP） |
 
-### Unity HLSL 参考实现
+> ---
 
-```hlsl
+### 💻 Unity HLSL 参考实现
+
+```cpp
 TEXTURE2D(_fgdLUT);
 SAMPLER(linear_clamp_sampler);
 
@@ -313,7 +315,7 @@ float3 indirectSpec  = envColor * specFGD / max(reflectivity, 1e-4);
 
 ---
 
-## 10. 常见陷阱
+## 📝 10. 常见陷阱
 
 | 问题 | 错误写法 | 正确写法 |
 |------|---------|---------|

@@ -1,20 +1,27 @@
 # Rim_Color
 
-> 溯源：`docs/raw_data/Rim_Color_20260227.json` | 节点数：11
+> 溯源：`docs/raw_data/Rim_Color_20260227.json` · 11 节点
 > HLSL 实现：`hlsl/SubGroups/SubGroups.hlsl` — `Rim_Color()` 函数
+
+---
 
 ## 接口
 
-| 方向 | 名称 | 类型 |
-|------|------|------|
-| 输入 | `albedo` | Color |
-| 输入 | `dirLight_lightColor` | Color |
-| 输入 | `Rim_Color` | Color |
-| 输入 | `Rim_ColorStrength` | Float |
-| 输入 | `LoV` | Float |
-| 输出 | `结果` | Color |
+| 📥 输入 | 类型 | 来源 |
+|---------|------|------|
+| `albedo` | Color | — |
+| `dirLight_lightColor` | Color | — |
+| `Rim_Color` | Color | — |
+| `Rim_ColorStrength` | Float | — |
+| `LoV` | Float | — |
 
-## 内部节点
+| 📤 输出 | 类型 | 下游 |
+|---------|------|------|
+| `结果` | Color | — |
+
+---
+
+## 🔗 内部节点
 
 ```
 GROUP_INPUT
@@ -24,7 +31,9 @@ GROUP_INPUT
     Rim_ColorStrength → MIX.017
 ```
 
-## 等价公式
+---
+
+## 🧮 等价公式
 
 ```
 // LoV 衰减（LoV = dot(L, V)，正面受光时 Rim 减弱）
@@ -40,9 +49,11 @@ colorWithAlbedo = lerp(rimColorMixed, albedo, ...)
 result = colorWithAlbedo * Rim_ColorStrength
 ```
 
-## HLSL 等价
+---
 
-```hlsl
+## 💻 HLSL 等价
+
+```cpp
 float3 RimColor(
     float3 albedo,
     float3 dirLightColor,
@@ -63,8 +74,16 @@ float3 RimColor(
 }
 ```
 
-## 备注
+---
+
+## 📝 备注
 
 - `LoV` = `dot(L, V)`，用于区分光源方向与视角方向的关系，防止 Rim 在光照正面过亮
 - 该 Rim 颜色会与 `DepthRim × FresnelAttenuation × VerticalAttenuation` 组成的遮罩相乘
 - 具体 MIX 系数需从节点默认值确认（此版本为逻辑推断）
+
+---
+
+## ❓ 待确认
+
+- [ ] 待补充

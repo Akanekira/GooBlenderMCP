@@ -1,6 +1,6 @@
 # OutlineColor
 
-> 溯源：`docs/raw_data/OutlineColor_20260301.json` | 节点数：7 | 连线数：8
+> 溯源：`docs/raw_data/OutlineColor_20260301.json` · 7 节点 | 连线数：8
 > HLSL 实现：`hlsl/M_actor_laevat_hair_01/SubGroups/SubGroups.hlsl` — `OutlineColor()` 函数
 > 首次出现材质：`M_actor_laevat_hair_01`（PBRToonBaseHair）
 > 归属 Frame：Frame.012（Rim & Outline）
@@ -9,15 +9,18 @@
 
 ## 接口
 
-| 方向 | 名称 | 类型 | 说明 |
-|------|------|------|------|
-| 输入 | `Fresnel attenuation` | VALUE | 边缘 Fresnel 衰减值（来自 FresnelAttenuation 子群组） |
-| 输入 | `Vertical attenuation` | VALUE | 垂直方向衰减值（来自 VerticalAttenuation 子群组） |
-| 输出 | `OutlineColor` | RGBA | 描边颜色遮罩（实际为灰度 float 广播至 RGBA） |
+| 📥 输入 | 类型 | 说明 |
+|---------|------|------|
+| `Fresnel attenuation` | VALUE | 边缘 Fresnel 衰减值（来自 FresnelAttenuation 子群组） |
+| `Vertical attenuation` | VALUE | 垂直方向衰减值（来自 VerticalAttenuation 子群组） |
+
+| 📤 输出 | 类型 | 说明 |
+|---------|------|------|
+| `OutlineColor` | RGBA | 描边颜色遮罩（实际为灰度 float 广播至 RGBA） |
 
 ---
 
-## 内部节点
+## 🔗 内部节点
 
 | 节点名 | 类型 | 操作 | 说明 |
 |--------|------|------|------|
@@ -40,7 +43,7 @@
 
 ---
 
-## 计算流程
+## 📊 计算流程
 
 ```
 输入: fresnel_atten, vertical_atten
@@ -58,7 +61,7 @@
 
 ---
 
-## 等价公式
+## 🧮 等价公式
 
 ```
 // 线性 ColorRamp（两停：stop0=1, stop1=0 at threshold）
@@ -77,9 +80,9 @@ OutlineColor = (crampA × fresnel_atten) × crampB
 
 ---
 
-## HLSL 等价
+## 💻 HLSL 等价
 
-```hlsl
+```cpp
 // --- OutlineColor ---
 // 溯源：docs/analysis/sub_groups/OutlineColor.md
 // 功能：基于 Fresnel 衰减和垂直方向衰减生成描边颜色遮罩
@@ -105,7 +108,7 @@ float3 OutlineColor(float fresnel_attenuation, float vertical_attenuation)
 
 ---
 
-## 备注
+## 📝 备注
 
 - **无对应 URP/HDRP 标准函数**：此子群组是 GooEngine Arknights: Endfield 专属描边逻辑
 - 输出为**灰度遮罩**（RGBA 中 R=G=B=mask），配合 Rim_Color 等实际颜色参数在上层合成
@@ -113,7 +116,9 @@ float3 OutlineColor(float fresnel_attenuation, float vertical_attenuation)
 - 该子群组 **不直接生成颜色**，只生成控制描边可见区域的浮点遮罩
 - 与标准 outline 方案（反法线描边、外扩顶点）不同，本方案为屏幕空间 Rim 近似，不依赖几何扩展
 
-## 待确认
+---
+
+## ❓ 待确认
 
 - [ ] 上层如何将 OutlineColor 遮罩与实际描边颜色（`_OutlineColor` 参数）组合
 - [ ] 两个 ColorRamp 的插值方式是否真的为 LINEAR（还是 EASE/CONSTANT）

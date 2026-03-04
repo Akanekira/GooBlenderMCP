@@ -50,7 +50,7 @@ T_actor_laevat_cloth_03_M.png
 ```
 
 等价 HLSL：
-```hlsl
+```cpp
 float3 mTex = SAMPLE_TEXTURE2D(_M, sampler_M, uv_M).rgb;
 float3 mMask = SmoothStep(0.0, 1.0, mTex);  // 输入到 _M 槽
 ```

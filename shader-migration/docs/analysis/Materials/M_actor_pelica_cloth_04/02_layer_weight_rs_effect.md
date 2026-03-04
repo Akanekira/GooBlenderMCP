@@ -113,7 +113,7 @@ Result = lerp(混合.033, 混合.038, RS_Model)
 
 **Blender LIGHTEN 混合模式公式**：
 
-```hlsl
+```cpp
 // blend_type = LIGHTEN，逐通道取最大值
 float3 brightest = max(A, B);                  // 逐通道较亮值
 float3 result    = lerp(A, brightest, factor); // factor = RS Multiply Value
@@ -128,7 +128,7 @@ float3 result    = lerp(A, brightest, factor); // factor = RS Multiply Value
 
 代入本 Shader 变量：
 
-```hlsl
+```cpp
 float3 A      = accumulated_color;        // 混合.026 输出（Emission 之后的完整颜色）
 float3 B      = rs_effect_color;          // 混合.037 输出（RS 特效颜色，模式由 RS_Model 选择）
 float  factor = _RS_MultiplyValue;        // Group Input "RS Multiply Value"
@@ -139,7 +139,7 @@ float3 lighten_result   = lerp(A, brightest, factor);
 
 ### 3.4 混合.030 — RS 总开关（MIX）
 
-```hlsl
+```cpp
 // Factor = Use RS_Eff? (boolean 0 or 1)
 float3 final_color = lerp(
     accumulated_color,   // A = Reroute.018（未经 RS 处理的原始累积色）
@@ -152,7 +152,7 @@ float3 final_color = lerp(
 
 ## 4. 等价 HLSL（完整 RS Effect 段落）
 
-```hlsl
+```cpp
 // ——— 帧.048 RS EFF ———
 // 1. RS 模式选择（混合.037）
 float3 rsEffectColor = lerp(rs_eff_modeA, rs_eff_modeB, _RS_Model);

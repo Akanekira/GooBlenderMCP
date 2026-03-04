@@ -13,5 +13,9 @@
       "Glob",
       "Grep"
     ]
-  }
+  },
+  "enabledMcpjsonServers": [
+    "blender"
+  ],
+  "enableAllProjectMcpServers": true
 }

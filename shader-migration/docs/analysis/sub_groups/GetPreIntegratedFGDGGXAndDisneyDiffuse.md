@@ -1,20 +1,27 @@
 # GetPreIntegratedFGDGGXAndDisneyDiffuse
 
-> 溯源：`docs/raw_data/GetPreIntegratedFGDGGXAndDisneyDiffuse_20260227.json` | 节点数：21
+> 溯源：`docs/raw_data/GetPreIntegratedFGDGGXAndDisneyDiffuse_20260227.json` · 21 节点
 > HLSL 实现：`hlsl/SubGroups/SubGroups.hlsl` — `GetPreIntegratedFGDGGXAndDisneyDiffuse()` 函数
+
+---
 
 ## 接口
 
-| 方向 | 名称 | 类型 |
-|------|------|------|
-| 输入 | `clampedNdotV` | Float |
-| 输入 | `perceptualRoughness` | Float |
-| 输入 | `fresnel0` | Color |
-| 输出 | `specularFGD` | Color |
-| 输出 | `diffuseFGD` | Float |
-| 输出 | `reflectivity` | Float |
+| 📥 输入 | 类型 | 来源 |
+|---------|------|------|
+| `clampedNdotV` | Float | — |
+| `perceptualRoughness` | Float | — |
+| `fresnel0` | Color | — |
 
-## 内部节点
+| 📤 输出 | 类型 | 下游 |
+|---------|------|------|
+| `specularFGD` | Color | — |
+| `diffuseFGD` | Float | — |
+| `reflectivity` | Float | — |
+
+---
+
+## 🔗 内部节点
 
 | 节点 | 作用 |
 |------|------|
@@ -31,7 +38,9 @@
 | `运算` | 对 LUT.B 做变换后输出 diffuseFGD（类型待确认） |
 | `转接点` ×3 | 信号路由（无计算） |
 
-## 完整数据流（基于 JSON links 精确追踪，29 条链接）
+---
+
+## 📊 完整数据流（基于 JSON links 精确追踪，29 条链接）
 
 ```
 ─── UV 构建 ────────────────────────────────────────────────────────
@@ -61,7 +70,9 @@ fresnel0 → SeparateXYZ.002
 > ¹ `运算.001`：操作类型未知（JSON 中无 operation 字段），可能为 `SQRT(NdotV)` 以改善 LUT 边缘采样精度，或直通。
 > ² `运算`：操作类型未知，可能为直通（Multiply×1）或 Clamp。
 
-## LUT 通道布局（关键修正）
+---
+
+## 📌 LUT 通道布局（关键修正）
 
 本实现 LUT 采用**重打包布局**，与 HDRP 标准不同：
 
@@ -76,7 +87,9 @@ fresnel0 → SeparateXYZ.002
 
 这是用 Mix lerp 替代 fma 的预计算优化：`reflectivity = LUT.G = A+B` 直接可读，无需 shader 内加法。
 
-## 采样逻辑
+---
+
+## 📌 采样逻辑
 
 ```
 // 1. 构建 LUT UV（U 可能经过 sqrt 变换）
@@ -96,9 +109,11 @@ diffuseFGD  = sample.B                              // 可能有 运算 变换
 reflectivity = sample.G                             // = A + B，直接读取！
 ```
 
-## HLSL 等价（修正版）
+---
 
-```hlsl
+## 💻 HLSL 等价（修正版）
+
+```cpp
 TEXTURE2D(_PreIntegratedFGD);
 SAMPLER(sampler_PreIntegratedFGD);
 
@@ -128,14 +143,18 @@ void GetPreIntegratedFGD(
 // 若复用官方 asset，需将 specularFGD 改为 fresnel0 * s.r + s.g
 ```
 
-## 备注
+---
+
+## 📝 备注
 
 - **reflectivity 直接来自 LUT.G**：原有分析"`reflectivity = sample.x + sample.y`"有误，实际节点直连 `分离XYZ.001.Y → 组输出.reflectivity`，无加法节点
 - FGD LUT 是**预计算纹理**，需要从 Blender 内嵌图像导出（或按上表通道约定重新烘焙）
 - `Remap01ToHalfTexelCoord` 是第三层子群组，分辨率参数推测 512
 - **Unity 迁移**：若用 HDRP `PreIntegratedFGD_GGXDisneyDiffuse.asset`，LUT 通道顺序不同，需改为标准写法 `f0 * s.r + s.g`；reflectivity 需改为 `s.r + s.g`
 
-## 待确认
+---
+
+## ❓ 待确认
 
 - [ ] `运算.001` 的具体操作（SQRT / 直通 / 其他），影响 U 坐标精度
 - [ ] `运算` 的具体操作（影响 diffuseFGD 输出值）

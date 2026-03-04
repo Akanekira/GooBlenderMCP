@@ -5,7 +5,7 @@
 > 提取日期：2026-03-02
 > 相关文件：`hlsl/M_actor_laevat_cloth_05/PBRToonBase_Cloth05.hlsl` | `hlsl/M_actor_laevat_cloth_05/SubGroups/SubGroups.hlsl`
 >
-> **本文为差量文档**：群组内部 Frame 架构与 pelica_cloth_04 完全一致，详细架构见 `docs/analysis/01_shader_arch.md`。
+> **本文为差量文档**：群组内部 Frame 架构与 pelica_cloth_04 完全一致，详细架构见 `docs/analysis/Materials/M_actor_pelica_cloth_04/01_shader_arch.md`。
 > 本文仅记录 laevat_cloth_05 的**特有差异**及 `_M` 贴图激活的影响分析。
 
 ---
@@ -42,7 +42,7 @@
 ```
 
 等价 HLSL：
-```hlsl
+```cpp
 float2 uvM = input.uv;  // UV 贴图节点（默认 UV0，待确认是否 UV2）
 float3 mTex  = SAMPLE_TEXTURE2D(_M, sampler_M, uvM).rgb;
 float3 mMask = SmoothStep(0.0, 1.0, mTex);
@@ -51,7 +51,7 @@ float3 mMask = SmoothStep(0.0, 1.0, mTex);
 
 **`_M` 在群组内的作用推断**：
 
-根据 PBRToonBase 群组架构（`docs/analysis/01_shader_arch.md`），`_M（非色彩）`
+根据 PBRToonBase 群组架构（`docs/analysis/Materials/M_actor_pelica_cloth_04/01_shader_arch.md`），`_M（非色彩）`
 在群组内最可能连接到以下位置之一：
 
 | 可能位置 | 依据 |
@@ -71,7 +71,7 @@ pelica_cloth_04 中 `_E` 接入 `_E（非色彩）` 插槽，驱动 Frame.010 Em
 laevat_cloth_05 中该槽未连线，Frame.010 接收默认值（黑色），**Emission 效果不启用**。
 
 等价 HLSL 变化：
-```hlsl
+```cpp
 // pelica_cloth_04:
 s.emission = SAMPLE_TEXTURE2D(_E, sampler_E, input.uv).rgb;
 

@@ -1,18 +1,25 @@
 # RampSelect
 
-> 溯源：`docs/raw_data/RampSelect_20260227.json` | 节点数：41
+> 溯源：`docs/raw_data/RampSelect_20260227.json` · 41 节点
 > HLSL 实现：`hlsl/SubGroups/SubGroups.hlsl` — `RampSelect()` 函数
+
+---
 
 ## 接口
 
-| 方向 | 名称 | 类型 |
-|------|------|------|
-| 输入 | `RampUV` | Float |
-| 输入 | `RampIndex` | Float |
-| 输出 | `RampColor` | Color |
-| 输出 | `RampAlpha` | Float |
+| 📥 输入 | 类型 | 来源 |
+|---------|------|------|
+| `RampUV` | Float | — |
+| `RampIndex` | Float | — |
 
-## 内部节点结构
+| 📤 输出 | 类型 | 下游 |
+|---------|------|------|
+| `RampColor` | Color | — |
+| `RampAlpha` | Float | — |
+
+---
+
+## 🔗 内部节点结构
 
 ```
 GROUP_INPUT.RampUV ──→ 5 × TEX_IMAGE（5条色带贴图）
@@ -32,7 +39,9 @@ TEX_IMAGE × 5 .Color/Alpha → MIX 混合链 → GROUP_OUTPUT
 
 > **注**：5 张贴图均为**内嵌贴图**（打包在 .blend 中），图像名称未在 JSON 中暴露。实际文件可能是 `TPLK_*_RD.png` 系列的多张 Ramp。
 
-## 混合逻辑（RampIndex 选择）
+---
+
+## 📌 混合逻辑（RampIndex 选择）
 
 ```
 // RampIndex 范围 [0, 4]，对应 5 条色带
@@ -48,9 +57,11 @@ color_n = tex2D(ramp_n, float2(RampUV, 0.5))
 RampColor = lerp(color_0, lerp(color_1, lerp(color_2, lerp(color_3, color_4, w4), w3), w2), w1)
 ```
 
-## HLSL 等价
+---
 
-```hlsl
+## 💻 HLSL 等价
+
+```cpp
 // Unity 侧建议：将5条 Ramp 合并为一张竖向 LUT
 // 每行对应一条 Ramp，用 RampIndex/4 作为 V 坐标
 TEXTURE2D(_RampLUT);
@@ -66,9 +77,17 @@ void RampSelect(float rampUV, float rampIndex,
 }
 ```
 
-## 备注
+---
+
+## 📝 备注
 
 - RampUV 输入来源：`_P.A`（材质参数贴图 Alpha 通道）
 - RampIndex 来源：材质参数 `RampIndex`（Float 控制器，决定用哪条色带表现阴影）
 - 实际色带贴图内容需从 Blender 导出确认（5 条对应不同材质类型：皮肤/布料/金属/发丝等）
 - **Unity 迁移建议**：将 5 张 1D Ramp 合并为 5×N 的 2D LUT 贴图，减少纹理采样次数
+
+---
+
+## ❓ 待确认
+
+- [ ] 待补充

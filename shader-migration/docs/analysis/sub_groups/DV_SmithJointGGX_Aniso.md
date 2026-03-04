@@ -1,29 +1,37 @@
 # DV_SmithJointGGX_Aniso
 
-> 溯源：`docs/raw_data/DV_SmithJointGGX_Aniso_20260227.json` | 节点数：22
+> 溯源：`docs/raw_data/DV_SmithJointGGX_Aniso_20260227.json` · 22 节点
 > HLSL 实现：`hlsl/SubGroups/SubGroups.hlsl` — `DV_SmithJointGGX_Aniso()` 函数
+> 第三层详细分析：`docs/analysis/sub_groups/DV_SmithJointGGX_Aniso_L3.md`（2026-03-04）
+
+---
 
 ## 接口
 
-| 方向 | 名称 | 类型 |
-|------|------|------|
-| 输入 | `NdotH` | Float |
-| 输入 | `Abs_NdotL` | Float |
-| 输入 | `clampedNdotV` | Float |
-| 输入 | `clampedRoughness` | Float |
-| 输入 | `TdotH` | Float |
-| 输入 | `BdotH` | Float |
-| 输入 | `TdotL` | Float |
-| 输入 | `BdotL` | Float |
-| 输入 | `TdotV` | Float |
-| 输入 | `BdotV` | Float |
-| 输入 | `roughnessT` | Float |
-| 输入 | `roughnessB` | Float |
-| 输出 | `original` | Float |
-| 输出 | `anisotropy` | Float |
-| 输出 | `DeBug` | Float |
+| 📥 输入 | 类型 | 来源 |
+|---------|------|------|
+| `NdotH` | Float | — |
+| `Abs_NdotL` | Float | — |
+| `clampedNdotV` | Float | — |
+| `clampedRoughness` | Float | — |
+| `TdotH` | Float | — |
+| `BdotH` | Float | — |
+| `TdotL` | Float | — |
+| `BdotL` | Float | — |
+| `TdotV` | Float | — |
+| `BdotV` | Float | — |
+| `roughnessT` | Float | — |
+| `roughnessB` | Float | — |
 
-## 内部节点（第三层子群组）
+| 📤 输出 | 类型 | 下游 |
+|---------|------|------|
+| `original` | Float | — |
+| `anisotropy` | Float | — |
+| `DeBug` | Float | — |
+
+---
+
+## 🔗 内部节点（第三层子群组）
 
 | 本地节点名 | 调用群组 | 功能 |
 |-----------|---------|------|
@@ -32,7 +40,9 @@
 | `群组.002` | `GetSmithJointGGXAnisoPartLambdaV` | 各向异性 GGX Lambda_V 项 |
 | `群组.003` | `DV_SmithJointGGXAniso` | 各向异性 D×V 最终计算 |
 
-## 计算流程
+---
+
+## 📊 计算流程
 
 ```
 // 等向性分支（original 输出）
@@ -47,7 +57,9 @@ anisotropy    = DV_SmithJointGGXAniso(NdotH, Abs_NdotL, lambdaV_aniso,
 // 混合：由主群组 "Use anisotropy?" 控制选择 original 或 anisotropy
 ```
 
-## 等价公式
+---
+
+## 🧮 等价公式
 
 **各向异性 GGX NDF（D 项）：**
 ```
@@ -62,9 +74,11 @@ Vis_SmithJointGGX = 0.5 / (Abs_NdotL * ΛV + NdotV * ΛL + eps)
 ΛL = NdotV  * sqrt((-Abs_NdotL * roughness + Abs_NdotL) * Abs_NdotL + roughness)
 ```
 
-## HLSL 等价
+---
 
-```hlsl
+## 💻 HLSL 等价
+
+```cpp
 // 各向异性 D 项
 float D_GGXAniso(float NdotH, float TdotH, float BdotH, float roughT, float roughB)
 {
@@ -83,14 +97,20 @@ float V_SmithJointGGXAniso(float TdotV, float BdotV, float NdotV,
 }
 ```
 
-## 备注
+---
+
+## 📝 备注
 
 - 等向和各向异性两路并行计算，主群组根据 `Use anisotropy?` 开关选择
-- 与 HDRP `D_GGXAniso` / `V_SmithJointGGXAniso` 实现基本一致
-- **第三层子群组**（`GetSmithJointGGXPartLambdaV` 等）尚未提取，后续需补充 Phase 1.4
+- 各向同性路径：`partLambdaV × NdotL`（**无 sqrt**），与 HDRP 标准版（含 sqrt）存在差异
+- 各向异性路径：`AnisoPartLambdaV`（**已含 sqrt**，LENGTH 节点），外层直接 × NdotL
+- `DeBug` 输出 = `AnisoPartLambdaV`（各向异性 ΛV 原始值），调试用，Unity 侧忽略
+- `clampedRoughness` = 各向同性粗糙度（外层平方得 a2），`roughnessT/B` = 各向异性分量
+- **第三层子群组完整分析**：见 `docs/analysis/sub_groups/DV_SmithJointGGX_Aniso_L3.md`
 
-## 待确认
+---
 
-- [ ] 第三层子群组的具体实现（`GetSmithJointGGXAnisoPartLambdaV`、`DV_SmithJointGGXAniso`）
-- [ ] `DeBug` 输出的含义（推测为中间值调试输出，Unity 侧可忽略）
-- [ ] `clampedRoughness` 与 `roughnessT/B` 的关系（是否为各向同性 roughness 还是夹紧后的版本）
+## ❓ 待确认
+
+- [ ] 各向同性路径 `partLambdaV × NdotL`（无 sqrt）是引擎近似优化还是节点 bug？
+      待与 Goo Engine 源码或 HDRP 近似版本对照

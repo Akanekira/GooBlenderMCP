@@ -1,21 +1,30 @@
 # ComputeDiffuseColor
 
-> 溯源：`docs/raw_data/ComputeDiffuseColor_20260227.json` | 节点数：5
+> 溯源：`docs/raw_data/ComputeDiffuseColor_20260227.json` · 5 节点
 > HLSL 实现：`hlsl/SubGroups/SubGroups.hlsl` — `ComputeDiffuseColor()` 函数
+
+---
 
 ## 接口
 
-| 方向 | 名称 | 类型 |
-|------|------|------|
-| 输入 | `albedo` | Color |
-| 输入 | `metallic` | Float |
-| 输出 | `输出` | Color |
+| 📥 输入 | 类型 | 来源 |
+|---------|------|------|
+| `albedo` | Color | — |
+| `metallic` | Float | — |
 
-## 内部节点
+| 📤 输出 | 类型 | 下游 |
+|---------|------|------|
+| `输出` | Color | — |
+
+---
+
+## 🔗 内部节点
 
 `GROUP_INPUT` → `REROUTE.045`(albedo) + `MATH`(1-metallic) → `VECT_MATH`(MULTIPLY) → `GROUP_OUTPUT`
 
-## 等价公式
+---
+
+## 🧮 等价公式
 
 ```
 diffuseColor = albedo * (1 - metallic)
@@ -23,16 +32,20 @@ diffuseColor = albedo * (1 - metallic)
 
 标准 PBR 金属工作流：金属部分不产生漫反射，`metallic=1` 时漫反射为 0。
 
-## HLSL 等价
+---
 
-```hlsl
+## 💻 HLSL 等价
+
+```cpp
 float3 ComputeDiffuseColor(float3 albedo, float metallic)
 {
     return albedo * (1.0 - metallic);
 }
 ```
 
-## 备注
+---
+
+## 📝 备注
 
 与 HDRP `GetDiffuseColor(BSDFData)` 逻辑相同。在材质中：
 - `albedo` = `_D.RGB`
@@ -40,7 +53,7 @@ float3 ComputeDiffuseColor(float3 albedo, float metallic)
 
 ---
 
-## 主群组中的输出流向
+## 📌 主群组中的输出流向
 
 > 追踪范围：`Arknights: Endfield_PBRToonBase` 主群组，节点 `群组.009`（ComputeDiffuseColor）输出后的完整路径。
 > 数据来源：2026-02-28 Blender MCP 实时追踪。
@@ -140,9 +153,9 @@ indirectDiffuse = diffuseColor
 
 ---
 
-### 完整伪代码
+### 💻 完整伪代码
 
-```hlsl
+```cpp
 // GetSurfaceData (Frame.013)
 float3 diffuseColor = ComputeDiffuseColor(_D_RGB, _P_R * MetallicMax);
 
@@ -182,7 +195,7 @@ color = lerp(color, RS_color, RS_factor);  // MIX
 
 ---
 
-### 节点路径索引
+### 🗂️ 节点路径索引
 
 | 节点名 | 类型 | 所属 Frame | 语义 |
 |--------|------|-----------|------|
@@ -198,3 +211,9 @@ color = lerp(color, RS_color, RS_factor);  // MIX
 | `混合.026` | MIX ADD | — | Emission 叠加 |
 | `混合.029` | MIX LIGHTEN | RS EFF | RS 效果取亮 |
 | `混合.030` | MIX | RS EFF | RS 最终混合 |
+
+---
+
+## ❓ 待确认
+
+- [ ] 待补充

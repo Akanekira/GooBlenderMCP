@@ -1,25 +1,32 @@
 # Get_NoH_LoH_ToH_BoH
 
-> 溯源：`docs/raw_data/Get_NoH_LoH_ToH_BoH_20260227.json` | 节点数：17
+> 溯源：`docs/raw_data/Get_NoH_LoH_ToH_BoH_20260227.json` · 17 节点
 > HLSL 实现：`hlsl/SubGroups/SubGroups.hlsl` — `Get_NoH_LoH_ToH_BoH()` 函数
+
+---
 
 ## 接口
 
-| 方向 | 名称 | 类型 |
-|------|------|------|
-| 输入 | `NoL_Unsaturate` | Float |
-| 输入 | `NoV` | Float |
-| 输入 | `LoV` | Float |
-| 输入 | `ToV` | Float |
-| 输入 | `ToL` | Float |
-| 输入 | `BoV` | Float |
-| 输入 | `BoL` | Float |
-| 输出 | `NdotH` | Float |
-| 输出 | `LdotH` | Float |
-| 输出 | `TdotH` | Float |
-| 输出 | `BdotH` | Float |
+| 📥 输入 | 类型 | 来源 |
+|---------|------|------|
+| `NoL_Unsaturate` | Float | — |
+| `NoV` | Float | — |
+| `LoV` | Float | — |
+| `ToV` | Float | — |
+| `ToL` | Float | — |
+| `BoV` | Float | — |
+| `BoL` | Float | — |
 
-## 内部节点
+| 📤 输出 | 类型 | 下游 |
+|---------|------|------|
+| `NdotH` | Float | — |
+| `LdotH` | Float | — |
+| `TdotH` | Float | — |
+| `BdotH` | Float | — |
+
+---
+
+## 🔗 内部节点
 
 包含子群组 `GetinvLenLV`（第三层，用于计算 `1/|L+V|`）：
 
@@ -30,7 +37,9 @@ ToL + ToV → 求和 → × (1/|L+V|) → TdotH
 BoL + BoV → 求和 → × (1/|L+V|) → BdotH
 ```
 
-## 等价公式
+---
+
+## 🧮 等价公式
 
 半角向量 H 的各点积，利用输入的已知点积推导（避免重建向量）：
 
@@ -44,9 +53,11 @@ TdotH = (ToL + ToV) * invLenLV
 BdotH = (BoL + BoV) * invLenLV
 ```
 
-## HLSL 等价
+---
 
-```hlsl
+## 💻 HLSL 等价
+
+```cpp
 void Get_NoH_LoH_ToH_BoH(
     float NoL, float NoV, float LoV,
     float ToV, float ToL, float BoV, float BoL,
@@ -60,9 +71,17 @@ void Get_NoH_LoH_ToH_BoH(
 }
 ```
 
-## 备注
+---
+
+## 📝 备注
 
 - 这是 HDRP 标准的半角向量点积计算方法（避免 `normalize(L+V)` 的显式向量运算）
 - 与 HDRP `GetBSDFAngle(V, L, NdotL, NdotV)` 思路完全一致
 - `GetinvLenLV` 子群组（第三层）需单独提取分析
 - 部分输出（TdotH/BdotH）无 clamp，因为切线/副切线方向允许负值（各向异性高光需要）
+
+---
+
+## ❓ 待确认
+
+- [ ] 待补充
