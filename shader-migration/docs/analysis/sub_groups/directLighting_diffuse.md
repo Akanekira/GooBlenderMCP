@@ -12,7 +12,7 @@
 | `shadowRampColor` | Color | — |
 | `directOcclusion` | Color | — |
 | `diffuseColor` | Color | — |
-| `矢量`（光方向相关） | Vector | — |
+| `矢量` | Vector | **已确认 = `dirLight_lightColor`（Group Input，平行光颜色 RGBA）**，非光方向向量 |
 
 | 📤 输出 | 类型 | 下游 |
 |---------|------|------|
@@ -71,13 +71,13 @@ float3 DirectLightingDiffuse(
 ## 📝 备注
 
 - `shadowRampColor`：来自 `RampSelect` 的 Toon 阴影色带颜色
-- `directOcclusion`：来自 `_P.G`（AO 通道），已由 `directOcclusionColor` 叠加
-- `矢量`：推测为平行光方向相关的衰减向量（从 `SHADERINFO` 获取）
+- `directOcclusion`：来自 `_P.G`（AO 通道），已由 `directOcclusionColor` 叠加（混合.005.Result）
+- `矢量`：**已确认 = `dirLight_lightColor`**（Group Input，平行光颜色 Vector）
 - `VALUE` 常量可能是光照强度缩放，待从节点默认值确认
 
 ---
 
 ## ❓ 待确认
 
-- [ ] `矢量` 插槽的具体含义（平行光向量？光照颜色？光照强度？）
-- [ ] `VALUE` 节点的数值
+- [ ] `VALUE` 节点的数值（光照强度缩放系数？）
+- ✅ ~~`矢量` 插槽的具体含义~~ ← 已确认 = `dirLight_lightColor`（2026-03-04）
