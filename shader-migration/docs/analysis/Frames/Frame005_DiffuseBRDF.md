@@ -80,39 +80,52 @@
 
 ## 📊 计算流程
 
-```
-Group Input.026  RemaphalfLambert_center ─┐
-Group Input.027  RemaphalfLambert_sharp  ─┤─→ 群组.004 SigmoidSharp ─→ 转接点.014 [帧.015 shadowNdotL]
-运算.001 (Frame.012, NoL)                ─┘                                            │
-                                                                                        ▼
-Group Input.028  CastShadow_center ─┐                                        运算.002 MINIMUM
-Group Input.029  CastShadow_sharp  ─┤─→ 群组.006 SigmoidSharp ─→ 转接点.016 [帧.019 shadowScene]
-Shader Info.Cast Shadows(Frame.013) ─┘                               │└─→ Reroute.098(extra out)
-                                                                       │
-                                                            ┌──────────┘
-                                                            ▼
-                                                  运算.002 MINIMUM
-                                                       │
-                                                       ▼
-                                              合并 XYZ (X=min, Y=0.5, Z=0.0)
-                                                       │
-                                              转接点.015 [帧.018 shadowArea]
-                                                       │ (VECTOR: RampUV)
-                                                       ▼
-Group Input.009  RampIndex ───────────────→ 群组.011 RampSelect
-                                              │              │
-                                           RampColor      RampAlpha
-                                              │              └─→ 群组.012 [Frame.007 SmoothStep.x]
-                                              ▼
-                                   转接点.050 [帧.032 shadowRampColor]
-                                       │              │
-                                  (internal)     (Reroute.016 extra out)
-                                       ▼
-Reroute.053 (directOcclusion) ──→ 群组.019 directLighting_diffuse
-Reroute.012 (diffuseColor)    ──→     │
-Group Input.057(dirLightColor)──→     │
-                                       ▼
-                          directLighting_diffuse → Vector Math.015 (ADD with Specular)
+```mermaid
+flowchart TD
+    NoL(["noL<br/>Frame.012 Init"])
+    CAST(["castShadow<br/>Frame.013 SHADERINFO"])
+    PARAMS(["diffuseColor · directOcclusion<br/>dirLightColor · RampIndex"])
+    REMAPS(["RemapHL_center/sharp<br/>CastShadow_center/sharp"])
+
+    SIG1["SigmoidSharp #1<br/>shadowNdotL = σ(noL, center, sharp)"]
+    SIG2["SigmoidSharp #2<br/>shadowScene = σ(castShadow, c, s)"]
+    MIN["MINIMUM<br/>shadowCombined = min(shadowNdotL, shadowScene)"]
+    COMB["COMBXYZ<br/>rampUV = float3(shadow, 0.5, 0)"]
+    RAMP["RampSelect<br/>→ rampColor + rampAlpha"]
+    DLD["directLighting_diffuse<br/>= rampColor × diffuse × dirLight × AO"]
+
+    OUT(["directLighting_diffuse<br/>→ 光照累积 ADD"])
+    RT098(["shadowScene → 下游复用"])
+    F007(["rampAlpha → Frame.007 ShadowAdjust"])
+    RT016O(["rampColor extra → 下游"])
+
+    NoL -->|"noL"| SIG1
+    REMAPS -->|"RemapHL_c/s"| SIG1
+    CAST -->|"castShadow"| SIG2
+    REMAPS -->|"CastShadow_c/s"| SIG2
+
+    SIG2 -.->|"extra out"| RT098
+
+    SIG1 --> MIN
+    SIG2 --> MIN
+    MIN --> COMB
+    COMB -->|"rampUV"| RAMP
+    PARAMS -->|"RampIndex"| RAMP
+
+    RAMP -.->|"RampAlpha"| F007
+    RAMP -.->|"RampColor extra"| RT016O
+    RAMP -->|"rampColor"| DLD
+
+    PARAMS -->|"diffuseColor · directOcclusion · dirLightColor"| DLD
+    DLD --> OUT
+
+    classDef input  fill:#e8f4fd,stroke:#4a90d9
+    classDef output fill:#eafaea,stroke:#4caf50
+    classDef extra  fill:#f5f5f5,stroke:#bbb,color:#888
+    class NoL,CAST,PARAMS,REMAPS input
+    class OUT output
+    class RT098,F007,RT016O extra
+    linkStyle default stroke:#555,stroke-width:1.5px
 ```
 
 ---

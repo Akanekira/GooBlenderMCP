@@ -421,6 +421,96 @@ Textures → Switches → Roughness Metallic → Shadow Diffuse
 
 ---
 
+### G.2-C Mermaid 计算流程图规范
+
+适用于所有 `## 📊 计算流程` 章节（Frame 详细分析文档与子群组文档）。
+
+#### 基本规则
+
+| 规则 | 正确做法 | 禁止做法 |
+|------|---------|---------|
+| **方向** | 统一 `flowchart TD`（顶向下） | `LR` / `BT` |
+| **主链节点** | 仅保留逻辑计算节点（GROUP / MATH / MIX） | 保留 `转接点.xxx` REROUTE 中间节点 |
+| **输入参数** | 将同一来源的多个变量合并为一个输入节点；变量名直接作为标签 | 编号 ①②③ 区分输入；为每个 Group Input 建独立节点 |
+| **subgraph** | 用于**并行计算路径**（两条语义独立的路径）或**计算子框**（帧.xxx 阶段） | 包裹输入参数列表；用于单一线性路径 |
+| **并行路径** | 语义明确的两路并行用 subgraph 分列，共同流向合并节点 | 把输入节点塞进 subgraph |
+| **节点标签** | 用计算概念命名，多行公式用 `<br/>`；格式 `概念名<br/>= 计算公式` | Blender 节点 ID（`群组.xxx`、`帧.xxx`）出现在标签；用 `\n` 换行 |
+| **图注表** | 不使用图注表；输入来源由节点标签的变量名自解释 | 在 flowchart 之后附 `| 编号 \| 来源 Frame \| ... |` 表格 |
+| **次要输出** | 虚线 `-.->|"extra out"|` + 灰色节点 | 实线，与主链视觉无差别 |
+| **连线可见性** | 末行加 `linkStyle default stroke:#555,stroke-width:1.5px` | 依赖主题默认颜色（深色背景下不可见） |
+
+#### 节点颜色语义
+
+```
+输入源节点  →  圆角框  fill:#e8f4fd,stroke:#4a90d9  （蓝色）
+逻辑计算节点 →  矩形    默认样式
+输出汇合节点 →  圆角框  fill:#eafaea,stroke:#4caf50  （绿色）
+extra out   →  圆角框  fill:#f5f5f5,stroke:#bbb,color:#888 （灰色）
+```
+
+#### 最小可用模板（单路径）
+
+```mermaid
+flowchart TD
+    IN_A(["var1 · var2 · var3"])
+    IN_B(["var4 · var5"])
+
+    CALC["计算阶段<br/>= output = f(inputs)"]
+
+    SIDE(["次要输出 → 下游复用"])
+    OUT(["最终输出<br/>= A + B"])
+
+    IN_A -->|"param_a / param_b"| CALC
+    IN_B --> CALC
+    CALC -.->|"extra out"| SIDE
+    CALC -->|"主输出"| OUT
+
+    classDef input  fill:#e8f4fd,stroke:#4a90d9
+    classDef output fill:#eafaea,stroke:#4caf50
+    classDef extra  fill:#f5f5f5,stroke:#bbb,color:#888
+    class IN_A,IN_B input
+    class OUT output
+    class SIDE extra
+    linkStyle default stroke:#555,stroke-width:1.5px
+```
+
+#### 并行路径模板（subgraph 分列）
+
+```mermaid
+flowchart TD
+    IN(["共享输入变量"])
+    SHARED["共享前置计算"]
+    IN --> SHARED
+
+    subgraph PATH_A["路径 A 名称"]
+        A["计算A<br/>= specFGD × ecFactor × strength"]
+    end
+
+    subgraph PATH_B["路径 B 名称"]
+        B1["计算B1<br/>= AmbientTint × AmbientLighting"]
+        B2["计算B2<br/>= diffuseColor × diffFGD × B1"]
+        B1 --> B2
+    end
+
+    SHARED -->|"输出A"| A
+    SHARED -->|"输出B"| B2
+    EXT_A(["路径A额外输入"]) --> A
+    EXT_B(["路径B额外输入"]) --> B2
+
+    OUT(["totalOutput<br/>= directLighting + A + B2"])
+    DL(["directLighting"]) --> OUT
+    A --> OUT
+    B2 --> OUT
+
+    classDef input  fill:#e8f4fd,stroke:#4a90d9
+    classDef output fill:#eafaea,stroke:#4caf50
+    class IN,EXT_A,EXT_B,DL input
+    class OUT output
+    linkStyle default stroke:#555,stroke-width:1.5px
+```
+
+---
+
 ### G.3 子群组文档模板（含图标与分割线）
 
 ```markdown
@@ -562,31 +652,23 @@ float FunctionName(float x, ...)
 
 ```mermaid
 flowchart TD
-    IN_A(["① Frame.xxx\n变量列表"])
-    IN_B(["② Frame.yyy\n变量列表"])
+    IN_A(["var1 · var2 · var3"])
+    IN_B(["var4 · var5"])
 
-    GRP["群组.xxx\nSubGroupName"]
+    GRP["SubGroupName<br/>→ output1 / output2"]
 
-    OUT(["帧.xxx 根级 → 下游"])
+    OUT(["totalOutput<br/>= A + B + C"])
 
     IN_A --> GRP
     IN_B --> GRP
     GRP  --> OUT
 
-    classDef input  fill:#d4e6f1,stroke:#2980b9,color:#000
-    classDef group  fill:#d5f5e3,stroke:#27ae60,color:#000
-    classDef output fill:#e8daef,stroke:#8e44ad,color:#000
+    classDef input  fill:#e8f4fd,stroke:#4a90d9
+    classDef output fill:#eafaea,stroke:#4caf50
     class IN_A,IN_B input
-    class GRP group
     class OUT output
+    linkStyle default stroke:#555,stroke-width:1.5px
 ```
-
-**图注**
-
-| 编号 | 来源 Frame | 传入变量 |
-|:----:|-----------|---------|
-| ① | Frame.xxx | `var1` `var2` |
-| ② | Frame.yyy | `var3` `var4` |
 
 ---
 

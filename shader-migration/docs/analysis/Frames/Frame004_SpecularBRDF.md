@@ -74,86 +74,55 @@
 
 ```mermaid
 flowchart TD
-    %% ── 外部输入（①②③ 见图注）──────────────────────────
-    IN_Init(["① Frame.012 Init\n10 个角度量"])
-    IN_Surf(["② Frame.013 GetSurfaceData\nroughness · roughT/B · F0"])
-    IN_Flag(["③ Group Input\nUse aniso? · Use Toonaniso?\nAnisotropy Mask"])
+    IN_angles(["NdotH · LdotH · TdotH · BdotH<br/>Abs_NdotL · clampedNdotV"])
+    IN_aniso(["TdotL · BdotL · TdotV · BdotV"])
+    IN_surf(["roughness · roughnessT · roughnessB · fresnel0"])
+    IN_flags(["Use anisotropy? · Use Toonaniso? · Anisotropy Mask"])
 
-    %% ── 子群组 ────────────────────────          ──────────────────
-    DV007["群组.007\nDV_SmithJointGGX_Aniso"]
-    F008["群组.008\nF_Schlick"]
+    DV["DV_SmithJointGGX_Aniso<br/>→ original（等向）/ anisotropy（各向异性）"]
+    F_schlick["F_Schlick<br/>= f0 + (1−f0)·(1−LdotH)⁵"]
 
-    %% ── DV 双路 + F ─────────────────────────────────────
-    DV_iso["帧.026  DV\n等向 original"]
-    DV_aniso["帧.065  AnisoDV\n各向异性 anisotropy"]
-    F_out["帧.027  F\nf0+(1-f0)·(1-LdotH)⁵"]
+    subgraph ISO["等向路径"]
+        specTerm["specTerm<br/>= DV_iso × F"]
+    end
 
-    %% ── 两路乘法 ─────────────────────────────────────────
-    VM003("× MULTIPLY")
-    VM018("× MULTIPLY")
-    specTerm["帧.028  specTerm\nDV_iso × F"]
-    specTermAniso["帧.066  specTermAniso\nDV_aniso × F"]
+    subgraph ANISO["各向异性路径"]
+        specTermAniso["specTermAniso<br/>= DV_aniso × F"]
+    end
 
-    %% ── 两级混合 ─────────────────────────────────────────
-    MIX020("混合.020\nlerp · Use Toonaniso?")
-    toonAniso["帧.068  Toon Aniso"]
-    MIX016("混合.016/017\nlerp · Use aniso? × Mask")
+    toonAniso["Toon Aniso 选择<br/>= lerp(specTerm, specTermAniso, UseToonaniso)"]
+    finalSpec["Use anisotropy? 混合<br/>= lerp(specTerm, toonAniso, AnisoMask)"]
+    piCorr["× π（待确认）<br/>最终归一化修正"]
+    OUT(["directLighting_specular"])
 
-    %% ── 输出 ──────────────────────────────────────────────
-    VM016("× π ?")
-    OUT(["帧.034  directLighting_specular\n根级 · Frame.004 外"])
+    IN_angles --> DV
+    IN_aniso --> DV
+    IN_surf --> DV
+    IN_surf --> F_schlick
+    IN_angles --> F_schlick
 
-    %% ── 连线 ──────────────────────────────────────────────
-    IN_Init --> DV007
-    IN_Surf --> DV007
-    IN_Surf --> F008
-    IN_Init --> F008
+    DV -->|"original"| specTerm
+    DV -->|"anisotropy"| specTermAniso
+    F_schlick --> specTerm
+    F_schlick --> specTermAniso
 
-    DV007 --> DV_iso
-    DV007 --> DV_aniso
-    F008  --> F_out
+    specTerm --> toonAniso
+    specTermAniso --> toonAniso
+    IN_flags -->|"Use Toonaniso?"| toonAniso
 
-    DV_iso   --> VM003
-    F_out    --> VM003
-    VM003    --> specTerm
+    specTerm --> finalSpec
+    toonAniso --> finalSpec
+    IN_flags -->|"Use anisotropy? + Mask"| finalSpec
 
-    DV_aniso --> VM018
-    F_out    --> VM018
-    VM018    --> specTermAniso
+    finalSpec --> piCorr
+    piCorr --> OUT
 
-    specTerm      --> MIX020
-    specTermAniso --> MIX020
-    IN_Flag       --> MIX020
-    MIX020        --> toonAniso
-
-    specTerm  --> MIX016
-    toonAniso --> MIX016
-    IN_Flag   --> MIX016
-
-    MIX016 --> VM016
-    VM016  --> OUT
-
-    %% ── 样式 ──────────────────────────────────────────────
-    classDef input  fill:#d4e6f1,stroke:#2980b9,color:#000
-    classDef group  fill:#d5f5e3,stroke:#27ae60,color:#000
-    classDef frame  fill:#fef9e7,stroke:#f39c12,color:#000
-    classDef op     fill:#f9ebea,stroke:#c0392b,color:#000
-    classDef output fill:#e8daef,stroke:#8e44ad,color:#000
-
-    class IN_Init,IN_Surf,IN_Flag input
-    class DV007,F008 group
-    class DV_iso,DV_aniso,F_out,specTerm,specTermAniso,toonAniso frame
-    class VM003,VM018,MIX020,MIX016,VM016 op
+    classDef input  fill:#e8f4fd,stroke:#4a90d9
+    classDef output fill:#eafaea,stroke:#4caf50
+    class IN_angles,IN_aniso,IN_surf,IN_flags input
     class OUT output
+    linkStyle default stroke:#555,stroke-width:1.5px
 ```
-
-**图注**
-
-| 编号 | 来源 Frame | 传入变量 |
-|:----:|-----------|---------|
-| ① | Frame.012 Init | `NdotH` `LdotH` `TdotH` `BdotH` `TdotL` `BdotL` `TdotV` `BdotV` `Abs_NdotL` `clampedNdotV` |
-| ② | Frame.013 GetSurfaceData | `roughness` `roughnessT` `roughnessB` `fresnel0` |
-| ③ | Group Input | `Use anisotropy?` `Use Toonaniso?` `Anisotropy Mask` |
 
 ---
 
