@@ -39,16 +39,16 @@ VectorMath.011 ──→ GROUP_OUTPUT
 ## 🧮 等价公式
 
 ```
-// VALUE 节点推测为 1.0（保留原始值）
-directLighting_diffuse = shadowRampColor * diffuseColor * 矢量 * directOcclusion
+// VALUE 节点 = 0.31831（1/π，Lambertian 归一化系数）
+directLighting_diffuse = (shadowRampColor × (1/π)) × diffuseColor × 矢量 × directOcclusion
 ```
 
-或更精确地（考虑到 VALUE 的作用）：
+展开为串行乘积（与节点拓扑一致）：
 ```
-temp = shadowRampColor × VALUE_const
-temp = temp × diffuseColor
-temp = temp × lightDir_factor（矢量）
-result = temp × directOcclusion
+temp = shadowRampColor × 0.31831   // VectorMath.008：乘 1/π，保证漫反射能量守恒
+temp = temp × diffuseColor         // VectorMath.009
+temp = temp × dirLightColor        // VectorMath.010（矢量 = dirLight_lightColor）
+result = temp × directOcclusion    // VectorMath.011
 ```
 
 ---
@@ -60,9 +60,11 @@ float3 DirectLightingDiffuse(
     float3 shadowRampColor,
     float3 directOcclusion,
     float3 diffuseColor,
-    float3 lightDirFactor)
+    float3 dirLightColor)
 {
-    return shadowRampColor * diffuseColor * lightDirFactor * directOcclusion;
+    // 1/π 归一化：Lambertian BRDF = albedo/π，保证半球积分能量守恒
+    // 即使是 Toon 风格，PBRToon 仍在漫反射项保留此物理系数
+    return (shadowRampColor * (1.0 / 3.14159265)) * diffuseColor * dirLightColor * directOcclusion;
 }
 ```
 
@@ -79,5 +81,5 @@ float3 DirectLightingDiffuse(
 
 ## ❓ 待确认
 
-- [ ] `VALUE` 节点的数值（光照强度缩放系数？）
+- ✅ ~~`VALUE` 节点的数值~~ ← 已确认 = **0.31831（1/π，Lambertian 归一化系数）**（2026-03-05）
 - ✅ ~~`矢量` 插槽的具体含义~~ ← 已确认 = `dirLight_lightColor`（2026-03-04）

@@ -254,7 +254,8 @@ void Frame_005_DiffuseBRDF(
     RampSelect(rampUV, RampIndex, /*out*/ rampColor, /*out*/ rampAlpha);
 
     // ── Step 6: 群组.019 directLighting_diffuse ── 漫反射四路乘积 ────────────────
-    // shadowRampColor × diffuseColor × dirLightColor × directOcclusion
+    // (shadowRampColor × 1/π) × diffuseColor × dirLightColor × directOcclusion
+    // 内部 VALUE 节点 = 0.31831（1/π）：Lambertian 归一化，PBRToon 在漫反射项保留能量守恒
     float3 directDiffuse = DirectLightingDiffuse(
         rampColor,        // shadowRampColor（Ramp 阴影色，亮部→暗部颜色过渡）
         directOcclusion,  // 混合.005.Result（AO 叠加色，含 directOcclusionColor）

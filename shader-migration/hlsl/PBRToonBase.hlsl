@@ -126,24 +126,47 @@ LightingData InitLightingData(Varyings input, SurfaceData sd)
 }
 
 // =============================================================================
-// 主片元函数（Fragment Shader）
-// 按 Frame 顺序逐步组装最终颜色
+// Frame.069 — SimpleTransmission（屏幕空间伪透射，修改 albedo，前置于漫反射）
+// 溯源：docs/analysis/Frames/Frame069_SimpleTransmission.md
+// 注：SCREENSPACEINFO 为 Goo Engine 专有节点；Unity 替换为 _CameraOpaqueTexture
 // =============================================================================
-float4 PBRToonBase_Frag(Varyings input) : SV_Target
+float3 Frame069_SimpleTransmission(SurfaceData sd, LightingData ld, Varyings input)
 {
-    // -------------------------------------------------------------------------
-    // Frame.013 + Frame.012 — 表面数据 + 光照初始化
-    // -------------------------------------------------------------------------
-    SurfaceData  sd = GetSurfaceData(input);
-    LightingData ld = InitLightingData(input, sd);
+    // Step 1: 菲涅尔.001（IOR=1.25）— 产生边缘权重，用于屏幕采样坐标偏移
+    float ior    = 1.25;
+    float NdotV  = saturate(dot(ld.N, -ld.V));
+    float fresnel = saturate(pow(1.0 - NdotV, 1.0 + ior * 0.5));
 
-    // -------------------------------------------------------------------------
-    // Frame.005 — DiffuseBRDF（Toon 漫反射）
-    // 溯源：docs/analysis/01_shader_arch.md#frame005
-    // -------------------------------------------------------------------------
+    // Step 2: 矢量运算.002 ADD — 摄像机视线 + Fresnel(broadcast) = 偏移视图坐标
+    float3 offsetViewPos = (-ld.V) + float3(fresnel, fresnel, fresnel);
 
+    // Step 3: Screenspace Info.001 — 在偏移坐标处采样场景背景色（概念性）
+    // Unity URP：需开启 Opaque Texture 或 GrabPass，使用 _CameraOpaqueTexture
+    float2 screenUV       = input.screenPos.xy / input.screenPos.w;
+    float2 offsetScreenUV = screenUV + offsetViewPos.xy * 0.01; // 概念性近似
+    float3 sceneColor     = SAMPLE_TEXTURE2D(_CameraOpaqueTexture,
+                                             sampler_CameraOpaqueTexture,
+                                             offsetScreenUV).rgb;
+
+    // Step 4: 混合.034 — 场景色 lerp 到 Albedo（clamp）
+    // A=sceneColor, B=albedo, Factor=_SimpleTransmissionValue（default 0.65）
+    float3 transBlend = saturate(lerp(sceneColor, sd.albedo, _SimpleTransmissionValue));
+
+    // Step 5: 混合.035 — 功能开关（clamp）
+    // A=albedo, B=transBlend, Factor=_UseSimpleTransmission（0 or 1）
+    float3 result = saturate(lerp(sd.albedo, transBlend, _UseSimpleTransmission));
+
+    return result;
+}
+
+// =============================================================================
+// Frame.005 + Frame.007 — DiffuseBRDF + ShadowAdjust（Toon 漫反射 + 全局阴影调整）
+// 溯源：docs/analysis/01_shader_arch.md#frame005 / #frame007
+// =============================================================================
+float3 Frame005_DiffuseBRDF(SurfaceData sd, LightingData ld)
+{
     // 框.014 RemaphalfLambert：halfLambert 重映射 + Sigmoid 锐化
-    float halfLambert = SigmoidSharp(ld.NoL,
+    float halfLambert = SigmoidSharp(ld.NoL * 0.5 + 0.5,
                                      _RemaphalfLambert_center,
                                      _RemaphalfLambert_sharp);
 
@@ -153,12 +176,8 @@ float4 PBRToonBase_Frag(Varyings input) : SV_Target
                                       _CastShadow_center,
                                       _CastShadow_sharp);
 
-    // 框.032 shadowRampColor：Toon Ramp 采样
-    float3 shadowRampColor;
-    float  shadowRampAlpha;
-    RampSelect(sd.rampUV, _RampIndex, shadowRampColor, shadowRampAlpha);
-    // 混合明暗（伪代码：shadowFactor 驱动 Ramp UV 的 U 坐标）
-    float rampU     = shadowFactor; // Ramp U = shadow factor
+    // 框.032 shadowRampColor：Toon Ramp 采样（shadowFactor 驱动 Ramp U 坐标）
+    float  rampU = shadowFactor;
     float3 rampCurrent; float rampA;
     RampSelect(rampU, _RampIndex, rampCurrent, rampA);
 
@@ -172,10 +191,20 @@ float4 PBRToonBase_Frag(Varyings input) : SV_Target
     float desat = _ColorDesaturationAttenuation * (1.0 - shadowFactor);
     diffuseDirect = DeSaturation(desat, diffuseDirect);
 
-    // -------------------------------------------------------------------------
-    // Frame.004 — SpecularBRDF（各向异性 GGX 高光）
-    // 溯源：docs/analysis/01_shader_arch.md#frame004
-    // -------------------------------------------------------------------------
+    // --- Frame.007 — ShadowAdjust（全局阴影亮度调整，内嵌于此函数）---
+    // SmoothStep 作用于漫反射的阴影区亮度
+    float shadowAdj = SmoothStepCustom(0.0, 1.0, _GlobalShadowBrightnessAdjustment);
+    diffuseDirect  *= lerp(shadowAdj, 1.0, shadowFactor);
+
+    return diffuseDirect;
+}
+
+// =============================================================================
+// Frame.004 — SpecularBRDF（各向异性 GGX 高光）
+// 溯源：docs/analysis/01_shader_arch.md#frame004
+// =============================================================================
+float3 Frame004_SpecularBRDF(SurfaceData sd, LightingData ld)
+{
     float clampedRoughness = max(sd.roughness, 0.001);
     float absNdotL = saturate(ld.NoL);
 
@@ -199,40 +228,74 @@ float4 PBRToonBase_Frag(Varyings input) : SV_Target
     float3 specularTerm  = F * dv * absNdotL * PI;
     float3 specularColor = specularTerm * _SpecularColor.rgb * ld.lightColor;
 
-    // -------------------------------------------------------------------------
-    // Frame.006 — IndirectLighting（间接光照）
-    // 溯源：docs/analysis/01_shader_arch.md#frame006
-    // -------------------------------------------------------------------------
+    return specularColor;
+}
+
+// =============================================================================
+// Frame.006 — IndirectLighting（间接光照）
+// 溯源：docs/analysis/Frames/Frame006_IndirectLighting.md
+// 节点：群组.005(GetPreIntegratedFGD) / 运算.015(DIVIDE) / 运算.013(SUBTRACT) /
+//       Vector Math.012(MULTIPLY) / Vector Math.013(ADD) /
+//       混合.025/010(indirectSpecComp) / 混合.013(ambientCombined) /
+//       混合.007/008(indirectDiffuse) / 混合.011(totalSpecular) / 混合.009(totalLighting)
+// 入参：directSpecular（Frame.004 输出）/ directDiffuse（Frame.005 输出）
+// 职责：在函数内完成 energyCompFactor 修正 + VM.015 汇合 + 间接项叠加，返回完整 totalLighting
+// =============================================================================
+float3 Frame006_IndirectLighting(SurfaceData sd, LightingData ld,
+                                 float3 directSpecular, float3 directDiffuse)
+{
+    // Stage 1: FGD LUT 查询（群组.005 GetPreIntegratedFGDGGXAndDisneyDiffuse）
+    // LUT 布局：R=B_term, G=A+B(reflectivity), B=Disney Diffuse FGD
     float3 specularFGD;
     float  diffuseFGD, reflectivity;
     GetPreIntegratedFGD(ld.NoV, sd.perceptualRoughness, sd.fresnel0,
                         specularFGD, diffuseFGD, reflectivity);
 
-    // 框.035 energyCompensation（能量守恒补偿）
-    float3 energyCompensation = 1.0 - reflectivity;
+    // Stage 2: 帧.035 energyCompensation — Kulla-Conty 多重散射修正
+    // 运算.015 DIVIDE : 1.0 / reflectivity
+    // 运算.013 SUBTRACT : (1/r) − 1.0 = ecFactor
+    float  invR     = 1.0 / max(reflectivity, 1e-4);   // 运算.015（防除零）
+    float  ecFactor = invR - 1.0;                       // 运算.013 [帧.035]
 
-    // 框.036 indirectDiffuse
-    float3 indirectDiffuse = sd.diffuseColor * diffuseFGD
-                           * _AmbientLightColorTint.rgb;
+    // Stage 3A: energyCompFactor（→ Reroute.110）修正 directSpecular
+    // Vector Math.012 MULTIPLY : F0 × ecFactor
+    // Vector Math.013 ADD      : (F0 × ecFactor) + 1.0
+    // 节点图中 Reroute.110 将此系数送回乘以 Frame.004 的输出，此处在函数内内联完成
+    float3 energyCompFactor   = sd.fresnel0 * ecFactor + float3(1, 1, 1); // VM.012 + VM.013
+    float3 correctedSpecular  = directSpecular * energyCompFactor;          // Reroute.110 乘法
 
-    // 框.038 indirectSpecular（概念性：需反射探针/SkyBox，此处简化）
-    float3 indirectSpecular = specularFGD * _specularFGDStrength;
+    // Stage 3B: directLighting = correctedSpecular + directDiffuse（根节点 VM.015 ADD）
+    float3 directLighting = correctedSpecular + directDiffuse;              // VM.015
 
-    // -------------------------------------------------------------------------
-    // Frame.007 — ShadowAdjust（全局阴影亮度调整）
-    // 溯源：docs/analysis/01_shader_arch.md#frame007
-    // -------------------------------------------------------------------------
-    // SmoothStep 作用于漫反射的阴影区亮度
-    float shadowAdj = SmoothStepCustom(0.0, 1.0, _GlobalShadowBrightnessAdjustment);
-    diffuseDirect  *= lerp(shadowAdj, 1.0, shadowFactor);
+    // Stage 4: 间接镜面能量补偿（indirectSpecComp = ecFactor × specFGD × strength）
+    // 混合.025 MULTIPLY : specularFGD × _specularFGDStrength
+    // 混合.010 MULTIPLY : ecFactor × weighted_specFGD
+    float3 weightedSpecFGD  = specularFGD * _specularFGDStrength;   // 混合.025
+    float3 indirectSpecComp = ecFactor    * weightedSpecFGD;         // 混合.010
 
-    // 组合直接光照
-    float3 color = diffuseDirect + specularColor + indirectDiffuse + indirectSpecular;
+    // Stage 5: 帧.036 ambientCombined（AmbientTint × AmbientLighting）
+    // 混合.013 MULTIPLY；_AmbientLighting = SHADERINFO.Ambient Lighting（Goo Engine 专有）
+    // Unity URP 替换：SampleSH(normalWS) 或 unity_AmbientSky.rgb
+    float3 ambientCombined = _AmbientLightColorTint.rgb * _AmbientLighting; // 混合.013 [帧.036]
 
-    // -------------------------------------------------------------------------
-    // Frame.008 — ToonFresnel（Toon 风格边缘色叠加）
-    // 溯源：docs/analysis/01_shader_arch.md#frame008
-    // -------------------------------------------------------------------------
+    // Stage 6: 间接漫反射（diffuseColor × diffuseFGD × ambientCombined）
+    // 混合.007 MULTIPLY : diffuseColor × diffuseFGD
+    // 混合.008 MULTIPLY : × ambientCombined
+    float3 indirectDiffuse = sd.diffuseColor * diffuseFGD * ambientCombined; // 混合.007+008
+
+    // Stage 7: 汇合
+    // 混合.011 ADD : directLighting + indirectSpecComp = totalSpecular
+    // 混合.009 ADD : totalSpecular + indirectDiffuse   = totalLighting → 混合.004
+    float3 totalSpecular = directLighting  + indirectSpecComp;  // 混合.011
+    return  totalSpecular  + indirectDiffuse;                   // 混合.009 → 混合.004
+}
+
+// =============================================================================
+// Frame.008 — ToonFresnel（Toon 风格边缘色叠加）
+// 溯源：docs/analysis/01_shader_arch.md#frame008
+// =============================================================================
+float3 Frame008_ToonFresnel(LightingData ld)
+{
     // LayerWeight Fresnel 因子（基于 NoV，模拟 Blender 的 LAYER_WEIGHT 节点）
     float toonFresnelFactor = pow(1.0 - ld.NoV, _ToonfresnelPow);
     toonFresnelFactor = SmoothStepCustom(_ToonfresnelSMO_L, _ToonfresnelSMO_H,
@@ -243,12 +306,16 @@ float4 PBRToonBase_Frag(Varyings input) : SV_Target
 
     // 内/外颜色混合
     float3 toonFresnelColor = lerp(_fresnelInsideColor.rgb, _fresnelOutsideColor.rgb, layerWeight);
-    color += toonFresnelColor * layerWeight;
 
-    // -------------------------------------------------------------------------
-    // Frame.009 — Rim（屏幕空间深度边缘光）
-    // 溯源：docs/analysis/01_shader_arch.md#frame009
-    // -------------------------------------------------------------------------
+    return toonFresnelColor * layerWeight;
+}
+
+// =============================================================================
+// Frame.009 — Rim（屏幕空间深度边缘光）
+// 溯源：docs/analysis/01_shader_arch.md#frame009
+// =============================================================================
+float3 Frame009_Rim(SurfaceData sd, LightingData ld, Varyings input)
+{
     // 屏幕空间 UV
     float2 screenUV = input.screenPos.xy / input.screenPos.w;
 
@@ -274,28 +341,23 @@ float4 PBRToonBase_Frag(Varyings input) : SV_Target
     float3 rimFinalColor = RimColor(sd.albedo, ld.lightColor,
                                     _Rim_Color.rgb, _Rim_ColorStrength, ld.LoV);
 
-    // 框.047 Rim：最终 Rim 叠加
-    color += rimFinalColor * rimMask * rimDirAtten;
+    return rimFinalColor * rimMask * rimDirAtten;
+}
 
-    // -------------------------------------------------------------------------
-    // Frame.010 — Emission（自发光叠加）
-    // 溯源：docs/analysis/01_shader_arch.md#frame010
-    // -------------------------------------------------------------------------
-    // _E.RGB 以 ADD 模式叠加（框.051）
-    color += sd.emission;
-
-    // -------------------------------------------------------------------------
-    // Frame.011 — ThinFilmFilter（RS 彩虹/光泽效果）
-    // 溯源：docs/analysis/01_shader_arch.md#frame011
-    // 贴图 A: T_actor_yvonne_cloth_05_RS.png (sRGB)
-    // 贴图 B: T_actor_aurora_cloth_03_RS.png (Linear / Extend)
-    // -------------------------------------------------------------------------
+// =============================================================================
+// Frame.011 — ThinFilmFilter（RS 彩虹/光泽效果）
+// 溯源：docs/analysis/01_shader_arch.md#frame011
+// 贴图 A: T_actor_yvonne_cloth_05_RS.png (sRGB)
+// 贴图 B: T_actor_aurora_cloth_03_RS.png (Linear / Extend)
+// =============================================================================
+float3 Frame011_ThinFilmFilter(float3 color, SurfaceData sd, LightingData ld, Varyings input)
+{
     if (_UseRSEff > 0.5)
     {
         // Layer Weight(N, Facing) → Add → Clamp → Combine XYZ → UV
-        float rsFresnel    = saturate(dot(ld.N, ld.V));
+        float rsFresnel     = saturate(dot(ld.N, ld.V));
         float rsLayerWeight = saturate(rsFresnel * _LayerWeightValue + _LayerWeightValueOffset);
-        float2 rsUV        = float2(rsLayerWeight, 0.5);
+        float2 rsUV         = float2(rsLayerWeight, 0.5);
 
         // 采样两张 RS 贴图，由 RS_Index 选择混合
         float3 rsColorA = SAMPLE_TEXTURE2D(_RS_Tex_A, sampler_RS_Tex_A, rsUV).rgb;
@@ -312,27 +374,48 @@ float4 PBRToonBase_Frag(Varyings input) : SV_Target
         color = lerp(color, color + rsMixed, _RSModel);
     }
 
-    // -------------------------------------------------------------------------
-    // Simple Transmission（框.069）— 简化透射（概念性）
-    // 溯源：docs/analysis/01_shader_arch.md#frame069
-    // 注：依赖 Goo Engine SCREENSPACEINFO，Unity URP 可简化为背向光方向透射
-    // -------------------------------------------------------------------------
-    if (_UseSimpleTransmission > 0.5)
-    {
-        // 概念：背光面 NoL 的绝对值 × 透射强度 → 叠加次表面散射感
-        float transmissionFactor = saturate(-ld.NoL) * _SimpleTransmissionValue;
-        color += sd.albedo * ld.lightColor * transmissionFactor;
-    }
+    return color;
+}
 
-    // -------------------------------------------------------------------------
-    // Frame.014 — Alpha（最终 Alpha 与输出）
-    // 溯源：docs/analysis/01_shader_arch.md#frame014
-    // -------------------------------------------------------------------------
-    float finalAlpha = sd.alpha * _Alpha;
+// =============================================================================
+// 主片元函数（Fragment Shader）
+// 按 Frame 顺序逐步组装最终颜色
+// =============================================================================
+float4 PBRToonBase_Frag(Varyings input) : SV_Target
+{
+    // Frame.013 + Frame.012
+    SurfaceData  sd = GetSurfaceData(input);
+    LightingData ld = InitLightingData(input, sd);
 
-    // ShaderOutput → Transparent + Emission MIX_SHADER 混合（伪代码）
-    // Unity URP 中通过 Blend SrcAlpha OneMinusSrcAlpha 控制透明
-    return float4(color, finalAlpha);
+    // Frame.069 — SimpleTransmission：透射修改 albedo（前置，影响后续所有漫反射计算）
+    sd.albedo       = Frame069_SimpleTransmission(sd, ld, input);
+    sd.diffuseColor = ComputeDiffuseColor(sd.albedo, sd.metallic); // albedo 变，diffuseColor 重算
+
+    // Frame.005 + Frame.007 — Diffuse + ShadowAdjust
+    float3 directDiffuse  = Frame005_DiffuseBRDF(sd, ld);
+
+    // Frame.004 — Specular（未修正，energyCompFactor 在 Frame.006 内部应用）
+    float3 directSpecular = Frame004_SpecularBRDF(sd, ld);
+
+    // Frame.006 — IndirectLighting
+    // 内部完成：directSpecular × energyCompFactor(Reroute.110) + directDiffuse(VM.015)
+    //            + indirectSpecComp(混合.011) + indirectDiffuse(混合.009) = totalLighting
+    float3 color = Frame006_IndirectLighting(sd, ld, directSpecular, directDiffuse);
+
+    // Frame.008 — ToonFresnel
+    color += Frame008_ToonFresnel(ld);
+
+    // Frame.009 — Rim
+    color += Frame009_Rim(sd, ld, input);
+
+    // Frame.010 — Emission
+    color += sd.emission;
+
+    // Frame.011 — ThinFilmFilter（RS 彩虹）
+    color = Frame011_ThinFilmFilter(color, sd, ld, input);
+
+    // Frame.014 — Alpha
+    return float4(color, sd.alpha * _Alpha);
 }
 
 // =============================================================================
