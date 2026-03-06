@@ -160,48 +160,59 @@ float3 Frame069_SimpleTransmission(SurfaceData sd, LightingData ld, Varyings inp
 }
 
 // =============================================================================
-// Frame.005 + Frame.007 — DiffuseBRDF + ShadowAdjust（Toon 漫反射 + 全局阴影调整）
-// 溯源：docs/analysis/01_shader_arch.md#frame005 / #frame007
+// Frame.005 — DiffuseBRDF（Toon 漫反射）
+// 溯源：docs/analysis/Frames/Frame005_DiffuseBRDF.md
+// 节点：SigmoidSharp×2 / MINIMUM / COMBXYZ / RampSelect / directLighting_diffuse
 // =============================================================================
-float3 Frame005_DiffuseBRDF(SurfaceData sd, LightingData ld)
+float3 Frame005_DiffuseBRDF(SurfaceData sd, LightingData ld, out float outRampAlpha)
 {
-    // 框.014 RemaphalfLambert：halfLambert 重映射 + Sigmoid 锐化
-    float halfLambert = SigmoidSharp(ld.NoL * 0.5 + 0.5,
+    // 帧.015 shadowNdotL：SigmoidSharp #1（halfLambert 阴影）
+    // 注：noL 来自 Frame.012 的 运算.001，可能已含 halfLambert 变换
+    float shadowNdotL = SigmoidSharp(ld.NoL,
                                      _RemaphalfLambert_center,
                                      _RemaphalfLambert_sharp);
 
-    // 框.018 shadowArea：搭配 castShadow 形成最终阴影区域
-    // CastShadow_center/sharp 控制阴影过渡边缘
-    float shadowFactor = SigmoidSharp(halfLambert * ld.castShadow,
-                                      _CastShadow_center,
-                                      _CastShadow_sharp);
+    // 帧.019 shadowScene：SigmoidSharp #2（投影阴影独立软化）
+    float shadowScene = SigmoidSharp(ld.castShadow,
+                                     _CastShadow_center,
+                                     _CastShadow_sharp);
 
-    // 框.032 shadowRampColor：Toon Ramp 采样（shadowFactor 驱动 Ramp U 坐标）
-    float  rampU = shadowFactor;
-    float3 rampCurrent; float rampA;
-    RampSelect(rampU, _RampIndex, rampCurrent, rampA);
+    // 运算.002 MINIMUM：双路阴影取暗合并（投影阴影完全覆盖自阴影）
+    float shadowCombined = min(shadowNdotL, shadowScene);
 
-    // 框.033 directLighting_diffuse：直接光漫反射
+    // 帧.018 shadowArea：COMBXYZ 打包为 RampUV Vector
+    // X=阴影值（Ramp U），Y=0.5（固定 V，1D Ramp 中线），Z=0
+    float3 rampUV = float3(shadowCombined, 0.5, 0.0);
+
+    // 帧.032 shadowRampColor：RampSelect Toon Ramp 采样
+    float3 rampColor; float rampAlpha;
+    RampSelect(rampUV, _RampIndex, rampColor, rampAlpha);
+
+    // 群组.019 directLighting_diffuse：漫反射四路乘积
+    // = (rampColor × 1/π) × diffuseColor × dirLightColor × directOcclusion
     float3 directOcclusion = lerp(_directOcclusionColor.rgb, 1.0, sd.ao);
-    float3 lightFactor      = ld.lightColor * _dirLight_lightColor.rgb;
-    float3 diffuseDirect    = DirectLightingDiffuse(rampCurrent, directOcclusion,
-                                                    sd.diffuseColor, lightFactor);
+    float3 diffuseDirect   = DirectLightingDiffuse(rampColor, directOcclusion,
+                                                   sd.diffuseColor,
+                                                   _dirLight_lightColor.rgb);
 
-    // DeSaturation：暗部去饱和（卡通压色），作用于阴影区域
-    float desat = _ColorDesaturationAttenuation * (1.0 - shadowFactor);
-    diffuseDirect = DeSaturation(desat, diffuseDirect);
-
-    // --- Frame.007 — ShadowAdjust（全局阴影亮度调整，内嵌于此函数）---
-    // SmoothStep 作用于漫反射的阴影区亮度
-    float shadowAdj = SmoothStepCustom(0.0, 1.0, _GlobalShadowBrightnessAdjustment);
-    diffuseDirect  *= lerp(shadowAdj, 1.0, shadowFactor);
-
+    outRampAlpha = rampAlpha; // → Frame.007 ShadowAdjust / SmoothStep.x
     return diffuseDirect;
 }
 
 // =============================================================================
+// Frame.007 — ShadowAdjust（全局阴影亮度调整）
+// 溯源：docs/analysis/01_shader_arch.md#frame007
+// 入参 rampAlpha 来自 Frame.005 的 RampSelect 输出
+// =============================================================================
+float3 Frame007_ShadowAdjust(float3 diffuse, float rampAlpha)
+{
+    float shadowAdj = SmoothStepCustom(0.0, 1.0, _GlobalShadowBrightnessAdjustment);
+    return diffuse * lerp(shadowAdj, 1.0, rampAlpha);
+}
+
+// =============================================================================
 // Frame.004 — SpecularBRDF（各向异性 GGX 高光）
-// 溯源：docs/analysis/01_shader_arch.md#frame004
+// 溯源：docs/analysis/Frames/Frame004_SpecularBRDF.md
 // =============================================================================
 float3 Frame004_SpecularBRDF(SurfaceData sd, LightingData ld)
 {
@@ -216,17 +227,28 @@ float3 Frame004_SpecularBRDF(SurfaceData sd, LightingData ld)
         ld.ToV, ld.BdotV, sd.roughnessT, sd.roughnessB,
         dvIsotropic, dvAnisotropic);
 
-    // 框.068 ToonAniso：等向/各向异性混合（Use anisotropy? 开关）
-    float dv = (_UseAnisotropy > 0.5) ? dvAnisotropic : dvIsotropic;
-    // ToonAniso 开关进一步选择使用 Toon 化的各向异性
-    dv = (_UseToonAniso > 0.5) ? dvAnisotropic : dv;
-
-    // 框.027 F：Schlick Fresnel
+    // 框.027 F：Schlick Fresnel（两路共用同一 F 项）
     float3 F = F_Schlick(sd.fresnel0, float3(1, 1, 1), ld.LdotH);
 
-    // 框.028 specTerm：高光项
-    float3 specularTerm  = F * dv * absNdotL * PI;
-    float3 specularColor = specularTerm * _SpecularColor.rgb * ld.lightColor;
+    // 框.028 specTerm / 框.066 specTermAniso：两路高光项（F × DV）
+    float3 specTerm      = F * dvIsotropic;   // Vector Math.003 [帧.028]
+    float3 specTermAniso = F * dvAnisotropic;  // Vector Math.018 [帧.066]
+
+    // 框.068 Toon Aniso 选择（混合.020）：Toon 路径使用简化的 BdotV 高光
+    float3 toonAnisoResult = (_UseToonAniso > 0.5) ? saturate(BdotV) : specTermAniso;
+
+    // 混合.016 / 混合.017：Use anisotropy? + AnisotropicMask 加权混合
+    float3 finalSpecTerm;
+    if (_UseAnisotropy > 0.5)
+        finalSpecTerm = lerp(specTerm, toonAnisoResult, _AnisotropicMask);
+    else
+        finalSpecTerm = specTerm;
+
+    // Vector Math.016：π 归一化修正（待确认）
+    // finalSpecTerm *= PI;
+
+    // 帧.034（根级）：directLighting_specular = specTerm × lightColor
+    float3 specularColor = finalSpecTerm * ld.lightColor;
 
     return specularColor;
 }
@@ -312,7 +334,7 @@ float3 Frame008_ToonFresnel(LightingData ld)
 
 // =============================================================================
 // Frame.009 — Rim（屏幕空间深度边缘光）
-// 溯源：docs/analysis/01_shader_arch.md#frame009
+// 溯源：docs/analysis/Frames/Frame009_Rim.md
 // =============================================================================
 float3 Frame009_Rim(SurfaceData sd, LightingData ld, Varyings input)
 {
@@ -322,57 +344,102 @@ float3 Frame009_Rim(SurfaceData sd, LightingData ld, Varyings input)
     // 法线视空间分量（近似：使用世界空间法线 XY 作为偏移方向）
     float3 normalVS = float3(ld.N.x, ld.N.y, 0); // 概念性转换
 
-    // 框.041 DepthRim：深度差遮罩
-    float rimDepthMask = DepthRim(screenUV, normalVS, _Rim_width_X, _Rim_width_Y);
+    // ── Stage 1: 遮罩四因子 ──────────────────────────────────────────────
 
-    // 框.042 FresnelAttenuation：Fresnel 遮罩
-    float rimFresnelMask = FresnelAttenuation(ld.NoV);
+    // 帧.045 — DirectionalLightAttenuation（群组.013）
+    // lerp(Rim_DirLightAtten, 1.0, saturate(NoL))，背光侧保留量
+    float dirLightAtten = DirectionalLightAttenuation(ld.NoL, _Rim_DirLightAtten);
 
-    // 框.043 VerticalAttenuation：法线垂直遮罩
-    float rimVerticalMask = VerticalAttenuation(ld.N);
+    // 帧.042 — FresnelAttenuation（群组.014）
+    // (1−NoV)⁴，grazing angle 处 Rim 最强
+    float fresnelAtten = FresnelAttenuation(ld.NoV);
 
-    // 三路遮罩相乘
-    float rimMask = rimDepthMask * rimFresnelMask * rimVerticalMask;
+    // 帧.043 — VerticalAttenuation（群组.015）
+    // saturate(normalWS.y)，顶部强底部弱
+    float verticalAtten = VerticalAttenuation(ld.N);
 
-    // 框.045 DirectionalLightAttenuation：光源方向调制
-    float rimDirAtten = DirectionalLightAttenuation(ld.NoL, _Rim_DirLightAtten);
+    // 帧.041 — DepthRim（群组.016）
+    // 屏幕空间法线偏移深度差，输出 [0,1] 边缘遮罩
+    float depthRim = DepthRim(screenUV, normalVS, _Rim_width_X, _Rim_width_Y);
 
-    // 框.046 Rim_Color：Rim 颜色合成
-    float3 rimFinalColor = RimColor(sd.albedo, ld.lightColor,
-                                    _Rim_Color.rgb, _Rim_ColorStrength, ld.LoV);
+    // ── Stage 2: 遮罩合并 ────────────────────────────────────────────────
 
-    return rimFinalColor * rimMask * rimDirAtten;
+    // 运算.026 MULTIPLY：DirLightAtten × FresnelAtten
+    float maskDF = dirLightAtten * fresnelAtten;
+
+    // 运算.027 MULTIPLY：× VerticalAtten
+    float maskDFV = maskDF * verticalAtten;
+
+    // 运算.029 MINIMUM：将 DepthRim 贡献上限截断为 0.5，防止过曝
+    float depthRimCapped = min(depthRim, 0.5);
+
+    // 运算.028 MULTIPLY：最终 rimMask = D×F×V × min(DepthRim, 0.5)
+    float rimMask = maskDFV * depthRimCapped;
+
+    // ── Stage 3: 边缘光颜色（帧.046 Rim_Color，群组.018）────────────────
+
+    float3 rimColor = RimColor(sd.albedo, ld.lightColor,
+                               _Rim_Color.rgb, _Rim_ColorStrength, ld.LoV);
+
+    // ── Stage 4: 颜色 × 遮罩（混合.018 MIX MULTIPLY RGBA）──────────────
+
+    return rimColor * rimMask;
 }
 
 // =============================================================================
-// Frame.011 — ThinFilmFilter（RS 彩虹/光泽效果）
-// 溯源：docs/analysis/01_shader_arch.md#frame011
-// 贴图 A: T_actor_yvonne_cloth_05_RS.png (sRGB)
-// 贴图 B: T_actor_aurora_cloth_03_RS.png (Linear / Extend)
+// Frame.011 — ThinFilmFilter（RS 彩虹/薄膜干涉效果）
+// 溯源：docs/analysis/Frames/Frame011_ThinFilmFilter.md
+// 贴图 Aurora: T_actor_aurora_cloth_03_RS.png (Linear / Extend)
+// 贴图 Yvonne: T_actor_yvonne_cloth_05_RS.png (sRGB)
 // =============================================================================
-float3 Frame011_ThinFilmFilter(float3 color, SurfaceData sd, LightingData ld, Varyings input)
+float3 Frame011_ThinFilmFilter(float3 color, SurfaceData sd, LightingData ld,
+                                float clampedNdotL, float shadowScene, Varyings input)
 {
-    if (_UseRSEff > 0.5)
-    {
-        // Layer Weight(N, Facing) → Add → Clamp → Combine XYZ → UV
-        float rsFresnel     = saturate(dot(ld.N, ld.V));
-        float rsLayerWeight = saturate(rsFresnel * _LayerWeightValue + _LayerWeightValueOffset);
-        float2 rsUV         = float2(rsLayerWeight, 0.5);
+    // ── Step 1: 视角菲涅耳 Facing（层权重 LAYER_WEIGHT）──────────────────
+    // Facing ≈ pow(1 - saturate(dot(N, V)), 1 / _LayerWeightValue)
+    float NdotV  = saturate(dot(ld.N, ld.V));
+    float facing = pow(1.0 - NdotV, 1.0 / max(_LayerWeightValue, 0.001));
 
-        // 采样两张 RS 贴图，由 RS_Index 选择混合
-        float3 rsColorA = SAMPLE_TEXTURE2D(_RS_Tex_A, sampler_RS_Tex_A, rsUV).rgb;
-        float3 rsColorB = SAMPLE_TEXTURE2D(_RS_Tex_B, sampler_RS_Tex_B, rsUV).rgb;
-        float3 rsMixed  = lerp(rsColorA, rsColorB, _RS_Index);
+    // ── Step 2: Facing 偏移 + 钳制（运算.004 ADD → 钳制.001 CLAMP）──────
+    float facingAdj = saturate(facing + _LayerWeightValueOffset);
 
-        // RS ColorTint → RS Strength → _M 彩色遮罩（×2）
-        rsMixed *= _RS_ColorTint.rgb;
-        rsMixed *= _RS_Strength;
-        float3 rsMask = SAMPLE_TEXTURE2D(_M, sampler_M, input.uv).rgb;
-        rsMixed *= rsMask * rsMask;   // _M (彩色) ×2
+    // ── Step 3: 构造 RS 贴图 UV（合并 XYZ.004: X=facingAdj, Y=0.5 固定）──
+    float2 rsUV = float2(facingAdj, 0.5);
 
-        // RS Model：最终混合叠加到主色
-        color = lerp(color, color + rsMixed, _RSModel);
-    }
+    // ── Step 4: 采样双 RS 贴图并混合（混合.032 MIX）──────────────────────
+    float4 rsAurora = SAMPLE_TEXTURE2D(_RS_Tex_Aurora, sampler_RS, rsUV);
+    float4 rsYvonne = SAMPLE_TEXTURE2D(_RS_Tex_Yvonne, sampler_RS, rsUV);
+    float4 rsBlend  = lerp(rsAurora, rsYvonne, _RS_Index);
+
+    // ── Step 5: 色调 × 强度调制 ──────────────────────────────────────────
+    // 混合.036 MULTIPLY：RS × RS_ColorTint
+    float4 rsTinted = rsBlend * _RS_ColorTint;
+    // 混合.023 MULTIPLY：× RS_Strength
+    float4 rsStrength = rsTinted * _RS_Strength;
+
+    // ── Step 6: 光照调制（Fresnel 路径完整执行）──────────────────────────
+    // 混合.027 MULTIPLY：× clampedNdotL
+    float4 rsLit = rsStrength * clampedNdotL;
+    // 混合.028 MULTIPLY：× shadowScene
+    float4 rsShadowed = rsLit * shadowScene;
+
+    // ── Step 7: 双路径分叉 ───────────────────────────────────────────────
+    float4 mTex = SAMPLE_TEXTURE2D(_M, sampler_M, input.uv);
+
+    // Fresnel 路径（RS_Model=0）：混合.033 MULTIPLY：rsShadowed × _M 遮罩
+    float4 pathA = rsShadowed * mTex;
+
+    // Model 路径（RS_Model=1）：混合.038 MULTIPLY：_M × RS_ColorTint_B
+    float4 pathB = mTex * _RS_ColorTint_B;
+
+    // ── Step 8: RS_Model 开关选择（混合.037 MIX）─────────────────────────
+    float4 thinFilmColor = lerp(pathA, pathB, _RS_Model);
+
+    // ── 下游：帧.048 RS EFF ──────────────────────────────────────────────
+    // 混合.029 LIGHTEN（Factor=_RS_MultiplyValue）：逐通道取最大值
+    float3 lightened = color + (max(color, thinFilmColor.rgb) - color) * _RS_MultiplyValue;
+    // 混合.030 MIX（Factor=_UseRSEff）：全局 RS 效果开关
+    color = lerp(color, lightened, _UseRSEff);
 
     return color;
 }
@@ -391,8 +458,12 @@ float4 PBRToonBase_Frag(Varyings input) : SV_Target
     sd.albedo       = Frame069_SimpleTransmission(sd, ld, input);
     sd.diffuseColor = ComputeDiffuseColor(sd.albedo, sd.metallic); // albedo 变，diffuseColor 重算
 
-    // Frame.005 + Frame.007 — Diffuse + ShadowAdjust
-    float3 directDiffuse  = Frame005_DiffuseBRDF(sd, ld);
+    // Frame.005 — DiffuseBRDF
+    float rampAlpha;
+    float3 directDiffuse  = Frame005_DiffuseBRDF(sd, ld, rampAlpha);
+
+    // Frame.007 — ShadowAdjust（rampAlpha 驱动全局阴影亮度）
+    directDiffuse = Frame007_ShadowAdjust(directDiffuse, rampAlpha);
 
     // Frame.004 — Specular（未修正，energyCompFactor 在 Frame.006 内部应用）
     float3 directSpecular = Frame004_SpecularBRDF(sd, ld);
@@ -412,7 +483,11 @@ float4 PBRToonBase_Frag(Varyings input) : SV_Target
     color += sd.emission;
 
     // Frame.011 — ThinFilmFilter（RS 彩虹）
-    color = Frame011_ThinFilmFilter(color, sd, ld, input);
+    // clampedNdotL 来自 Frame.012 Init（帧.029 clampedNdotL）
+    // shadowScene 来自 Frame.005 DiffuseBRDF（帧.019 SigmoidSharp(castShadow)）
+    float clampedNdotL = saturate(ld.NoL);                                          // 帧.029
+    float shadowScene  = SigmoidSharp(ld.castShadow, _CastShadow_center, _CastShadow_sharp); // 帧.019
+    color = Frame011_ThinFilmFilter(color, sd, ld, clampedNdotL, shadowScene, input);
 
     // Frame.014 — Alpha
     return float4(color, sd.alpha * _Alpha);

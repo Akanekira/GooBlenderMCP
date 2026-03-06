@@ -141,7 +141,7 @@ flowchart TD
         specTermAniso["specTermAniso<br/>= DV_aniso × F"]
     end
 
-    toonAniso["Toon Aniso 选择<br/>= lerp(specTerm, specTermAniso, UseToonaniso)"]
+    toonAniso["Toon Aniso 选择<br/>= UseToonaniso ? saturate(BdotV) : specTermAniso"]
     finalSpec["Use anisotropy? 混合<br/>= lerp(specTerm, toonAniso, AnisoMask)"]
     piCorr["× π（待确认）<br/>最终归一化修正"]
     OUT(["directLighting_specular"])
@@ -254,7 +254,8 @@ float3 specTerm      = F * DV_iso;    // Vector Math.003  [帧.028]
 float3 specTermAniso = F * DV_aniso;  // Vector Math.018  [帧.066]
 
 // ── Step 4: Toon Aniso 选择（混合.020）[帧.068] ───────────────────────────
-float3 toonAnisoResult = UseToonAniso ? specTermAniso : specTerm;
+// Toon 各向异性使用简化的 BdotV 高光，而非完整各向异性 BRDF
+float3 toonAnisoResult = UseToonAniso ? saturate(BdotV) : specTermAniso;
 
 // ── Step 5: Use anisotropy? 最终混合（混合.016 / 混合.017） ────────────────
 float3 finalSpecTerm;

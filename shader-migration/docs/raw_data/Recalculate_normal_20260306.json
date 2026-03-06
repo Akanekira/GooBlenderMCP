@@ -1,0 +1,463 @@
+{
+  "group": "Recalculate normal",
+  "nodes": [
+    {
+      "name": "帧.015",
+      "type": "FRAME",
+      "label": "sphereNormal",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [],
+      "outputs": []
+    },
+    {
+      "name": "Vector Math.008",
+      "type": "VECT_MATH",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Scale",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "operation": "SUBTRACT"
+    },
+    {
+      "name": "Vector Math.009",
+      "type": "VECT_MATH",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Scale",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Vector",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "operation": "NORMALIZE"
+    },
+    {
+      "name": "转接点.115",
+      "type": "REROUTE",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [
+        {
+          "name": "Input",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Output",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "转接点.114",
+      "type": "REROUTE",
+      "label": "",
+      "parent": "帧.015",
+      "node_tree": null,
+      "inputs": [
+        {
+          "name": "Input",
+          "type": "VECTOR"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Output",
+          "type": "VECTOR"
+        }
+      ]
+    },
+    {
+      "name": "转接点.118",
+      "type": "REROUTE",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [
+        {
+          "name": "Input",
+          "type": "VECTOR"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Output",
+          "type": "VECTOR"
+        }
+      ]
+    },
+    {
+      "name": "转接点.119",
+      "type": "REROUTE",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [
+        {
+          "name": "Input",
+          "type": "VECTOR"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Output",
+          "type": "VECTOR"
+        }
+      ]
+    },
+    {
+      "name": "转接点.122",
+      "type": "REROUTE",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [
+        {
+          "name": "Input",
+          "type": "VECTOR"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Output",
+          "type": "VECTOR"
+        }
+      ]
+    },
+    {
+      "name": "组输出",
+      "type": "GROUP_OUTPUT",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [
+        {
+          "name": "结果",
+          "type": "VECTOR"
+        },
+        {
+          "name": "",
+          "type": "CUSTOM"
+        }
+      ],
+      "outputs": []
+    },
+    {
+      "name": "混合.014",
+      "type": "MIX",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [
+        {
+          "name": "Factor",
+          "type": "VALUE"
+        },
+        {
+          "name": "Factor",
+          "type": "VECTOR"
+        },
+        {
+          "name": "A",
+          "type": "VALUE"
+        },
+        {
+          "name": "B",
+          "type": "VALUE"
+        },
+        {
+          "name": "A",
+          "type": "VECTOR"
+        },
+        {
+          "name": "B",
+          "type": "VECTOR"
+        },
+        {
+          "name": "A",
+          "type": "RGBA"
+        },
+        {
+          "name": "B",
+          "type": "RGBA"
+        },
+        {
+          "name": "A",
+          "type": "ROTATION"
+        },
+        {
+          "name": "B",
+          "type": "ROTATION"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Result",
+          "type": "VALUE"
+        },
+        {
+          "name": "Result",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Result",
+          "type": "RGBA"
+        },
+        {
+          "name": "Result",
+          "type": "ROTATION"
+        }
+      ],
+      "blend_type": "MIX",
+      "data_type": "VECTOR"
+    },
+    {
+      "name": "混合.013",
+      "type": "MIX",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [
+        {
+          "name": "Factor",
+          "type": "VALUE"
+        },
+        {
+          "name": "Factor",
+          "type": "VECTOR"
+        },
+        {
+          "name": "A",
+          "type": "VALUE"
+        },
+        {
+          "name": "B",
+          "type": "VALUE"
+        },
+        {
+          "name": "A",
+          "type": "VECTOR"
+        },
+        {
+          "name": "B",
+          "type": "VECTOR"
+        },
+        {
+          "name": "A",
+          "type": "RGBA"
+        },
+        {
+          "name": "B",
+          "type": "RGBA"
+        },
+        {
+          "name": "A",
+          "type": "ROTATION"
+        },
+        {
+          "name": "B",
+          "type": "ROTATION"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Result",
+          "type": "VALUE"
+        },
+        {
+          "name": "Result",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Result",
+          "type": "RGBA"
+        },
+        {
+          "name": "Result",
+          "type": "ROTATION"
+        }
+      ],
+      "blend_type": "MIX",
+      "data_type": "VECTOR"
+    },
+    {
+      "name": "组输入",
+      "type": "GROUP_INPUT",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "sphereNormal_Strength",
+          "type": "VALUE"
+        },
+        {
+          "name": "headCenter",
+          "type": "VECTOR"
+        },
+        {
+          "name": "posWS",
+          "type": "VECTOR"
+        },
+        {
+          "name": "NormalWS",
+          "type": "VECTOR"
+        },
+        {
+          "name": "ChinMask",
+          "type": "VALUE"
+        },
+        {
+          "name": "",
+          "type": "CUSTOM"
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "from_node": "转接点.118",
+      "from_socket": "Output",
+      "to_node": "Vector Math.008",
+      "to_socket": "Vector"
+    },
+    {
+      "from_node": "转接点.122",
+      "from_socket": "Output",
+      "to_node": "混合.013",
+      "to_socket": "A"
+    },
+    {
+      "from_node": "转接点.115",
+      "from_socket": "Output",
+      "to_node": "混合.013",
+      "to_socket": "Factor"
+    },
+    {
+      "from_node": "转接点.119",
+      "from_socket": "Output",
+      "to_node": "Vector Math.008",
+      "to_socket": "Vector"
+    },
+    {
+      "from_node": "转接点.114",
+      "from_socket": "Output",
+      "to_node": "混合.013",
+      "to_socket": "B"
+    },
+    {
+      "from_node": "Vector Math.008",
+      "from_socket": "Vector",
+      "to_node": "Vector Math.009",
+      "to_socket": "Vector"
+    },
+    {
+      "from_node": "Vector Math.009",
+      "from_socket": "Vector",
+      "to_node": "转接点.114",
+      "to_socket": "Input"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "sphereNormal_Strength",
+      "to_node": "转接点.115",
+      "to_socket": "Input"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "posWS",
+      "to_node": "转接点.118",
+      "to_socket": "Input"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "headCenter",
+      "to_node": "转接点.119",
+      "to_socket": "Input"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "NormalWS",
+      "to_node": "转接点.122",
+      "to_socket": "Input"
+    },
+    {
+      "from_node": "混合.014",
+      "from_socket": "Result",
+      "to_node": "组输出",
+      "to_socket": "结果"
+    },
+    {
+      "from_node": "混合.013",
+      "from_socket": "Result",
+      "to_node": "混合.014",
+      "to_socket": "A"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "ChinMask",
+      "to_node": "混合.014",
+      "to_socket": "Factor"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "NormalWS",
+      "to_node": "混合.014",
+      "to_socket": "B"
+    }
+  ]
+}

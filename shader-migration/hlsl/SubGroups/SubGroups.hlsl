@@ -142,8 +142,8 @@ void Get_NoH_LoH_ToH_BoH(
     float invLenLV = rsqrt(max(2.0 * (1.0 + LoV), 1e-7));
     NdotH = saturate((NoL + NoV) * invLenLV);
     LdotH = saturate((LoV + 1.0) * invLenLV);
-    TdotH = (ToL + ToV) * invLenLV;
-    BdotH = (BoL + BoV) * invLenLV;
+    TdotH = saturate((ToL + ToV) * invLenLV);
+    BdotH = saturate((BoL + BoV) * invLenLV);
 }
 
 // -----------------------------------------------------------------------------

@@ -1,0 +1,356 @@
+{
+  "group": "Front transparent red",
+  "nodes": [
+    {
+      "name": "转接点.046",
+      "type": "REROUTE",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [
+        {
+          "name": "Input",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Output",
+          "type": "VALUE"
+        }
+      ]
+    },
+    {
+      "name": "转接点.082",
+      "type": "REROUTE",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [
+        {
+          "name": "Input",
+          "type": "RGBA"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Output",
+          "type": "RGBA"
+        }
+      ]
+    },
+    {
+      "name": "运算.006",
+      "type": "MATH",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        },
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Value",
+          "type": "VALUE"
+        }
+      ],
+      "operation": "POWER"
+    },
+    {
+      "name": "组输出",
+      "type": "GROUP_OUTPUT",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [
+        {
+          "name": "结果",
+          "type": "RGBA"
+        },
+        {
+          "name": "",
+          "type": "CUSTOM"
+        }
+      ],
+      "outputs": []
+    },
+    {
+      "name": "混合.007",
+      "type": "MIX",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [
+        {
+          "name": "Factor",
+          "type": "VALUE"
+        },
+        {
+          "name": "Factor",
+          "type": "VECTOR"
+        },
+        {
+          "name": "A",
+          "type": "VALUE"
+        },
+        {
+          "name": "B",
+          "type": "VALUE"
+        },
+        {
+          "name": "A",
+          "type": "VECTOR"
+        },
+        {
+          "name": "B",
+          "type": "VECTOR"
+        },
+        {
+          "name": "A",
+          "type": "RGBA"
+        },
+        {
+          "name": "B",
+          "type": "RGBA"
+        },
+        {
+          "name": "A",
+          "type": "ROTATION"
+        },
+        {
+          "name": "B",
+          "type": "ROTATION"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Result",
+          "type": "VALUE"
+        },
+        {
+          "name": "Result",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Result",
+          "type": "RGBA"
+        },
+        {
+          "name": "Result",
+          "type": "ROTATION"
+        }
+      ],
+      "blend_type": "MIX",
+      "data_type": "RGBA"
+    },
+    {
+      "name": "组输入",
+      "type": "GROUP_INPUT",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "smo_max",
+          "type": "VALUE"
+        },
+        {
+          "name": "Positive attenuation",
+          "type": "VALUE"
+        },
+        {
+          "name": "sideColor",
+          "type": "RGBA"
+        },
+        {
+          "name": "D_R",
+          "type": "VALUE"
+        },
+        {
+          "name": "Pow",
+          "type": "VALUE"
+        },
+        {
+          "name": "",
+          "type": "CUSTOM"
+        }
+      ]
+    },
+    {
+      "name": "混合.006",
+      "type": "MIX",
+      "label": "",
+      "parent": null,
+      "node_tree": null,
+      "inputs": [
+        {
+          "name": "Factor",
+          "type": "VALUE"
+        },
+        {
+          "name": "Factor",
+          "type": "VECTOR"
+        },
+        {
+          "name": "A",
+          "type": "VALUE"
+        },
+        {
+          "name": "B",
+          "type": "VALUE"
+        },
+        {
+          "name": "A",
+          "type": "VECTOR"
+        },
+        {
+          "name": "B",
+          "type": "VECTOR"
+        },
+        {
+          "name": "A",
+          "type": "RGBA"
+        },
+        {
+          "name": "B",
+          "type": "RGBA"
+        },
+        {
+          "name": "A",
+          "type": "ROTATION"
+        },
+        {
+          "name": "B",
+          "type": "ROTATION"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Result",
+          "type": "VALUE"
+        },
+        {
+          "name": "Result",
+          "type": "VECTOR"
+        },
+        {
+          "name": "Result",
+          "type": "RGBA"
+        },
+        {
+          "name": "Result",
+          "type": "ROTATION"
+        }
+      ],
+      "blend_type": "MIX",
+      "data_type": "RGBA"
+    },
+    {
+      "name": "群组.010",
+      "type": "GROUP",
+      "label": "",
+      "parent": null,
+      "node_tree": "SmoothStep",
+      "inputs": [
+        {
+          "name": "min",
+          "type": "VALUE"
+        },
+        {
+          "name": "max",
+          "type": "VALUE"
+        },
+        {
+          "name": "x",
+          "type": "VALUE"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "输出",
+          "type": "VALUE"
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "from_node": "转接点.082",
+      "from_socket": "Output",
+      "to_node": "混合.006",
+      "to_socket": "B"
+    },
+    {
+      "from_node": "运算.006",
+      "from_socket": "Value",
+      "to_node": "转接点.046",
+      "to_socket": "Input"
+    },
+    {
+      "from_node": "转接点.046",
+      "from_socket": "Output",
+      "to_node": "群组.010",
+      "to_socket": "x"
+    },
+    {
+      "from_node": "群组.010",
+      "from_socket": "输出",
+      "to_node": "混合.006",
+      "to_socket": "Factor"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "smo_max",
+      "to_node": "群组.010",
+      "to_socket": "max"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "Pow",
+      "to_node": "运算.006",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "sideColor",
+      "to_node": "转接点.082",
+      "to_socket": "Input"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "D_R",
+      "to_node": "运算.006",
+      "to_socket": "Value"
+    },
+    {
+      "from_node": "混合.007",
+      "from_socket": "Result",
+      "to_node": "组输出",
+      "to_socket": "结果"
+    },
+    {
+      "from_node": "组输入",
+      "from_socket": "Positive attenuation",
+      "to_node": "混合.007",
+      "to_socket": "Factor"
+    },
+    {
+      "from_node": "混合.006",
+      "from_socket": "Result",
+      "to_node": "混合.007",
+      "to_socket": "B"
+    }
+  ]
+}

@@ -66,8 +66,8 @@ void Get_NoH_LoH_ToH_BoH(
     float invLenLV = rsqrt(max(2.0 * LoV + 2.0, FLT_EPS));
     NdotH = saturate((NoL + NoV) * invLenLV);
     LdotH = saturate((LoV + 1.0) * invLenLV);
-    TdotH = (ToL + ToV) * invLenLV;
-    BdotH = (BoL + BoV) * invLenLV;
+    TdotH = saturate((ToL + ToV) * invLenLV);
+    BdotH = saturate((BoL + BoV) * invLenLV);
 }
 ```
 
@@ -78,7 +78,7 @@ void Get_NoH_LoH_ToH_BoH(
 - 这是 HDRP 标准的半角向量点积计算方法（避免 `normalize(L+V)` 的显式向量运算）
 - 与 HDRP `GetBSDFAngle(V, L, NdotL, NdotV)` 思路完全一致
 - `GetinvLenLV` 子群组（第三层）需单独提取分析
-- 部分输出（TdotH/BdotH）无 clamp，因为切线/副切线方向允许负值（各向异性高光需要）
+- 四个输出均经过 Clamp[0,1]（即 `saturate`），包括 TdotH/BdotH（与标准 HDRP 不同，HDRP 各向异性允许负值）
 
 ---
 
